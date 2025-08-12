@@ -36,3 +36,18 @@ Tech stack:
   - fyne, wails, gio
 - considerations for internationalization dictionary:
   - json (most likely), yaml, toml
+
+---
+
+### Models:
+
+| Name               | Description                                                               |
+|--------------------|---------------------------------------------------------------------------|
+| `Item`             | Base model for all catalog items, contains common fields                  |
+| `Book`             | Embedded in `Item`, represents a book with specific fields                |
+| `Profile`          | User profile details                                                      |
+| `ProfileSettings`  | User profile settings                                                     |
+| `ProfileItemFlags` | Flags for user-specific item states (read, favorite, etc.)                |
+| `Creator`          | Represents an author or creator of an item                                |
+| `ItemCreator`      | Association between `Item` and `Creator` (to allow for multiple creators) |
+| `Image`            | Represents an image associated with an item                               |
