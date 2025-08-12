@@ -12,7 +12,8 @@ Planned features for v1 release:
     - delete: remove book from catalog
     - user-based book management: read/unread, favorite, reading list, user notes 
 - browse books (list, favorites, reading list)
-- search by title, author, year, isbn, publisher, tags
+- search and sort by title, author, year, isbn, publisher, tags
+- quick stats (total books, number read, number in reading list)
 - add images for book covers
   - image compressor, thumbnail generation, resizing
 - import/export to/from (csv, json)
@@ -23,6 +24,7 @@ Planned features for v1 release:
   - language selection
   - user profile management (username)
   - change user
+  - backup/restore database in-app button
 - multilingual support (english, hungarian)
 - os-native gui (primarily windows focus)
 - starting with books only to limit scope but architecture needs to be flexible enough to support future catalogue-able items
@@ -33,4 +35,4 @@ Tech stack:
 - considerations for gui:
   - fyne, wails, gio
 - considerations for internationalization dictionary:
-  - json, yaml, toml
+  - json (most likely), yaml, toml
