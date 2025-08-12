@@ -1,1 +1,36 @@
-# teka
+# Téka - WIP
+
+Book cataloging system for personal libraries
+
+Planned features for v1 release:
+- user profiles (very simple, no auth)
+- crud operations for books
+    - create: title, author, year, isbn, publisher, description, tags, 
+      cover image, type (book, magazine, etc.)
+    - read: book "profile" page
+    - update: edit book details on profile page
+    - delete: remove book from catalog
+    - user-based book management: read/unread, favorite, reading list, user notes 
+- browse books (list, favorites, reading list)
+- search by title, author, year, isbn, publisher, tags
+- add images for book covers
+  - image compressor, thumbnail generation, resizing
+- import/export to/from (csv, json)
+- add book to reading list
+- mark book as read/unread
+- mark book as favorite
+- in-app settings:
+  - language selection
+  - user profile management (username)
+  - change user
+- multilingual support (english, hungarian)
+- os-native gui (primarily windows focus)
+- starting with books only to limit scope but architecture needs to be flexible enough to support future catalogue-able items
+
+Tech stack:
+- Go
+- SQLite
+- considerations for gui:
+  - fyne, wails, gio
+- considerations for internationalization dictionary:
+  - json, yaml, toml
