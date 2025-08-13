@@ -23,17 +23,38 @@ type profileRepository struct{ db *sql.DB }
 
 var ProfileRepo = &profileRepository{db: ??}
 
-const FailedInsertId int = 0
+const DbFailedInsertId int = 0
 
-func (r *profileRepository) CreateProfile(p models.Profile) (int, error){
+func (r *profileRepository) CreateProfile(p models.Profile) (int, error) {
 	res, err := r.db.Exec("INSERT INTO profiles (name) VALUES (?)", p.Name)
 	if err != nil {
-		return FailedInsertId, err
+		return DbFailedInsertId, err
 	}
 	var id int64
 	if id, err = res.LastInsertId(); err != nil {
-		return FailedInsertId, err
+		return DbFailedInsertId, err
 	}
 	return int(id), nil
+}
+
+func (r *profileRepository) GetProfileById(id int) (*models.Profile, error) {}
+
+func (r *profileRepository) GetProfileByName(name string) (*models.Profile, error) {
+	var p models.Profile
+	err := r.db.QueryRow("SELECT id, name FROM profiles WHERE name = ?", name).Scan(&p.ID, &p.Name)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return nil, nil // No profile found
+		}
+		return nil, err // Other error
+	}
+	return &p, nil
+}
+
+func (r *profileRepository) UpdateProfile(p models.Profile) error {}
+
+func (r *profileRepository) DeleteProfile(id int) error {
+	_, err := r.db.Exec("DELETE FROM profiles WHERE id = ?", id)
+	return err
 }
 
