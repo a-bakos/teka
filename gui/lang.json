@@ -1,0 +1,22 @@
+{
+  "app": {
+    "title": {
+      "en": "Book Catalog",
+      "hu": "Könyvkatalógus"
+    },
+    "welcome": {
+      "en": "Welcome, {{name}}!",
+      "hu": "Üdvözlünk, {{name}}!"
+    }
+  },
+  "book": {
+    "add": {
+      "en": "Add Book",
+      "hu": "Könyv hozzáadása"
+    },
+    "edit": {
+      "en": "Edit Book",
+      "hu": "Könyv szerkesztése"
+    }
+  }
+}
