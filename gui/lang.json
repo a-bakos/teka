@@ -4,7 +4,7 @@
       "en": "Book Catalog",
       "hu": "Könyvkatalógus"
     },
-    "welcome": {
+    "greeting": {
       "en": "Welcome, {{name}}!",
       "hu": "Üdvözlünk, {{name}}!"
     }
