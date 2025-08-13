@@ -69,6 +69,8 @@ Tech stack:
 
 GUI layer never touches the DB directly
 
-Services layer encapsulates app logic
+Services layer encapsulates app/business logic
 
-Repository layer only handles SQL operations
+Repository, database access layer, only handles SQL operations, doesn't contain business logic. It only knows how to fetch, store, and update data.
+
+Using a package-level singleton instances
