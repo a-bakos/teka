@@ -26,16 +26,18 @@ Planned features for v1 release:
   - change user
   - backup/restore database in-app button
 - multilingual support (english, hungarian)
-- os-native gui (primarily windows focus)
+- cross-platform gui
 - starting with books only to limit scope but architecture needs to be flexible enough to support future catalogue-able items
 
 Tech stack:
 - Go
 - SQLite
-- considerations for gui:
-  - fyne, wails, gio
-- considerations for internationalization dictionary:
-  - json (most likely), yaml, toml
+- Wails (for GUI)
+- HTML + CSS / Tailwind + JS (for GUI)
+- JSON
+
+- previous considerations for gui: fyne, wails, gio
+- previous considerations for internationalization dictionary: json, yaml, toml
 
 ---
 
@@ -51,3 +53,22 @@ Tech stack:
 | `Creator`          | Represents an author or creator of an item                                |
 | `ItemCreator`      | Association between `Item` and `Creator` (to allow for multiple creators) |
 | `Image`            | Represents an image associated with an item                               |
+
+---
+
+### Project Structure
+
+- `main.go`: starts Wails, initializes App struct
+- `cli/`: command line interface
+- `app/app.go`: defines methods exposed to JS via Wails
+- `services/`: contains higher-level logic (eg, book operations combining repo + extra rules)
+- `repository/`: talks to SQLite, CRUD methods for tables
+- `models/`: Go structs, app-specific data models
+- `gui/`: HTML/CSS/JS that Wails serves; vanilla JS communicates with Go via Wails bindings
+- `utils/`: helper functions
+
+GUI layer never touches the DB directly
+
+Services layer encapsulates app logic
+
+Repository layer only handles SQL operations
