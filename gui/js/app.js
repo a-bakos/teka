@@ -1,3 +1,5 @@
+"use strict"
+
 import Lang from './lang.js'
 
 const LANG_EN = 'en'

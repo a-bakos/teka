@@ -1,3 +1,5 @@
+"use strict"
+
 export default class Lang {
     static LANG_FILE = '../lang.json'
     static LANG_EN = 'en'
