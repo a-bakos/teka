@@ -37,10 +37,12 @@ CREATE TABLE creators (
 );
 
 CREATE TABLE item_creators (
-                               item_id INTEGER REFERENCES items(id) ON DELETE CASCADE,
-                               creator_id INTEGER REFERENCES creators(id),
-                               role TEXT DEFAULT 'author',
-                               PRIMARY KEY (item_id, creator_id, role)
+                               id INTEGER PRIMARY KEY AUTOINCREMENT,
+                               item_id INTEGER NOT NULL,
+                               creator_id INTEGER NOT NULL,
+                               role TEXT NOT NULL,
+                               FOREIGN KEY(item_id) REFERENCES items(id),
+                               FOREIGN KEY(creator_id) REFERENCES creators(id)
 );
 
 CREATE TABLE images (

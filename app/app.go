@@ -78,7 +78,7 @@ func Run() {
 		PageCount:     util.PointerInt(300),
 		ISBN:          util.PointerString("978-3-16-148410-0"),
 	}
-	itemID, err := repository.InsertBook(&newbook)
+	itemID, err := repository.InsertBook(&newbook, "Author three + Author four + author five")
 	if err != nil {
 		log.Fatalf("Failed to insert book: %v", err)
 	}
