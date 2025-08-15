@@ -1,5 +1,7 @@
 package db
 
-import "database/sql"
+import (
+	"database/sql"
+)
 
 var Conn *sql.DB

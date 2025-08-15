@@ -4,13 +4,14 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
+	"teka/constants"
 	"teka/db"
 	"teka/util"
 )
 
-func Run(cliMode bool) {
+func Run() {
 
-	if cliMode {
+	if constants.CliMode {
 		fmt.Println("Running in CLI mode")
 		// Here you would call your CLI commands, e.g.:
 		// book.CmdAddBook()

@@ -16,5 +16,5 @@ func main() {
 	}
 	defer db.Conn.Close()
 
-	app.Run(constants.CliMode)
+	app.Run()
 }
