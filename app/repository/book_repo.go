@@ -1,10 +1,6 @@
 package repository
 
-type bookRepository struct{}
-
-var BookRepository = &bookRepository{}
-
-func (r *bookRepository) InsertBook() {
+func InsertBook() {
 	// Implementation for inserting a book
 	// insert book into items AND books tables
 
