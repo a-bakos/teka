@@ -7,7 +7,7 @@ import (
 	"teka/models"
 )
 
-func CreateProfile(p models.Profile) (int, error) {
+func CreateProfile(p models.Profile) (int64, error) {
 	res, err := db.Conn.Exec("INSERT INTO profiles (name) VALUES (?)", p.Name)
 	if err != nil {
 		return constants.DbFailedInsertId, err
@@ -16,7 +16,7 @@ func CreateProfile(p models.Profile) (int, error) {
 	if id, err = res.LastInsertId(); err != nil {
 		return constants.DbFailedInsertId, err
 	}
-	return int(id), nil
+	return id, nil
 }
 
 //func (r *profileRepository) GetProfileById(id int) (*models.Profile, error) {}

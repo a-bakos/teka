@@ -4,20 +4,21 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
+	"teka/app/repository"
 	"teka/constants"
 	"teka/db"
+	"teka/models"
 	"teka/util"
+	"time"
 )
 
 func Run() {
 
 	if constants.CliMode {
 		fmt.Println("Running in CLI mode")
-		// Here you would call your CLI commands, e.g.:
 		// book.CmdAddBook()
 	} else {
 		fmt.Println("Running in GUI mode")
-		// Here you would initialize and run your GUI application
 		runGui()
 	}
 
@@ -45,16 +46,43 @@ func Run() {
 		fmt.Printf(
 			"ID: %d, ISBN: %v, Publisher: %v, Published: %v, Page count: %v\n",
 			id,
-			util.NullableToString(isbn),
-			util.NullableToString(publisher),
-			util.NullableToTime(publishedDate),
-			util.NullableToInt(pageCount),
+			util.NullableToStringDisplay(isbn),
+			util.NullableToStringDisplay(publisher),
+			util.NullableToTimeDisplay(publishedDate),
+			util.NullableToIntDisplay(pageCount),
 		)
 	}
 
 	if err = rows.Err(); err != nil {
 		log.Fatal(err)
 	}
+
+	// Deal with published date
+	parsedPublished, err := time.Parse(time.RFC3339, "2020-01-01T00:00:00Z")
+	var published *time.Time
+	if err == nil {
+		published = util.PointerTime(parsedPublished)
+	} else {
+		published = nil
+	}
+
+	newbook := models.Book{
+		Item: models.Item{
+			Title:       "Sample Book",
+			Description: "This is a sample book description.",
+			ItemType:    constants.ItemTypeBook,
+			CreatedBy:   1,
+		},
+		Publisher:     util.PointerString("Sample Publisher"),
+		PublishedDate: published,
+		PageCount:     util.PointerInt(300),
+		ISBN:          util.PointerString("978-3-16-148410-0"),
+	}
+	itemID, err := repository.InsertBook(&newbook)
+	if err != nil {
+		log.Fatalf("Failed to insert book: %v", err)
+	}
+	fmt.Printf("Inserted new book with ID: %d\n", itemID)
 
 }
 
