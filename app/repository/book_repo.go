@@ -1,23 +1,16 @@
 package repository
 
 import (
-	"strings"
+	"database/sql"
 	"teka/constants"
 	"teka/db"
 	"teka/models"
 )
 
-// InsertBook Implementation for inserting a book
-// insert book into items AND books tables
-// insert author into authors table
-// insert item_creators and link book and authors
-func InsertBook(b *models.Book, authors string) (int64, error) {
-	/// Why a transaction?
-	// If the items insert succeeds but the books insert fails, we don't want an orphaned row in items.
-	// The tx ensures both succeed or both fail.
+func GetBookByTitleAutoTx(title string) (int64, error) {
 	tx, err := db.Conn.Begin()
 	if err != nil {
-		return constants.DbFailedInsertId, err
+		return constants.NotFoundCreatorId, err
 	}
 	defer func() {
 		if err != nil {
@@ -27,39 +20,31 @@ func InsertBook(b *models.Book, authors string) (int64, error) {
 		}
 	}()
 
-	// Step 1: Process authors
-	allAuthorIDs := []int64{}
-	names := strings.Split(authors, constants.MultiAuthorSeparator)
-	for _, name := range names {
-		name = strings.TrimSpace(name)
-		if name == constants.EmptyString {
-			continue
-		}
-		id, _, err := GetOrCreateAuthor(tx, name)
-		if err != nil {
-			return constants.DbFailedInsertId, err
-		}
-		allAuthorIDs = append(allAuthorIDs, id)
-	}
+	return GetItemByTitle(tx, title)
+}
 
+// InsertBook Implementation for inserting a book
+// insert book into items AND books tables
+// insert author into authors table
+// insert item_creators and link book and authors
+func InsertBook(tx *sql.Tx, b *models.Book) (int64, error) {
+	// Step 1: Process author(s)
+	allAuthorIDs, err := ProcessMultiAuthors(tx, b.AuthorNames)
+	if len(allAuthorIDs) == constants.ZeroValue || err != nil {
+		return constants.DbFailedInsertId, err
+	}
 	// Step 2: Insert into items
-	// todo: need to check title exists!
-	res, err := tx.Exec(`
-        INSERT INTO items (title, description, item_type, created_at, created_by)
-        VALUES (?, ?, ?, CURRENT_TIMESTAMP, ?)`,
-		b.Title, b.Description, constants.ItemTypeBook, b.CreatedBy,
-	)
+	itemID, err := InsertItem(tx, &b.Item)
 	if err != nil {
 		return constants.DbFailedInsertId, err
 	}
-
-	itemID, err := res.LastInsertId()
-	if err != nil {
-		return constants.DbFailedInsertId, err
+	if itemID == constants.NotFoundItemId {
+		// If item already exists, we should not insert again
+		return itemID, nil // todo maybe return an error here?
 	}
 
 	// Step 2: Insert into books
-	_, err = tx.Exec(`
+	res, err := tx.Exec(`
         INSERT INTO books (item_id, publisher, published_date, page_count, isbn)
         VALUES (?, ?, ?, ?, ?)`,
 		itemID,
@@ -71,18 +56,26 @@ func InsertBook(b *models.Book, authors string) (int64, error) {
 	if err != nil {
 		return constants.DbFailedInsertId, err
 	}
-
-	// Step 4: Link authors to item in item_creators
-	for _, authorID := range allAuthorIDs {
-		_, err := tx.Exec(`
-            INSERT INTO item_creators (item_id, creator_id, role)
-            VALUES (?, ?, ?)`,
-			itemID, authorID, constants.RoleAuthor,
-		)
-		if err != nil {
-			return constants.DbFailedInsertId, err
-		}
+	bookID, err := res.LastInsertId()
+	if err != nil {
+		return constants.DbFailedInsertId, err
 	}
 
-	return itemID, nil
+	// Step 3: Link authors to item in item_creators
+	err = LinkAuthorsToItem(tx, bookID, allAuthorIDs)
+	if err != nil {
+		return constants.DbFailedInsertId, err
+	}
+
+	return bookID, nil
+}
+
+func InsertBookAutoTx(b *models.Book) (int64, error) {
+	var bookID int64
+	err := db.RunInTx(func(tx *sql.Tx) error {
+		var err error
+		bookID, err = InsertBook(tx, b)
+		return err
+	})
+	return bookID, err
 }

@@ -2,11 +2,13 @@
 --  Dummy Data
 -- =========================
 
+INSERT INTO profiles (name) VALUES ('Admin');
 INSERT INTO profiles (name) VALUES ('Alice');
 INSERT INTO profiles (name) VALUES ('Bob');
 
 INSERT INTO profile_settings (profile_id, language) VALUES (1, 'en');
 INSERT INTO profile_settings (profile_id, language) VALUES (2, 'hu');
+INSERT INTO profile_settings (profile_id, language) VALUES (3, 'en');
 
 INSERT INTO items (title, description, item_type, created_by)
 VALUES ('The Hobbit', 'A fantasy novel by J.R.R. Tolkien.', 'book', 1);

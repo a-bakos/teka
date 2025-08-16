@@ -5,6 +5,7 @@ import (
 	"strings"
 	"teka/constants"
 	"teka/db"
+	"teka/util"
 )
 
 // GetAuthor tries to find an author by name. Returns ID if found
@@ -20,9 +21,25 @@ func GetAuthor(tx *sql.Tx, name string) (int64, error) {
 	return id, nil
 }
 
-// GetOrCreateAuthor attempts to find an author by name and creates it if not found
+func ProcessMultiAuthors(tx *sql.Tx, authors string) ([]int64, error) {
+	var allAuthorIDs []int64
+	for _, name := range util.SplitMultiAuthorString(authors) {
+		name = strings.TrimSpace(name)
+		if name == constants.EmptyString {
+			continue
+		}
+		id, _, err := getOrCreateAuthor(tx, name)
+		if err != nil {
+			return nil, err
+		}
+		allAuthorIDs = append(allAuthorIDs, id)
+	}
+	return allAuthorIDs, nil
+}
+
+// getOrCreateAuthor attempts to find an author by name and creates it if not found
 // returns: authorID, wasCreated, err
-func GetOrCreateAuthor(tx *sql.Tx, name string) (int64, bool, error) {
+func getOrCreateAuthor(tx *sql.Tx, name string) (int64, bool, error) {
 	id, err := GetAuthor(tx, name)
 	if err != nil {
 		return constants.NotFoundCreatorId, false, err
@@ -30,15 +47,15 @@ func GetOrCreateAuthor(tx *sql.Tx, name string) (int64, bool, error) {
 	if id != constants.NotFoundCreatorId {
 		return id, false, nil
 	}
-	newID, err := InsertAuthor(tx, name)
+	newID, err := insertAuthor(tx, name)
 	if err != nil {
 		return constants.NotFoundCreatorId, false, err
 	}
 	return newID, true, nil // new author created
 }
 
-// InsertAuthor inserts a new author and returns the new ID
-func InsertAuthor(tx *sql.Tx, name string) (int64, error) {
+// insertAuthor inserts a new author and returns the new ID
+func insertAuthor(tx *sql.Tx, name string) (int64, error) {
 	res, err := tx.Exec(`INSERT INTO creators (name) VALUES (?)`, name)
 	if err != nil {
 		return constants.NotFoundCreatorId, err
@@ -50,11 +67,7 @@ func InsertAuthor(tx *sql.Tx, name string) (int64, error) {
 	}
 
 	// insert int item_creators
-	_, err = tx.Exec(`
-        INSERT INTO item_creators (creator_id, role)
-        VALUES (?, ?)`,
-		authorID, constants.RoleAuthor,
-	)
+	_, err = InsertItemCreator(tx, authorID, constants.RoleAuthor)
 	if err != nil {
 		return constants.DbFailedInsertId, err
 	}
@@ -74,7 +87,7 @@ func CreateAuthors(tx *sql.Tx, authors string) ([]int64, error) {
 		if name == constants.EmptyString {
 			continue // skip empty names
 		}
-		id, wasCreated, err := GetOrCreateAuthor(tx, name)
+		id, wasCreated, err := getOrCreateAuthor(tx, name)
 		if err != nil {
 			return nil, err
 		}
@@ -85,7 +98,7 @@ func CreateAuthors(tx *sql.Tx, authors string) ([]int64, error) {
 	return newIDs, nil
 }
 
-func GetAuthorByName(name string) (int64, error) {
+func GetAuthorByNameAutoTx(name string) (int64, error) {
 	tx, err := db.Conn.Begin()
 	if err != nil {
 		return constants.NotFoundCreatorId, err
@@ -101,7 +114,7 @@ func GetAuthorByName(name string) (int64, error) {
 	return GetAuthor(tx, name)
 }
 
-func AddAuthor(name string) (int64, error) {
+func AddAuthorAutoTx(name string) (int64, error) {
 	tx, err := db.Conn.Begin()
 	if err != nil {
 		return constants.NotFoundCreatorId, err
@@ -114,5 +127,19 @@ func AddAuthor(name string) (int64, error) {
 		}
 	}()
 
-	return InsertAuthor(tx, name)
+	return insertAuthor(tx, name)
+}
+
+func LinkAuthorsToItem(tx *sql.Tx, itemID int64, authorIDs []int64) error {
+	for _, authorID := range authorIDs {
+		_, err := tx.Exec(`
+			INSERT INTO item_creators (item_id, creator_id, role)
+			VALUES (?, ?, ?)`,
+			itemID, authorID, constants.RoleAuthor,
+		)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
 }
