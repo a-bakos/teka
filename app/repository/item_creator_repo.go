@@ -2,6 +2,7 @@ package repository
 
 import (
 	"database/sql"
+	"fmt"
 	"teka/constants"
 	"teka/util"
 )
@@ -18,11 +19,12 @@ func GetItemCreatorByCreatorID(tx *sql.Tx, creatorID int64) (int64, error) {
 	return itemCreatorID, nil
 }
 
-func InsertItemCreator(tx *sql.Tx, creatorID int64, role string) (int64, error) {
+func InsertItemCreator(tx *sql.Tx, itemID int64, creatorID int64, role string) (int64, error) {
 	role = util.NormalizeRole(role) // move this to service
 
-	res, err := tx.Exec(`INSERT INTO item_creators (creator_id, role) VALUES (?, ?)`, creatorID, role)
+	res, err := tx.Exec(`INSERT INTO item_creators (item_id, creator_id, role) VALUES (?, ?, ?)`, itemID, creatorID, role)
 	if err != nil {
+		fmt.Println(err)
 		return constants.DbFailedInsertId, err
 	}
 

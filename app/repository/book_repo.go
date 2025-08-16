@@ -2,6 +2,7 @@ package repository
 
 import (
 	"database/sql"
+	"fmt"
 	"teka/constants"
 	"teka/db"
 	"teka/models"
@@ -35,12 +36,12 @@ func InsertBook(tx *sql.Tx, b *models.Book) (int64, error) {
 	}
 	// Step 2: Insert into items
 	itemID, err := InsertItem(tx, &b.Item)
+	if itemID != constants.NotFoundItemId { // not zero ie we have ID
+		fmt.Println("book already exists")
+		return constants.DbFailedInsertId, nil
+	}
 	if err != nil {
 		return constants.DbFailedInsertId, err
-	}
-	if itemID == constants.NotFoundItemId {
-		// If item already exists, we should not insert again
-		return itemID, nil // todo maybe return an error here?
 	}
 
 	// Step 2: Insert into books
@@ -57,12 +58,6 @@ func InsertBook(tx *sql.Tx, b *models.Book) (int64, error) {
 		return constants.DbFailedInsertId, err
 	}
 	bookID, err := res.LastInsertId()
-	if err != nil {
-		return constants.DbFailedInsertId, err
-	}
-
-	// Step 3: Link authors to item in item_creators
-	err = LinkAuthorsToItem(tx, bookID, allAuthorIDs)
 	if err != nil {
 		return constants.DbFailedInsertId, err
 	}

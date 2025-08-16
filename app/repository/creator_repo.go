@@ -2,6 +2,7 @@ package repository
 
 import (
 	"database/sql"
+	"fmt"
 	"strings"
 	"teka/constants"
 	"teka/db"
@@ -14,7 +15,7 @@ func GetAuthor(tx *sql.Tx, name string) (int64, error) {
 	err := tx.QueryRow(`SELECT id FROM creators WHERE name = ?`, name).Scan(&id)
 	if err != nil {
 		if err == sql.ErrNoRows {
-			return constants.NotFoundCreatorId, nil // not found
+			return constants.NotFoundCreatorId, nil // author not found
 		}
 		return constants.NotFoundCreatorId, err
 	}
@@ -48,6 +49,7 @@ func getOrCreateAuthor(tx *sql.Tx, name string) (int64, bool, error) {
 		return id, false, nil
 	}
 	newID, err := insertAuthor(tx, name)
+	fmt.Println(newID)
 	if err != nil {
 		return constants.NotFoundCreatorId, false, err
 	}
@@ -63,12 +65,7 @@ func insertAuthor(tx *sql.Tx, name string) (int64, error) {
 
 	authorID, err := res.LastInsertId()
 	if err != nil {
-		return constants.DbFailedInsertId, err
-	}
-
-	// insert int item_creators
-	_, err = InsertItemCreator(tx, authorID, constants.RoleAuthor)
-	if err != nil {
+		fmt.Println("after aid")
 		return constants.DbFailedInsertId, err
 	}
 
@@ -128,18 +125,4 @@ func AddAuthorAutoTx(name string) (int64, error) {
 	}()
 
 	return insertAuthor(tx, name)
-}
-
-func LinkAuthorsToItem(tx *sql.Tx, itemID int64, authorIDs []int64) error {
-	for _, authorID := range authorIDs {
-		_, err := tx.Exec(`
-			INSERT INTO item_creators (item_id, creator_id, role)
-			VALUES (?, ?, ?)`,
-			itemID, authorID, constants.RoleAuthor,
-		)
-		if err != nil {
-			return err
-		}
-	}
-	return nil
 }

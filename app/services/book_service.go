@@ -24,7 +24,7 @@ func CreateBook() models.Book {
 
 	return models.Book{
 		Item: models.Item{
-			Title:       "New Book",
+			Title:       "New Book 3",
 			Description: "A new book description",
 			ItemType:    constants.ItemTypeBook,
 			CreatedBy:   1,
@@ -57,15 +57,6 @@ func AddBook(b *models.Book) (int64, error) {
 		return constants.DbFailedInsertId, err
 	}
 
-	// Insert into item_creators
-	for _, authorID := range newAuthorIDs {
-		_, err = repository.InsertItemCreator(tx, authorID, constants.RoleAuthor)
-		fmt.Println("are we here")
-		if err != nil {
-			return constants.DbFailedInsertId, err
-		}
-	}
-
 	// Create or get item
 	_, err = repository.InsertItem(tx, &b.Item)
 	if err != nil {
@@ -74,14 +65,22 @@ func AddBook(b *models.Book) (int64, error) {
 
 	// Insert book
 	bookID, err := repository.InsertBook(tx, b)
+	if bookID == constants.DbFailedInsertId && err == nil {
+		fmt.Println("book exists!")
+		return 0, nil
+	}
+
 	if err != nil {
+		fmt.Println("are we here")
 		return constants.DbFailedInsertId, err
 	}
 
-	// Link authors to book
-	err = repository.LinkAuthorsToItem(tx, bookID, newAuthorIDs)
-	if err != nil {
-		return constants.DbFailedInsertId, err
+	// Insert into item_creators and Link book and authors
+	for _, authorID := range newAuthorIDs {
+		_, err = repository.InsertItemCreator(tx, bookID, authorID, constants.RoleAuthor)
+		if err != nil {
+			return constants.DbFailedInsertId, err
+		}
 	}
 
 	return bookID, nil

@@ -2,6 +2,7 @@ package repository
 
 import (
 	"database/sql"
+	"fmt"
 	"strings"
 	"teka/constants"
 	"teka/models"
@@ -26,6 +27,7 @@ func InsertItem(tx *sql.Tx, item *models.Item) (int64, error) {
 		return constants.DbFailedInsertId, err
 	}
 	if id != constants.NotFoundItemId {
+		fmt.Println("itt?")
 		return id, nil // item already exists todo: maybe return a third param?
 	}
 

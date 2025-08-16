@@ -57,6 +57,9 @@ func Run() {
 	if err != nil {
 		log.Fatalf("Failed to insert book: %v", err)
 	}
+	if itemID == constants.DbFailedInsertId && err == nil {
+		fmt.Println("BOOK ALREADY EXISTS")
+	}
 	fmt.Printf("Inserted new book with ID: %d\n", itemID)
 
 }
