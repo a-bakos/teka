@@ -18,3 +18,5 @@ const RoleAuthor string = "author"
 const RoleUnknown string = "unknown"
 
 const EmptyString string = ""
+
+const SingleWhiteSpace string = " "

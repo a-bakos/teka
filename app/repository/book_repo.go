@@ -28,19 +28,11 @@ func GetBookByTitleAutoTx(title string) (int64, error) {
 // insert book into items AND books tables
 // insert author into authors table
 // insert item_creators and link book and authors
-func InsertBook(tx *sql.Tx, b *models.Book) (int64, error) {
+func InsertBook(tx *sql.Tx, b *models.Book, itemID int64) (int64, error) {
 	// Step 1: Process author(s)
 	allAuthorIDs, err := ProcessMultiAuthors(tx, b.AuthorNames)
+	fmt.Println("Multi-authors processed")
 	if len(allAuthorIDs) == constants.ZeroValue || err != nil {
-		return constants.DbFailedInsertId, err
-	}
-	// Step 2: Insert into items
-	itemID, err := InsertItem(tx, &b.Item)
-	if itemID != constants.NotFoundItemId { // not zero ie we have ID
-		fmt.Println("book already exists")
-		return constants.DbFailedInsertId, nil
-	}
-	if err != nil {
 		return constants.DbFailedInsertId, err
 	}
 
@@ -55,22 +47,24 @@ func InsertBook(tx *sql.Tx, b *models.Book) (int64, error) {
 		NullString(b.ISBN),
 	)
 	if err != nil {
+		fmt.Printf("InsertBook failed for item ID %d: %v\n", itemID, err)
 		return constants.DbFailedInsertId, err
 	}
 	bookID, err := res.LastInsertId()
 	if err != nil {
+		fmt.Printf("InsertBook failed to get last insert ID for item ID %d: %v\n", itemID, err)
 		return constants.DbFailedInsertId, err
 	}
 
 	return bookID, nil
 }
 
-func InsertBookAutoTx(b *models.Book) (int64, error) {
-	var bookID int64
-	err := db.RunInTx(func(tx *sql.Tx) error {
-		var err error
-		bookID, err = InsertBook(tx, b)
-		return err
-	})
-	return bookID, err
-}
+//func InsertBookAutoTx(b *models.Book) (int64, error) {
+//	var bookID int64
+//	err := db.RunInTx(func(tx *sql.Tx) error {
+//		var err error
+//		bookID, err = InsertBook(tx, b)
+//		return err
+//	})
+//	return bookID, err
+//}
