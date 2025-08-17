@@ -7,33 +7,23 @@ import (
 	"teka/db"
 	"teka/models"
 	"teka/util"
-	"time"
 )
 
 func CreateBook() models.Book {
 	// validate inputs, sanitise, etc
 
-	// Deal with published date
-	parsedPublished, err := time.Parse(time.RFC3339, "2021-01-01T00:00:00Z")
-	var published *time.Time
-	if err == nil {
-		published = util.PointerTime(parsedPublished)
-	} else {
-		published = nil
-	}
-
 	return models.Book{
 		Item: models.Item{
-			Title:       "Jamie Goes to Italy",
-			Description: "Jamie Oliver's culinary journey through Italy, exploring traditional recipes and cooking techniques.",
+			Title:       "Jamie Goes to Portugal",
+			Description: "Jamie Oliver's culinary journey through Portugal, exploring traditional recipes and cooking techniques.",
 			ItemType:    constants.ItemTypeBook,
 			CreatedBy:   1,
 		},
 		Publisher:     util.PointerString("Cooking Press"),
-		PublishedDate: published,
+		PublishedDate: util.ParsePublishedDate("2022-02-11"),
 		PageCount:     util.PointerInt(455),
 		ISBN:          util.PointerString("978-3-16-148410-0"),
-		AuthorNames:   "Marie Berry + Jamie Oliver + Gennaro Contaldo + Gordon Ramsey",
+		AuthorNames:   "Jamie Oliver + Gennaro Contaldo",
 		// AuthorIDs:     []int64{}
 	}
 }

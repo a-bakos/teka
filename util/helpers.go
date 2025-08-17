@@ -3,6 +3,7 @@ package util
 import (
 	"strings"
 	"teka/constants"
+	"time"
 )
 
 func NormalizeRole(role string) string {
@@ -32,4 +33,16 @@ func ProcessAuthorName(name string) string {
 	name = strings.TrimSpace(processedName)
 
 	return name
+}
+
+func ParsePublishedDate(dateStr string) *time.Time {
+	parsedPublished, err := time.Parse(constants.ReferenceTimeLayout, dateStr)
+	var published *time.Time
+	if err == nil {
+		published = PointerTime(parsedPublished)
+	} else {
+		published = nil
+	}
+
+	return published
 }

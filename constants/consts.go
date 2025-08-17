@@ -20,3 +20,8 @@ const RoleUnknown string = "unknown"
 const EmptyString string = ""
 
 const SingleWhiteSpace string = " "
+
+const TrueInt int = 1
+const FalseInt int = 0
+
+const ReferenceTimeLayout string = "2006-01-02"

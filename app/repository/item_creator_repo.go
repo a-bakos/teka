@@ -20,16 +20,17 @@ func GetItemCreatorByCreatorID(tx *sql.Tx, creatorID int64) (int64, error) {
 }
 
 func InsertItemCreator(tx *sql.Tx, itemID int64, creatorID int64, role string) (int64, error) {
-	role = util.NormalizeRole(role) // move this to service
+	// Eventually move this to service. We're not allowing for custom roles yet.
+	role = util.NormalizeRole(role)
 
-	//  check if the item_id to creator_id connection already exists
+	//  Check if the item_id to creator_id connection already exists
 	var linkExists int
 	err := tx.QueryRow(`SELECT EXISTS(SELECT 1 FROM item_creators WHERE item_id = ? AND creator_id = ?)`, itemID, creatorID).Scan(&linkExists)
 	if err != nil {
 		fmt.Println(err)
 		return constants.DbFailedInsertId, err
 	}
-	if linkExists == 1 {
+	if linkExists == constants.TrueInt {
 		fmt.Printf("Link already exists for item_id: %d and creator_id: %d\n", itemID, creatorID)
 		return constants.DbFailedInsertId, nil // Link already exists
 	}
