@@ -33,7 +33,7 @@ func CreateBook() models.Book {
 		PublishedDate: published,
 		PageCount:     util.PointerInt(455),
 		ISBN:          util.PointerString("978-3-16-148410-0"),
-		AuthorNames:   "Jamie Oliver + Gennaro Contaldo",
+		AuthorNames:   "Marie Berry + Jamie Oliver + Gennaro Contaldo + Gordon Ramsey",
 		// AuthorIDs:     []int64{}
 	}
 }
@@ -89,7 +89,6 @@ func AddBook(b *models.Book) (int64, error) {
 	}
 
 	// Link existing authors to book
-	// todo but only do this if they are not already linked!!
 	for _, existingAuthorID := range existingAuthorIDs {
 		_, err = repository.InsertItemCreator(tx, bookID, existingAuthorID, constants.RoleAuthor)
 		if err != nil {
@@ -99,7 +98,11 @@ func AddBook(b *models.Book) (int64, error) {
 
 	// Link book to new authors
 	for _, newAuthorID := range newAuthorIDs {
-		_, err = repository.InsertItemCreator(tx, bookID, newAuthorID, constants.RoleAuthor)
+		creatorID, err := repository.InsertItemCreator(tx, bookID, newAuthorID, constants.RoleAuthor)
+		if creatorID == constants.DbFailedInsertId && err == nil {
+			fmt.Println("Author already linked to book!")
+			continue
+		}
 		if err != nil {
 			return constants.DbFailedInsertId, err
 		}
