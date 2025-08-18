@@ -30,12 +30,14 @@ func InsertProfile(tx *sql.Tx, p *models.Profile) (int64, error) {
 	return id, nil
 }
 
-func GetProfile(tx *sql.Tx, by GetProfileBy, value string) {
+func GetProfile(tx *sql.Tx, by GetProfileBy, value string) (*models.Profile, error) {
 	switch by {
 	case GetProfileByName:
-		getProfileByName(tx, value)
+		return getProfileByName(tx, value)
 	case GetProfileById:
-		getProfileById(tx, value)
+		return getProfileById(tx, value)
+	default:
+		return nil, nil // todo
 	}
 }
 

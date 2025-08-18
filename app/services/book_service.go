@@ -62,7 +62,7 @@ func CreateBook(b *models.Book) (int64, error) {
 		}
 		name = util.ProcessAuthorName(name)
 
-		authorID, err := repository.GetAuthor(tx, name)
+		authorID, err := repository.GetAuthor(tx, repository.GetAuthorByName, name)
 		if err != nil {
 			return 0, err
 		}

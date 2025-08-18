@@ -8,6 +8,13 @@ import (
 	"teka/util"
 )
 
+type GetBookBy int
+
+const (
+	GetBookByName GetBookBy = iota
+	GetBookById
+)
+
 func GetBookByTitleAutoTx(title string) (int64, error) {
 	tx, err := db.Conn.Begin()
 	if err != nil {

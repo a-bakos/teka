@@ -7,8 +7,33 @@ import (
 	"teka/util"
 )
 
-// GetAuthor tries to find an author by name. Returns ID if found
-func GetAuthor(tx *sql.Tx, name string) (int64, error) {
+type GetAuthorBy int
+
+const (
+	GetAuthorByName GetAuthorBy = iota
+	GetAuthorById
+)
+
+func GetAuthor(tx *sql.Tx, by GetAuthorBy, value string) (int64, error) {
+	switch by {
+	case GetAuthorByName:
+		return getAuthorByName(tx, value)
+	case GetAuthorById:
+
+		return getAuthorById(tx, value)
+	default:
+		return 0, nil // todo
+	}
+}
+
+func getAuthorById(tx *sql.Tx, value string) (int64, error) {
+	util.Logger("Get by ID: %s", value)
+
+	return 0, nil
+}
+
+// getAuthorByName tries to find an author by name. Returns ID if found
+func getAuthorByName(tx *sql.Tx, name string) (int64, error) {
 	util.Logger("Get by name: %s", name)
 	var id int64
 	err := tx.QueryRow(`SELECT id FROM creators WHERE name = ?`, name).Scan(&id)
@@ -48,7 +73,7 @@ func ProcessMultiAuthors(tx *sql.Tx, authors string) ([]int64, error) {
 // getOrCreateAuthor attempts to find an author by name and creates it if not found
 // returns: authorID, wasCreated, err
 func getOrCreateAuthor(tx *sql.Tx, name string) (int64, bool, error) {
-	id, err := GetAuthor(tx, name)
+	id, err := GetAuthor(tx, GetAuthorByName, name)
 
 	if err == sql.ErrNoRows && id == constants.NotFoundCreatorId {
 		util.Logger("Author not found, creating new author entry: %s", name)
@@ -125,7 +150,7 @@ func GetAuthorByNameAutoTx(name string) (int64, error) {
 		}
 	}()
 
-	return GetAuthor(tx, name)
+	return GetAuthor(tx, GetAuthorByName, name)
 }
 
 func AddAuthorAutoTx(name string) (int64, error) {
