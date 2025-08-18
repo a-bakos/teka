@@ -8,11 +8,11 @@ import (
 	"teka/util"
 )
 
-func NewProfile(name string) models.Profile {
+func NewProfile(name string, id *int) models.Profile {
 	name = util.ProcessProfileName(name)
 
 	return models.Profile{
-		ID:   nil, // ID is for retrieval
+		ID:   id, // ID is for retrieval
 		Name: name,
 	}
 }
@@ -34,7 +34,7 @@ func CreateProfile(p *models.Profile) (int64, error) {
 
 	// Attempt to get profile
 	profile, err := repository.GetProfile(tx, repository.GetProfileByName, p.Name)
-	if err != nil {
+	if err != nil || profile == nil {
 		return int64(constants.ZeroValue), err
 	}
 	// if found, can't insert

@@ -44,10 +44,9 @@ func GetProfile(tx *sql.Tx, by GetProfileBy, value string) (*models.Profile, err
 
 func getProfileByName(tx *sql.Tx, name string) (*models.Profile, error) {
 	util.Logger("Getting profile by name: %s", name)
-	var id int64
-	var profileName string
+	var p models.Profile
 	name = strings.TrimSpace(name)
-	err := tx.QueryRow(`SELECT id, name FROM profiles WHERE name = ?`, name).Scan(&id, &profileName)
+	err := tx.QueryRow(`SELECT id, name FROM profiles WHERE name = ?`, name).Scan(&p.ID, &p.Name)
 	if err == sql.ErrNoRows {
 		util.Logger("Not found: %s (%s)", name, err)
 		return nil, err
@@ -57,31 +56,29 @@ func getProfileByName(tx *sql.Tx, name string) (*models.Profile, error) {
 		return nil, err
 	}
 
-	idInt := int(id) // convert id to int, take its address, and pass it as *int
-	return &models.Profile{
-		ID:   &idInt,
-		Name: profileName,
-	}, nil
-
+	return &p, nil
 }
 
 func getProfileById(tx *sql.Tx, id string) (*models.Profile, error) {
 	util.Logger("Getting profile by ID: %d", id)
-	// todo
-	return nil, nil
+	id = strings.TrimSpace(id)
+	queriedID, err := util.StringToInt64(id)
+	if err != nil {
+		util.Logger("Error converting ID: %s", err)
+		return nil, err
+	}
+	var p models.Profile
+	err = tx.QueryRow(`SELECT id, name FROM profiles WHERE id = ?`, queriedID).Scan(&p.ID, &p.Name)
+	if err == sql.ErrNoRows {
+		util.Logger("Not found: %s (%s)", id, err)
+		return nil, err
+	}
+	if err != nil && err != sql.ErrNoRows {
+		util.Logger("Error: %s", err)
+		return nil, err
+	}
+	return &p, nil
 }
-
-//func GetProfileByName(name string) (*models.Profile, error) {
-//	var p models.Profile
-//	err := db.Conn.QueryRow("SELECT id, name FROM profiles WHERE name = ?", name).Scan(&p.ID, &p.Name)
-//	if err != nil {
-//		if err == sql.ErrNoRows {
-//			return nil, nil // No profile found
-//		}
-//		return nil, err // Other error
-//	}
-//	return &p, nil
-//}
 
 //func (r *profileRepository) UpdateProfile(p models.Profile) error {}
 
