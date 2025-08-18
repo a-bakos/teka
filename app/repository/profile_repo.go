@@ -2,6 +2,7 @@ package repository
 
 import (
 	"database/sql"
+	"strings"
 	"teka/constants"
 	"teka/db"
 	"teka/models"
@@ -16,7 +17,7 @@ const (
 )
 
 func InsertProfile(tx *sql.Tx, p *models.Profile) (int64, error) {
-	res, err := db.Conn.Exec("INSERT INTO profiles (name) VALUES (?)", p.Name)
+	res, err := tx.Exec("INSERT INTO profiles (name) VALUES (?)", p.Name)
 	if err != nil {
 		util.Logger("Error inserting profile: %v", err)
 		return constants.DbFailedInsertId, err
@@ -43,8 +44,25 @@ func GetProfile(tx *sql.Tx, by GetProfileBy, value string) (*models.Profile, err
 
 func getProfileByName(tx *sql.Tx, name string) (*models.Profile, error) {
 	util.Logger("Getting profile by name: %s", name)
-	// todo
-	return nil, nil
+	var id int64
+	var profileName string
+	name = strings.TrimSpace(name)
+	err := tx.QueryRow(`SELECT id, name FROM profiles WHERE name = ?`, name).Scan(&id, &profileName)
+	if err == sql.ErrNoRows {
+		util.Logger("Not found: %s (%s)", name, err)
+		return nil, err
+	}
+	if err != nil && err != sql.ErrNoRows {
+		util.Logger("Error: %s", err)
+		return nil, err
+	}
+
+	idInt := int(id) // convert id to int, take its address, and pass it as *int
+	return &models.Profile{
+		ID:   &idInt,
+		Name: profileName,
+	}, nil
+
 }
 
 func getProfileById(tx *sql.Tx, id string) (*models.Profile, error) {

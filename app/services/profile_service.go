@@ -33,9 +33,15 @@ func CreateProfile(p *models.Profile) (int64, error) {
 	util.Logger("Profile to add: %s", p.Name)
 
 	// Attempt to get profile
-	repository.GetProfile(tx, repository.GetProfileByName, p.Name)
-
-	// if found, can't insert, otherwise insert
+	profile, err := repository.GetProfile(tx, repository.GetProfileByName, p.Name)
+	if err != nil {
+		return int64(constants.ZeroValue), err
+	}
+	// if found, can't insert
+	if *profile.ID != constants.ZeroValue {
+		util.Logger("Profile already exists: %s / %d", profile.Name, *profile.ID)
+		return int64(*profile.ID), nil
+	}
 
 	// Insert profile into the database
 	return repository.InsertProfile(tx, p)
