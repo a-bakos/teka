@@ -1,7 +1,6 @@
 package services
 
 import (
-	"fmt"
 	"teka/app/repository"
 	"teka/constants"
 	"teka/db"
@@ -14,16 +13,16 @@ func CreateBook() models.Book {
 
 	return models.Book{
 		Item: models.Item{
-			Title:       "Jamie Goes to Portugal",
-			Description: "Jamie Oliver's culinary journey through Portugal, exploring traditional recipes and cooking techniques.",
+			Title:       "Jamie Goes to Morocco",
+			Description: "Jamie Oliver's culinary journey through Morocco, exploring traditional recipes and cooking techniques.",
 			ItemType:    constants.ItemTypeBook,
 			CreatedBy:   1,
 		},
 		Publisher:     util.PointerString("Cooking Press"),
-		PublishedDate: util.ParsePublishedDate("2022-02-11"),
+		PublishedDate: util.ParsePublishedDate("2025-05-11"),
 		PageCount:     util.PointerInt(455),
 		ISBN:          util.PointerString("978-3-16-148410-0"),
-		AuthorNames:   "Jamie Oliver + Gennaro Contaldo",
+		AuthorNames:   "Jamie Oliver + Ainsley Harriott",
 		// AuthorIDs:     []int64{}
 	}
 }
@@ -41,7 +40,7 @@ func AddBook(b *models.Book) (int64, error) {
 		}
 	}()
 
-	fmt.Printf("Adding book started: %s\n", b.Item.Title)
+	util.Logger("Book to add: %s by %s", b.Item.Title, b.AuthorNames)
 
 	// Create or get authors [done]
 	newAuthorIDs, err := repository.CreateAuthors(tx, b.AuthorNames)
@@ -52,7 +51,7 @@ func AddBook(b *models.Book) (int64, error) {
 	// Create or get item [done]
 	bookID, err := repository.InsertItem(tx, b)
 	if err != nil {
-		fmt.Printf("InsertItem failed for book: %s, error: %v\n", b.Item.Title, err)
+		util.Logger("Failed for book: %s, error: %s", b.Item.Title, err)
 		return constants.DbFailedInsertId, err
 	}
 
@@ -60,10 +59,8 @@ func AddBook(b *models.Book) (int64, error) {
 	// But we also need to link existing authors to the book
 
 	var existingAuthorIDs []int64
-	// get author by name
 	for _, name := range util.SplitMultiAuthorString(b.AuthorNames) {
 		if name == constants.EmptyString {
-			fmt.Printf("Empty string author skipped")
 			continue // skip empty names
 		}
 		name = util.ProcessAuthorName(name)
@@ -88,11 +85,7 @@ func AddBook(b *models.Book) (int64, error) {
 
 	// Link book to new authors
 	for _, newAuthorID := range newAuthorIDs {
-		creatorID, err := repository.InsertItemCreator(tx, bookID, newAuthorID, constants.RoleAuthor)
-		if creatorID == constants.DbFailedInsertId && err == nil {
-			fmt.Println("Author already linked to book!")
-			continue
-		}
+		_, err := repository.InsertItemCreator(tx, bookID, newAuthorID, constants.RoleAuthor)
 		if err != nil {
 			return constants.DbFailedInsertId, err
 		}

@@ -6,37 +6,38 @@ import (
 	"strings"
 	"teka/constants"
 	"teka/models"
+	"teka/util"
 )
 
 func GetItemByTitle(tx *sql.Tx, title string) (int64, error) {
-	fmt.Printf("Getting item by title: %s\n", title)
+	util.Logger("Get by title: %s", title)
 	var id int64
 	title = strings.TrimSpace(title)
 	err := tx.QueryRow(`SELECT id FROM items WHERE title = ?`, title).Scan(&id)
 	if err == sql.ErrNoRows {
-		fmt.Printf("Getting item by title - item not found: %s\n", title)
+		util.Logger("Not found: %s (%s)", title, err)
 		return constants.NotFoundItemId, err
 	}
-
-	///
 	if err != nil && err != sql.ErrNoRows {
+		util.Logger("Error: %s", err)
 		return constants.NotFoundItemId, err
 	}
 	return id, nil
 }
 
 func InsertItem(tx *sql.Tx, item *models.Book) (int64, error) {
-	fmt.Printf("Inserting item started for: %s\n", item.Title)
+	util.Logger("Started for: %s", item.Title)
 	id, err := GetItemByTitle(tx, item.Title)
 	if err == sql.ErrNoRows && id == constants.NotFoundItemId {
-		fmt.Printf("Item not found, creating new item: %s\n", item.Title)
+		// Item does not exist, create a new one
+		util.Logger("Item not found, creating new entry: %s", item.Title)
 	} else if err != nil {
-		fmt.Printf("GetItemByTitle failed for: %s, error: %v\n", item.Title, err)
+		util.Logger("GetItemByTitle failed for: %s, error: %v", item.Title, err)
 		return constants.DbFailedInsertId, err
 	} else if id != constants.NotFoundItemId && err == nil {
-		fmt.Println(err)
-		fmt.Printf("Item already exists with ID: %d\n", id)
-		return id, nil // item already exists
+		// Item already exists
+		util.Logger("Item already exists with ID: %d (%s)", id, item.Title)
+		return id, nil
 	}
 
 	res, err := tx.Exec(`
@@ -45,17 +46,17 @@ func InsertItem(tx *sql.Tx, item *models.Book) (int64, error) {
 		item.Title, item.Description, item.ItemType, item.CreatedBy,
 	)
 	if err != nil {
-		fmt.Printf("InsertItem failed for: %s, error: %v\n", item.Title, err)
+		util.Logger("Failed for: %s, error: %v", item.Title, err)
 		return constants.DbFailedInsertId, err
 	}
 
 	itemID, err := res.LastInsertId()
-	fmt.Printf("Inserted item title/ID: %s/%d\n\n", item.Title, itemID)
+	util.Logger("Inserted item title / ID: %s / %d", item.Title, itemID)
 	if err != nil {
 		return constants.DbFailedInsertId, err
 	}
 
-	// we can only run InsertBook if InsertItem ID does not exist
+	// ? we can only run InsertBook if InsertItem ID does not exist
 
 	// Insert book [done]
 	bookID, err := InsertBook(tx, item, itemID)
@@ -65,7 +66,6 @@ func InsertItem(tx *sql.Tx, item *models.Book) (int64, error) {
 	}
 
 	if err != nil {
-		fmt.Println("are we here")
 		return constants.DbFailedInsertId, err
 	}
 

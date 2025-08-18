@@ -2,7 +2,6 @@ package repository
 
 import (
 	"database/sql"
-	"fmt"
 	"teka/constants"
 	"teka/db"
 	"teka/util"
@@ -10,32 +9,32 @@ import (
 
 // GetAuthor tries to find an author by name. Returns ID if found
 func GetAuthor(tx *sql.Tx, name string) (int64, error) {
-	fmt.Printf("Getting author by name: %s\n", name)
+	util.Logger("Get by name: %s", name)
 	var id int64
 	err := tx.QueryRow(`SELECT id FROM creators WHERE name = ?`, name).Scan(&id)
 	if err != nil {
 		if err == sql.ErrNoRows {
-			fmt.Printf("(sql.ErrNoRows) Author not found: %s\n", name)
-			return constants.NotFoundCreatorId, err // author not found
+			util.Logger("Not found: %s (%s)", name, err)
+			return constants.NotFoundCreatorId, err
 		}
-		fmt.Printf("GetAuthor - other error")
+		util.Logger("Error: %s", err)
 		return constants.NotFoundCreatorId, err
 	}
-	fmt.Printf("GetAuthor returned ID: %d\n", id)
+	util.Logger("Author ID found: %d (%s)", id, name)
 	return id, nil
 }
 
 // Todo: Streamline with CreateAuthors
 func ProcessMultiAuthors(tx *sql.Tx, authors string) ([]int64, error) {
 	var allAuthorIDs []int64
+	util.Logger("Original value: %s", authors)
 	for _, name := range util.SplitMultiAuthorString(authors) {
 		if name == constants.EmptyString {
-			fmt.Printf("Empty string author skipped")
 			continue // skip empty names
 		}
 
 		name = util.ProcessAuthorName(name)
-		fmt.Printf("The processed author name: %s\n", name)
+		util.Logger("Processed author name: %s", name)
 
 		id, _, err := getOrCreateAuthor(tx, name) // _ = wasCreated
 		if err != nil {
@@ -49,21 +48,20 @@ func ProcessMultiAuthors(tx *sql.Tx, authors string) ([]int64, error) {
 // getOrCreateAuthor attempts to find an author by name and creates it if not found
 // returns: authorID, wasCreated, err
 func getOrCreateAuthor(tx *sql.Tx, name string) (int64, bool, error) {
-	fmt.Printf("getOrCreateAuthor\n")
 	id, err := GetAuthor(tx, name)
 
 	if err == sql.ErrNoRows && id == constants.NotFoundCreatorId {
-		fmt.Printf("Author not found, creating new author: %s\n", name)
+		util.Logger("Author not found, creating new author entry: %s", name)
 	} else if err != nil {
-		fmt.Printf("GetAuthor failed for: %s, error: %v\n", name, err)
+		util.Logger("GetAuthor failed for: %s, error: %v", name, err)
 		return constants.NotFoundCreatorId, false, err
 	} else if id != constants.NotFoundCreatorId && err == nil {
-		fmt.Printf("Author already exists with ID: %d\n", id)
+		util.Logger("Author already exists with ID: %s %d", name, id)
 		return id, false, nil
 	}
 
 	newID, err := insertAuthor(tx, name)
-	fmt.Printf("getOrCreateAuthor - new creator inserted: ID / name : %d, %s\n", newID, name)
+	util.Logger("New creator inserted: ID / name : %d, %s", newID, name)
 	if err != nil {
 		return constants.NotFoundCreatorId, false, err
 	}
@@ -72,17 +70,17 @@ func getOrCreateAuthor(tx *sql.Tx, name string) (int64, bool, error) {
 
 // insertAuthor inserts a new author and returns the new ID
 func insertAuthor(tx *sql.Tx, name string) (int64, error) {
-	fmt.Printf("insertAuthor started: %s\n", name)
+	util.Logger("Started for: %s", name)
 	res, err := tx.Exec(`INSERT INTO creators (name) VALUES (?)`, name)
 	if err != nil {
-		fmt.Printf("insertAuthor failed for: %s\n", name)
+		util.Logger("Failed for: %s", name)
 		return constants.NotFoundCreatorId, err
 	}
 
 	creatorID, err := res.LastInsertId()
-	fmt.Printf("insertAuthor success, ID: %d\n", creatorID)
+	util.Logger("Success, new author ID: %d (%s)", creatorID, name)
 	if err != nil {
-		fmt.Printf("insertAuthor failure")
+		util.Logger("Failure")
 		return constants.DbFailedInsertId, err
 	}
 
@@ -91,25 +89,23 @@ func insertAuthor(tx *sql.Tx, name string) (int64, error) {
 
 // CreateAuthors attempts to insert multiple authors from a string
 func CreateAuthors(tx *sql.Tx, authors string) ([]int64, error) {
-
-	fmt.Printf("Adding author(s) (original value): %s\n", authors)
+	util.Logger("Original authors value: %s", authors)
 
 	var newIDs []int64
 	for _, name := range util.SplitMultiAuthorString(authors) {
 		if name == constants.EmptyString {
-			fmt.Printf("Empty string author skipped")
 			continue // skip empty names
 		}
 
 		name = util.ProcessAuthorName(name)
-		fmt.Printf("The processed author name: %s\n", name)
+		util.Logger("Processed author name: %s", name)
 
 		id, wasCreated, err := getOrCreateAuthor(tx, name)
 		if err != nil {
 			return nil, err
 		}
 		if wasCreated {
-			fmt.Printf("The inserted author ID: %d\n", id)
+			util.Logger("The inserted author ID: %d / %s", id, name)
 			newIDs = append(newIDs, id)
 		}
 	}

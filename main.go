@@ -16,5 +16,10 @@ func main() {
 	}
 	defer db.Conn.Close()
 
-	app.Run()
+	appRuntime := app.App{
+		Config: app.AppConfig{
+			CurrentUserID: 1,
+		},
+	}
+	appRuntime.Run()
 }

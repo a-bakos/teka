@@ -2,7 +2,6 @@ package repository
 
 import (
 	"database/sql"
-	"fmt"
 	"teka/constants"
 	"teka/util"
 )
@@ -20,29 +19,29 @@ func GetItemCreatorByCreatorID(tx *sql.Tx, creatorID int64) (int64, error) {
 }
 
 func InsertItemCreator(tx *sql.Tx, itemID int64, creatorID int64, role string) (int64, error) {
-	// Eventually move this to service. We're not allowing for custom roles yet.
+	// TODO Eventually move this to service, but we're not allowing for custom roles yet
 	role = util.NormalizeRole(role)
 
 	//  Check if the item_id to creator_id connection already exists
 	var linkExists int
 	err := tx.QueryRow(`SELECT EXISTS(SELECT 1 FROM item_creators WHERE item_id = ? AND creator_id = ?)`, itemID, creatorID).Scan(&linkExists)
 	if err != nil {
-		fmt.Println(err)
+		util.Logger("Error (QueryRow): %s", err)
 		return constants.DbFailedInsertId, err
 	}
 	if linkExists == constants.TrueInt {
-		fmt.Printf("Link already exists for item_id: %d and creator_id: %d\n", itemID, creatorID)
-		return constants.DbFailedInsertId, nil // Link already exists
+		util.Logger("Link already exists between item_id %d and creator_id %d", itemID, creatorID)
+		return constants.DbFailedInsertId, nil
 	}
 
 	res, err := tx.Exec(`INSERT INTO item_creators (item_id, creator_id, role) VALUES (?, ?, ?)`, itemID, creatorID, role)
 	if err != nil {
-		fmt.Println(err)
+		util.Logger("Error (Exec): %s", err)
 		return constants.DbFailedInsertId, err
 	}
 
 	itemCreatorID, err := res.LastInsertId()
-	fmt.Printf("Created new link to book ID: %d with creator ID: %d\n", itemID, creatorID)
+	util.Logger("Created new link to book ID %d with creator ID %d", itemID, creatorID)
 	if err != nil {
 		return constants.DbFailedInsertId, err
 	}

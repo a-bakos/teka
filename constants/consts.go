@@ -9,6 +9,7 @@ const NotFoundCreatorId int64 = 0
 const NotFoundItemId int64 = 0
 
 const CliMode bool = true
+const FullLoggingEnabled bool = true
 
 const ItemTypeBook string = "book"
 
@@ -20,7 +21,7 @@ const RoleUnknown string = "unknown"
 const EmptyString string = ""
 
 const SingleWhiteSpace string = " "
-
+ 
 const TrueInt int = 1
 const FalseInt int = 0
 

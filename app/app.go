@@ -2,12 +2,16 @@ package app
 
 import (
 	"fmt"
-	"log"
 	"teka/app/services"
 	"teka/constants"
+	"teka/util"
 )
 
-func Run() {
+type App struct {
+	Config AppConfig
+}
+
+func (a App) Run() {
 
 	if constants.CliMode {
 		fmt.Println("Running in CLI mode")
@@ -55,13 +59,9 @@ func Run() {
 	newbook := services.CreateBook() // this collects all the data from the user
 	itemID, err := services.AddBook(&newbook)
 	if err != nil {
-		log.Fatalf("Failed to insert book: %v", err)
+		util.Logger("Failed: %v", err)
 	}
-	if itemID == constants.DbFailedInsertId && err == nil {
-		fmt.Println("BOOK ALREADY EXISTS")
-	}
-	fmt.Printf("Inserted new book with ID: %d\n", itemID)
-
+	util.Logger("End for book ID: %d", itemID)
 }
 
 func runGui() {
