@@ -1,6 +1,6 @@
 package models
 
 type Profile struct {
-	ID   int
+	ID   *int
 	Name string
 }

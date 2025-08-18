@@ -8,7 +8,7 @@ import (
 	"teka/util"
 )
 
-func CreateBook() models.Book {
+func NewBook() models.Book {
 	// validate inputs, sanitise, etc
 
 	return models.Book{
@@ -27,7 +27,7 @@ func CreateBook() models.Book {
 	}
 }
 
-func AddBook(b *models.Book) (int64, error) {
+func CreateBook(b *models.Book) (int64, error) {
 	tx, err := db.Conn.Begin()
 	if err != nil {
 		return constants.DbFailedInsertId, err
@@ -54,9 +54,6 @@ func AddBook(b *models.Book) (int64, error) {
 		util.Logger("Failed for book: %s, error: %s", b.Item.Title, err)
 		return constants.DbFailedInsertId, err
 	}
-
-	// Insert into item_creators and Link book and authors
-	// But we also need to link existing authors to the book
 
 	var existingAuthorIDs []int64
 	for _, name := range util.SplitMultiAuthorString(b.AuthorNames) {
