@@ -6,7 +6,35 @@ import (
 	"teka/util"
 )
 
-func GetItemCreatorByCreatorID(tx *sql.Tx, creatorID int64) (int64, error) {
+type GetItemCreatorBy int
+
+const (
+	GetItemCreatorByCreatorId GetItemCreatorBy = iota
+	GetItemCreatorByRole
+)
+
+func GetItemCreator(tx *sql.Tx, by GetItemCreatorBy, value string) (int64, error) {
+	switch by {
+	case GetItemCreatorByCreatorId:
+		creatorID, err := util.StringToInt64(value)
+		if err != nil {
+			util.Logger("Error converting creator ID: %s", err)
+			return constants.NotFoundCreatorId, err
+		}
+		return getItemCreatorByCreatorID(tx, creatorID)
+	case GetItemCreatorByRole:
+		return getItemCreatorByRole(tx, value)
+	default:
+		return 0, nil // todo
+	}
+}
+
+func getItemCreatorByRole(tx *sql.Tx, role string) (int64, error) {
+	// todo
+	return 0, nil
+}
+
+func getItemCreatorByCreatorID(tx *sql.Tx, creatorID int64) (int64, error) {
 	var itemCreatorID int64
 	err := tx.QueryRow(`SELECT id FROM item_creators WHERE creator_id = ?`, creatorID).Scan(&itemCreatorID)
 	if err != nil {

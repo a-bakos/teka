@@ -28,7 +28,7 @@ func GetBookByTitleAutoTx(title string) (int64, error) {
 		}
 	}()
 
-	return GetItemByTitle(tx, title)
+	return GetItem(tx, GetItemByTitle, title)
 }
 
 func InsertBook(tx *sql.Tx, b *models.Book, itemID int64) (int64, error) {

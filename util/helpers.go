@@ -35,3 +35,12 @@ func printCaller() string {
 	fn := runtime.FuncForPC(pc)
 	return fn.Name()
 }
+
+func StringToInt64(s string) (int64, error) {
+	var result int64
+	_, err := fmt.Sscanf(s, "%d", &result)
+	if err != nil {
+		return 0, err
+	}
+	return result, nil
+}

@@ -9,7 +9,37 @@ import (
 	"teka/util"
 )
 
-func GetItemByTitle(tx *sql.Tx, title string) (int64, error) {
+type GetItemBy int
+
+const (
+	GetItemByTitle GetItemBy = iota
+	GetItemById
+)
+
+type GetItemsBy int
+
+const (
+	GetItemsByType GetItemsBy = iota
+	GetItemsByCreatedByID
+)
+
+func GetItem(tx *sql.Tx, by GetItemBy, value string) (int64, error) {
+	switch by {
+	case GetItemByTitle:
+		return getItemByTitle(tx, value)
+	case GetItemById:
+		return getItemById(tx, value)
+	default:
+		return 0, nil // todo
+	}
+}
+
+func getItemById(tx *sql.Tx, id string) (int64, error) {
+	// todo
+	return 0, nil
+}
+
+func getItemByTitle(tx *sql.Tx, title string) (int64, error) {
 	util.Logger("Get by title: %s", title)
 	var id int64
 	title = strings.TrimSpace(title)
@@ -27,7 +57,7 @@ func GetItemByTitle(tx *sql.Tx, title string) (int64, error) {
 
 func InsertItem(tx *sql.Tx, item *models.Book) (int64, error) {
 	util.Logger("Started for: %s", item.Title)
-	id, err := GetItemByTitle(tx, item.Title)
+	id, err := GetItem(tx, GetItemByTitle, item.Title)
 	if err == sql.ErrNoRows && id == constants.NotFoundItemId {
 		// Item does not exist, create a new one
 		util.Logger("Item not found, creating new entry: %s", item.Title)
@@ -56,8 +86,6 @@ func InsertItem(tx *sql.Tx, item *models.Book) (int64, error) {
 		return constants.DbFailedInsertId, err
 	}
 
-	// ? we can only run InsertBook if InsertItem ID does not exist
-
 	// Insert book [done]
 	bookID, err := InsertBook(tx, item, itemID)
 	if bookID == constants.DbFailedInsertId && err == nil {
@@ -74,3 +102,4 @@ func InsertItem(tx *sql.Tx, item *models.Book) (int64, error) {
 
 // todo
 // getItemsByType
+// getItemsByCreatedByID
