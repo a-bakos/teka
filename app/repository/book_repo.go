@@ -2,6 +2,7 @@ package repository
 
 import (
 	"database/sql"
+	"log"
 	"teka/constants"
 	"teka/db"
 	"teka/models"
@@ -70,3 +71,68 @@ func InsertBook(tx *sql.Tx, b *models.Book, itemID int64) (int64, error) {
 //	})
 //	return bookID, err
 //}
+
+// Query filter idea
+type QueryArgs struct {
+	ItemTitle         *string
+	ItemType          *string
+	ItemIdIn          *[]int // maybe different
+	ItemCreatedAt     *string
+	ItemUpdatedAt     *string
+	ItemCreatedBy     *int
+	ItemUpdatedBy     *int
+	BookISBN          *string
+	BookPublisher     *string
+	BookPublishedDate *string
+	BookPageCount     *int
+}
+
+// todo booksfilter will be added
+func GetBooks(tx *sql.Tx) []models.Book {
+	rows, err := tx.Query(`
+		SELECT items.id, items.title, items.description, items.item_type, items.created_at, items.updated_at, items.created_by, items.updated_by, 
+		       books.isbn, books.publisher, books.published_date, books.page_count,
+		       creators.name
+		FROM items 
+		INNER JOIN books 
+			ON items.id = books.item_id
+		INNER JOIN item_creators
+			ON items.id = item_creators.item_id
+		INNER JOIN creators
+			ON item_creators.creator_id = creators.id
+	`)
+	if err != nil {
+		util.Logger("GetBooks failed: %v", err)
+	}
+
+	// Filter to find multiple authors per book
+	
+	var books []models.Book // container
+
+	for rows.Next() {
+		var b models.Book
+
+		err = rows.Scan(
+			&b.Item.ID,
+			&b.Item.Title,
+			&b.Item.Description,
+			&b.Item.ItemType,
+			&b.Item.CreatedAt,
+			&b.Item.UpdatedAt,
+			&b.Item.CreatedBy,
+			&b.Item.UpdatedBy,
+			&b.ISBN,
+			&b.Publisher,
+			&b.PublishedDate,
+			&b.PageCount,
+			&b.AuthorNames,
+		)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		books = append(books, b)
+	}
+
+	return books
+}

@@ -2,6 +2,7 @@ package services
 
 import (
 	"database/sql"
+	"fmt"
 	"teka/app/repository"
 	"teka/constants"
 	"teka/db"
@@ -119,4 +120,27 @@ func UpdateBook() string {
 
 func DeleteBook() string {
 	return "Delete Book"
+}
+
+func GetBooks() []models.Book {
+	tx, err := db.Conn.Begin()
+	if err != nil {
+		return nil
+	}
+	defer func() {
+		if err != nil {
+			tx.Rollback()
+		} else {
+			tx.Commit()
+		}
+	}()
+
+	util.Logger("All books query started")
+
+	books := repository.GetBooks(tx)
+
+	for _, book := range books {
+		fmt.Printf("%+v\n\n", book)
+	}
+	return books
 }
