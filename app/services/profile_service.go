@@ -1,6 +1,7 @@
 package services
 
 import (
+	"database/sql"
 	"teka/app/repository"
 	"teka/constants"
 	"teka/db"
@@ -34,11 +35,12 @@ func CreateProfile(p *models.Profile) (int64, error) {
 
 	// Attempt to get profile
 	profile, err := repository.GetProfile(tx, repository.GetProfileByName, p.Name)
-	if err != nil || profile == nil {
+
+	if err != nil && err != sql.ErrNoRows {
 		return int64(constants.ZeroValue), err
 	}
 	// if found, can't insert
-	if *profile.ID != constants.ZeroValue {
+	if err == nil && profile.ID != nil {
 		util.Logger("Profile already exists: %s / %d", profile.Name, *profile.ID)
 		return int64(*profile.ID), nil
 	}

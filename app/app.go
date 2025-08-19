@@ -56,19 +56,19 @@ func (a App) Run() {
 	//	log.Fatal(err)
 	//}
 
-	newProfile := services.NewProfile("John Doe") // this collects input from the user
+	newProfile := services.NewProfile("Poirot", nil) // this collects input from the user
 	profileID, err := services.CreateProfile(&newProfile)
 	if err != nil {
 		util.Logger("Failed: %v", err)
 	}
 	util.Logger("End for profile ID: %d", profileID)
 
-	newbook := services.NewBook() // this collects all the data from the user
-	itemID, err := services.CreateBook(&newbook)
-	if err != nil {
-		util.Logger("Failed: %v", err)
-	}
-	util.Logger("End for book ID: %d", itemID)
+	//newbook := services.NewBook() // this collects all the data from the user
+	//itemID, err := services.CreateBook(&newbook)
+	//if err != nil {
+	//	util.Logger("Failed: %v", err)
+	//}
+	//util.Logger("End for book ID: %d", itemID)
 }
 
 func runGui() {
