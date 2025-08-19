@@ -2,7 +2,6 @@ package repository
 
 import (
 	"database/sql"
-	"log"
 	"teka/constants"
 	"teka/db"
 	"teka/models"
@@ -89,7 +88,6 @@ type QueryArgs struct {
 
 // todo booksfilter will be added
 func GetBooks(tx *sql.Tx) []models.Book {
-	// 1. Fetch all items + books data
 	booksRows, err := tx.Query(`
 		SELECT 
 		    items.id,
@@ -104,7 +102,7 @@ func GetBooks(tx *sql.Tx) []models.Book {
 		    books.publisher,
 		    books.published_date, 
 		    books.page_count,
-		    GROUP_CONCAT(creators.name, ' + ') AS author_names
+		    GROUP_CONCAT(creators.name, '+') AS author_names -- group for multi-authors = author1+author2
 		FROM items 
 		INNER JOIN books 
 			ON items.id = books.item_id
@@ -127,7 +125,7 @@ func GetBooks(tx *sql.Tx) []models.Book {
 		    books.page_count;
 	`)
 	if err != nil {
-		util.Logger("GetBooks failed: %v", err)
+		util.Logger("Failed: %v", err)
 	}
 
 	var books []models.Book // container
@@ -150,7 +148,7 @@ func GetBooks(tx *sql.Tx) []models.Book {
 			&b.AuthorNames,
 		)
 		if err != nil {
-			log.Fatal(err)
+			util.Logger("Failed for item ID %d: %v", b.Item.ID, err)
 		}
 
 		books = append(books, b)

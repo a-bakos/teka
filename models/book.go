@@ -10,5 +10,5 @@ type Book struct {
 	PublishedDate *time.Time
 	PageCount     *int
 	ISBN          *string
-	AuthorNames   string // input from user, e.g. "Alice + Bob"
+	AuthorNames   string // e.g. "Alice + Bob"
 }
