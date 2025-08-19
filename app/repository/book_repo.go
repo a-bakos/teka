@@ -89,10 +89,22 @@ type QueryArgs struct {
 
 // todo booksfilter will be added
 func GetBooks(tx *sql.Tx) []models.Book {
-	rows, err := tx.Query(`
-		SELECT items.id, items.title, items.description, items.item_type, items.created_at, items.updated_at, items.created_by, items.updated_by, 
-		       books.isbn, books.publisher, books.published_date, books.page_count,
-		       creators.name
+	// 1. Fetch all items + books data
+	booksRows, err := tx.Query(`
+		SELECT 
+		    items.id,
+		    items.title,
+		    items.description, 
+		    items.item_type,
+		    items.created_at,
+		    items.updated_at,
+		    items.created_by,
+		    items.updated_by,   
+		    books.isbn,
+		    books.publisher,
+		    books.published_date, 
+		    books.page_count,
+		    GROUP_CONCAT(creators.name, ' + ') AS author_names
 		FROM items 
 		INNER JOIN books 
 			ON items.id = books.item_id
@@ -100,19 +112,29 @@ func GetBooks(tx *sql.Tx) []models.Book {
 			ON items.id = item_creators.item_id
 		INNER JOIN creators
 			ON item_creators.creator_id = creators.id
+		GROUP BY
+		    items.id,
+		    items.title,
+		    items.description, 
+		    items.item_type,
+		    items.created_at,
+		    items.updated_at,
+		    items.created_by,
+		    items.updated_by,
+		    books.isbn,
+		    books.publisher, 
+		    books.published_date, 
+		    books.page_count;
 	`)
 	if err != nil {
 		util.Logger("GetBooks failed: %v", err)
 	}
 
-	// Filter to find multiple authors per book
-	
 	var books []models.Book // container
-
-	for rows.Next() {
+	for booksRows.Next() {
 		var b models.Book
 
-		err = rows.Scan(
+		err = booksRows.Scan(
 			&b.Item.ID,
 			&b.Item.Title,
 			&b.Item.Description,
