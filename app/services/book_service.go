@@ -1,6 +1,7 @@
 package services
 
 import (
+	"database/sql"
 	"teka/app/repository"
 	"teka/constants"
 	"teka/db"
@@ -13,8 +14,8 @@ func NewBook() models.Book {
 
 	return models.Book{
 		Item: models.Item{
-			Title:       "Jamie Goes to Morocco",
-			Description: "Jamie Oliver's culinary journey through Morocco, exploring traditional recipes and cooking techniques.",
+			Title:       "Jamie Goes to Egypt",
+			Description: "Jamie Oliver's culinary journey through Egypt, exploring traditional recipes and cooking techniques.",
 			ItemType:    constants.ItemTypeBook,
 			CreatedBy:   1,
 		},
@@ -22,15 +23,15 @@ func NewBook() models.Book {
 		PublishedDate: util.ParsePublishedDate("2025-05-11"),
 		PageCount:     util.PointerInt(455),
 		ISBN:          util.PointerString("978-3-16-148410-0"),
-		AuthorNames:   "Jamie Oliver + Ainsley Harriott",
+		AuthorNames:   "Jamie Oliver + Ainsley Harriott + Cook1 + Cook2 + Gok",
 		// AuthorIDs:     []int64{}
 	}
 }
 
-func CreateBook(b *models.Book) (int64, error) {
+func CreateBook(b *models.Book) int64 {
 	tx, err := db.Conn.Begin()
 	if err != nil {
-		return constants.DbFailedInsertId, err
+		return constants.DbFailedInsertId
 	}
 	defer func() {
 		if err != nil {
@@ -45,14 +46,15 @@ func CreateBook(b *models.Book) (int64, error) {
 	// Create or get authors [done]
 	newAuthorIDs, err := repository.CreateAuthors(tx, b.AuthorNames)
 	if err != nil {
-		return constants.DbFailedInsertId, err
+		util.Logger("CreateAuthors error: %s", err)
+		return constants.DbFailedInsertId
 	}
 
 	// Create or get item [done]
 	bookID, err := repository.InsertItem(tx, b)
 	if err != nil {
 		util.Logger("Failed for book: %s, error: %s", b.Item.Title, err)
-		return constants.DbFailedInsertId, err
+		return constants.DbFailedInsertId
 	}
 
 	var existingAuthorIDs []int64
@@ -64,7 +66,8 @@ func CreateBook(b *models.Book) (int64, error) {
 
 		authorID, err := repository.GetAuthor(tx, repository.GetAuthorByName, name)
 		if err != nil {
-			return 0, err
+			util.Logger("GetAuthorByName error: %s", err)
+			return 0
 		}
 		// add to existingAuthorIDs if found
 		if authorID != constants.NotFoundCreatorId {
@@ -72,23 +75,38 @@ func CreateBook(b *models.Book) (int64, error) {
 		}
 	}
 
-	// Link existing authors to book
-	for _, existingAuthorID := range existingAuthorIDs {
-		_, err = repository.InsertItemCreator(tx, bookID, existingAuthorID, constants.RoleAuthor)
-		if err != nil {
-			return constants.DbFailedInsertId, err
+	linkAuthorsToBook := func(tx *sql.Tx, bookID int64, authorIdCollection []int64) {
+		for _, existingAuthorID := range existingAuthorIDs {
+			_, err = repository.InsertItemCreator(tx, bookID, existingAuthorID, constants.RoleAuthor)
+			if err != nil {
+				util.Logger("InsertItemCreator error: %s", err)
+			}
 		}
 	}
+
+	linkAuthorsToBook(tx, bookID, existingAuthorIDs)
+	linkAuthorsToBook(tx, bookID, newAuthorIDs)
+
+	// Link existing authors to book
+	//for _, existingAuthorID := range existingAuthorIDs {
+	//	_, err = repository.InsertItemCreator(tx, bookID, existingAuthorID, constants.RoleAuthor)
+	//	if err != nil {
+	//		util.Logger("InsertItemCreator error: %s", err)
+	//		return constants.DbFailedInsertId
+	//	}
+	//}
 
 	// Link book to new authors
-	for _, newAuthorID := range newAuthorIDs {
-		_, err := repository.InsertItemCreator(tx, bookID, newAuthorID, constants.RoleAuthor)
-		if err != nil {
-			return constants.DbFailedInsertId, err
-		}
-	}
+	//for _, newAuthorID := range newAuthorIDs {
+	//	_, err := repository.InsertItemCreator(tx, bookID, newAuthorID, constants.RoleAuthor)
+	//	if err != nil {
+	//		util.Logger("InsertItemCreator error: %s", err)
+	//		return constants.DbFailedInsertId
+	//	}
+	//}
 
-	return bookID, nil
+	util.Logger("End for book ID: %d", bookID)
+	return bookID
 }
 
 func GetBook() string {

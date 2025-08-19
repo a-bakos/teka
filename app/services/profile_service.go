@@ -18,10 +18,10 @@ func NewProfile(name string, id *int) models.Profile {
 	}
 }
 
-func CreateProfile(p *models.Profile) (int64, error) {
+func CreateProfile(p *models.Profile) int64 {
 	tx, err := db.Conn.Begin()
 	if err != nil {
-		return constants.DbFailedInsertId, err
+		return constants.DbFailedInsertId
 	}
 	defer func() {
 		if err != nil {
@@ -37,18 +37,50 @@ func CreateProfile(p *models.Profile) (int64, error) {
 	profile, err := repository.GetProfile(tx, repository.GetProfileByName, p.Name)
 
 	if err != nil && err != sql.ErrNoRows {
-		return int64(constants.ZeroValue), err
+		util.Logger("Error: %v", err)
+		return int64(constants.ZeroValue)
 	}
-	// if found, can't insert
+	// If found, can't insert
 	if err == nil && profile.ID != nil {
 		util.Logger("Profile already exists: %s / %d", profile.Name, *profile.ID)
-		return int64(*profile.ID), nil
+		return int64(*profile.ID)
 	}
 
 	// Insert profile into the database
-	return repository.InsertProfile(tx, p)
+	profileID, e := repository.InsertProfile(tx, p)
+	if e != nil {
+		util.Logger("Failed creating profile: %v", e)
+		return int64(constants.ZeroValue)
+	}
+	util.Logger("End for profile ID: %d", profileID)
+	return profileID
 }
 
 func GetProfile() (*models.Profile, error) {
 	return nil, nil
+}
+
+func DeleteProfile(by repository.DeleteProfileBy, value string) bool {
+	tx, err := db.Conn.Begin()
+	if err != nil {
+		return false
+	}
+	defer func() {
+		if err != nil {
+			tx.Rollback()
+		} else {
+			tx.Commit()
+		}
+	}()
+
+	deleted, e := repository.DeleteProfile(tx, by, value)
+	if e != nil {
+		util.Logger("Failed deleting profile: %s (%v)", value, e)
+		return false
+	}
+	if deleted == true {
+		util.Logger("Profile deleted successfully! %s", value)
+		return true
+	}
+	return false
 }

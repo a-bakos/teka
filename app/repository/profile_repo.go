@@ -4,7 +4,6 @@ import (
 	"database/sql"
 	"strings"
 	"teka/constants"
-	"teka/db"
 	"teka/models"
 	"teka/util"
 )
@@ -14,6 +13,13 @@ type GetProfileBy int
 const (
 	GetProfileByName GetProfileBy = iota
 	GetProfileById
+)
+
+type DeleteProfileBy int
+
+const (
+	DeleteProfileByName DeleteProfileBy = iota
+	DeleteProfileById
 )
 
 func InsertProfile(tx *sql.Tx, p *models.Profile) (int64, error) {
@@ -80,7 +86,57 @@ func getProfileById(tx *sql.Tx, id string) (models.Profile, error) {
 	return p, nil
 }
 
-func DeleteProfile(id int) error {
-	_, err := db.Conn.Exec("DELETE FROM profiles WHERE id = ?", id)
-	return err
+func DeleteProfile(tx *sql.Tx, by DeleteProfileBy, value string) (bool, error) {
+	switch by {
+	case DeleteProfileByName:
+		return deleteProfileByName(tx, value)
+	case DeleteProfileById:
+		return deleteProfileById(tx, value)
+	default:
+		return false, nil
+	}
+}
+
+func deleteProfileByName(tx *sql.Tx, name string) (bool, error) {
+	res, err := tx.Exec("DELETE FROM profiles WHERE name = ?", name)
+	if err != nil {
+		util.Logger("Error deleting profile: %s (%v)", name, err)
+		return false, err
+	}
+	var r int64
+	r, err = res.RowsAffected()
+	if err != nil {
+		util.Logger("Error getting affected rows: %v", err)
+		return false, err
+	}
+	if r > 0 {
+		util.Logger("Deleted profile Name: %s", name)
+		return true, err
+	}
+	if r == 0 && err == nil {
+		util.Logger("Profile doesn't exist: %s", name)
+	}
+	return false, err
+}
+
+func deleteProfileById(tx *sql.Tx, id string) (bool, error) {
+	res, err := tx.Exec("DELETE FROM profiles WHERE id = ?", id)
+	if err != nil {
+		util.Logger("Error deleting profile: %d (%v)", id, err)
+		return false, err
+	}
+	var r int64
+	r, err = res.RowsAffected()
+	if err != nil {
+		return false, err
+	}
+	if r > 0 {
+		util.Logger("Deleted profile ID: %s", id)
+		return true, err
+	}
+	if r == 0 && err == nil {
+		util.Logger("Profile doesn't exist: %s", id)
+	}
+
+	return false, err
 }
