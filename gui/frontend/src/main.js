@@ -4,21 +4,50 @@ import './app.css';
 import logo from './assets/images/logo-universal.png';
 import {Greet} from '../wailsjs/go/main/App';
 
-import Lang from './lang.js'
+import Lang from './Lang.js';
 
-const LANG_EN = 'en'
-const LANG_HU = 'hu'
+const LANG_EN = 'en';
+const LANG_HU = 'hu';
 const i18n = new Lang(LANG_EN);
 
-(async () => {
-    await i18n.init()
-    console.log(i18n.t('app.greeting', { name: 'John' }))
+import ScreenManager from "./ScreenManager.js";
+import ScreenBookList from "./ScreenBookList";
 
-    i18n.setLang(LANG_HU)
-    console.log(i18n.t('app.greeting', { name: 'John' }))
-})()
+const SELECTOR_ID_APP_CONTAINER = "app";
+
+const screenManager = new ScreenManager(SELECTOR_ID_APP_CONTAINER);
+screenManager.load(new ScreenBookList());
+
+(async () => {
+    await i18n.init();
+    console.log(i18n.t('app.greeting', { name: 'John' }));
+
+    i18n.setLang(LANG_HU);
+    console.log(i18n.t('app.greeting', { name: 'John' }));
+})();
 
 ////
+
+export const AppContext = {
+    currentUserId: 0,
+    currentScreen: '',
+    appLang: i18n.currentLang,
+};
+
+export function setScreen(screenName) {
+    AppContext.currentScreen = screenName;
+    renderScreen(screenName);
+}
+
+export function renderScreen(screenName) {
+    // todo
+}
+
+export function setUserId(id) {
+    AppContext.currentUserId = id;
+}
+
+///////////
 
 
 document.querySelector('#app').innerHTML = `
@@ -61,3 +90,4 @@ window.greet = function () {
         console.error(err);
     }
 };
+
