@@ -1,6 +1,6 @@
 "use strict"
 
-import Lang from './lang.js'
+import Lang from '../../gui/frontend/src/lang.js'
 
 const LANG_EN = 'en'
 const LANG_HU = 'hu'
