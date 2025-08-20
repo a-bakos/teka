@@ -1,7 +1,6 @@
 "use strict"
 
 import langFile from './lang.json'
-console.log(langFile)
 
 export default class Lang {
     static LANG_EN = 'en'
