@@ -4,8 +4,26 @@ import './app.css';
 import logo from './assets/images/logo-universal.png';
 import {Greet} from '../wailsjs/go/main/App';
 
+import Lang from './lang.js'
+
+const LANG_EN = 'en'
+const LANG_HU = 'hu'
+const i18n = new Lang(LANG_EN);
+
+(async () => {
+    await i18n.init()
+    console.log(i18n.t('app.greeting', { name: 'John' }))
+
+    i18n.setLang(LANG_HU)
+    console.log(i18n.t('app.greeting', { name: 'John' }))
+})()
+
+////
+
+
 document.querySelector('#app').innerHTML = `
     <img id="logo" class="logo">
+      <p id="langtest"></p>
       <div class="result" id="result">Please enter your name below 👇</div>
       <div class="input-box" id="input">
         <input class="input" id="name" type="text" autocomplete="off" />
@@ -14,6 +32,8 @@ document.querySelector('#app').innerHTML = `
     </div>
 `;
 document.getElementById('logo').src = logo;
+
+document.getElementById('langtest').innerHTML = i18n.t('app.title')
 
 let nameElement = document.getElementById("name");
 nameElement.focus();

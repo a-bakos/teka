@@ -1,18 +1,18 @@
 "use strict"
 
+import langFile from './lang.json'
+console.log(langFile)
+
 export default class Lang {
-    static LANG_FILE = '../lang.json'
     static LANG_EN = 'en'
     static DICT_SPLIT = '.'
 
     constructor(defaultLang = Lang.LANG_EN) {
-        this.dictionary = {}
+        this.dictionary = langFile
         this.currentLang = defaultLang
     }
 
     async init(langCode = this.currentLang) {
-        const res = await fetch(Lang.LANG_FILE)
-        this.dictionary = await res.json()
         this.currentLang = langCode
     }
 
