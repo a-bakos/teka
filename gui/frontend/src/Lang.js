@@ -2,6 +2,9 @@
 
 import langFile from './lang.json'
 
+export const LANG_EN = 'en';
+export const LANG_HU = 'hu';
+
 export default class Lang {
     static LANG_EN = 'en';
     static DICT_SPLIT = '.';
@@ -11,7 +14,7 @@ export default class Lang {
         this.currentLang = defaultLang;
     }
 
-    async init(langCode = this.currentLang) {
+    init(langCode = this.currentLang) {
         this.currentLang = langCode;
     }
 

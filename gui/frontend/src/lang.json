@@ -18,5 +18,23 @@
       "en": "Edit Book",
       "hu": "Könyv szerkesztése"
     }
+  },
+  "nav": {
+    "browse": {
+      "en": "Browse",
+      "hu": "Bongeszes"
+    },
+    "settings": {
+      "en": "Settings",
+      "hu": "Beallitasok"
+    },
+    "profile": {
+      "en": "Profile",
+      "hu": "Profil"
+    },
+    "new": {
+      "en": "New Book",
+      "hu": "Uj Konyv"
+    }
   }
 }

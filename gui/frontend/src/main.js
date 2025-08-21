@@ -4,53 +4,39 @@ import './app.css';
 import logo from './assets/images/logo-universal.png';
 import {Greet} from '../wailsjs/go/main/App';
 
-import Lang from './Lang.js';
-
-const LANG_EN = 'en';
-const LANG_HU = 'hu';
-const i18n = new Lang(LANG_EN);
-
-import ScreenManager from "./ScreenManager.js";
-import ScreenBookList from "./ScreenBookList";
+import ScreenBuilder from "./ScreenBuilder";
+import AppContext from "./AppContext";
 
 const SELECTOR_ID_APP_CONTAINER = "app";
 
-const screenManager = new ScreenManager(SELECTOR_ID_APP_CONTAINER);
-screenManager.load(new ScreenBookList().render());
-
-(async () => {
-    await i18n.init();
-    console.log(i18n.t('app.greeting', { name: 'John' }));
-
-    i18n.setLang(LANG_HU);
-    console.log(i18n.t('app.greeting', { name: 'John' }));
-})();
-
 ////
 
-// Idea
-export const AppContext = {
-    currentUserId: 0,
-    currentScreen: '',
-    appLang: i18n.currentLang,
-};
+const ctx = new AppContext();
+const screenBuilder = new ScreenBuilder(ctx);
+const appFrame = document.getElementById(SELECTOR_ID_APP_CONTAINER);
 
-export function setScreen(screenName) {
-    AppContext.currentScreen = screenName;
-    renderScreen(screenName);
+function render() {
+    appFrame.innerHTML = screenBuilder.render()
 }
 
-export function renderScreen(screenName) {
-    // todo
-}
+// Initial render
+render();
 
-export function setUserId(id) {
-    AppContext.currentUserId = id;
-}
+document.querySelectorAll("nav button").forEach(btn => {
+    btn.addEventListener("click", () => {
+        ctx.currentScreen = btn.dataset.screen;
+        render();
+    })
+})
+
+// ui elements
+// menu
+// search bar
+// related books (other items from author)
 
 ///////////
 
-
+/*
 document.querySelector('#app').innerHTML = `
     <img id="logo" class="logo">
       <p id="langtest"></p>
@@ -91,4 +77,4 @@ window.greet = function () {
         console.error(err);
     }
 };
-
+*/
