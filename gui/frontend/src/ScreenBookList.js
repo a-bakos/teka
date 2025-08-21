@@ -1,9 +1,7 @@
 "use strict"
 
 export default class ScreenBookList {
-    constructor() {
-        return this.render();
-    }
+    constructor() {}
 
     render() {
         const div = document.createElement("div");

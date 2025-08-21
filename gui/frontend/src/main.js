@@ -16,7 +16,7 @@ import ScreenBookList from "./ScreenBookList";
 const SELECTOR_ID_APP_CONTAINER = "app";
 
 const screenManager = new ScreenManager(SELECTOR_ID_APP_CONTAINER);
-screenManager.load(new ScreenBookList());
+screenManager.load(new ScreenBookList().render());
 
 (async () => {
     await i18n.init();
@@ -28,6 +28,7 @@ screenManager.load(new ScreenBookList());
 
 ////
 
+// Idea
 export const AppContext = {
     currentUserId: 0,
     currentScreen: '',
