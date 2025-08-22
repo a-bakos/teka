@@ -2,6 +2,9 @@
 
 import ElementNav from "./ElementNav";
 import ElementFooter from "./ElementFooter";
+import ScreenBuilder from "./ScreenBuilder";
+
+import coverExample from './assets/images/pooh.jpg';
 
 export default class ScreenItem {
     constructor(appContext) {
@@ -18,19 +21,24 @@ export default class ScreenItem {
                 <div class="flex w-full mx-auto bg-white rounded shadow">
                                 
                     <!-- Left column: Image -->
-                    <div class="w-1/4 border bg-gray-50">
-                        <img src="https://via.placeholder.com/150" alt="Sample" class="rounded shadow">
-                        <div><button class="bg-blue-500 hover:bg-blue-600 text-white">Upload</button></div>
+                    <div class="w-1/4 border bg-gray-50 p-2">
+                        <img src="${coverExample}" alt="Sample" class="rounded shadow mb-2">
+                        <button id="cover-magnify">Zoom</button>
+                        <div><button class="bg-blue-500 hover:bg-blue-600 text-white rounded text-lg px-5 py-2 mb-2">Upload</button></div>
                     </div>
                                             
                    <!-- Middle column: Main details -->
                     <div class="w-2/4 border">
-                        <div class="max-w-xl mx-auto bg-white">
+                        <div class="max-w-xl mx-auto bg-white p-2">
                             <div class="flex items-center justify-between">
-                                <h2 class="text-2xl font-bold text-gray-800">Book Title</h2>
-                                <button class="bg-yellow-400 hover:bg-yellow-500 text-white font-semibold shadow rounded">
-                                    Add to Favourites
-                                </button>
+                                <div class="w-3/5">
+                                    <h2 class="text-2xl font-bold text-gray-800">Book Title</h2>
+                                </div>
+                                <div class="w-2/5">
+                                    <button class="bg-blue-500 hover:bg-blue-600 text-white rounded text-lg px-5 py-2 mb-2 shadow">
+                                        Add to Favourites
+                                    </button>
+                                </div>
                             </div>
                             <div class="text-gray-700">
                                 <div><span class="font-semibold">Author:</span> John Doe</div>
@@ -48,7 +56,7 @@ export default class ScreenItem {
                     </div>
             
                     <!-- Right column: Meta -->
-                    <div class="w-1/4 border bg-gray-50">
+                    <div class="w-1/4 bg-gray-50 p-2">
                         <div class="">
                             <div class="">
                                 <div><span class="font-semibold">Book ID:</span> 12345</div>
@@ -58,9 +66,9 @@ export default class ScreenItem {
                                 <div><span class="font-semibold">Updated by:</span> editor</div>
                             </div>
                             <div class="">
-                                <div><button class="bg-blue-500 hover:bg-blue-600 text-white">Edit</button></div>
-                                <div><button class="bg-red-500 hover:bg-red-600 text-white">Remove</button></div>
-                                <div><button class="bg-green-500 hover:bg-green-600 text-white">Duplicate</button></div>
+                                <div><button data-screen="${ScreenBuilder.SCREENS.FORM}" class="bg-blue-500 hover:bg-blue-600 text-white rounded text-lg px-5 py-2 mb-2">Edit</button></div>
+                                <div><button id="book-delete" class="bg-blue-500 hover:bg-blue-600 text-white rounded text-lg px-5 py-2 mb-2">Remove</button></div>
+                                <div><button id="book-clone" class="bg-blue-500 hover:bg-blue-600 text-white rounded text-lg px-5 py-2 mb-2">Duplicate</button></div>
                             </div>
                         </div>
                     </div>                                
@@ -75,6 +83,10 @@ export default class ScreenItem {
     }
 
     attachEvents() {
-        //
+        const zoom = document.getElementById("cover-magnify")
+        zoom.addEventListener("click", () => {
+            // create modal
+            console.log("zoom clicked")
+        })
     }
 }

@@ -2,6 +2,7 @@
 
 import ElementNav from "./ElementNav";
 import ElementFooter from "./ElementFooter";
+import ScreenBuilder from "./ScreenBuilder";
 
 export default class ScreenStartup {
     constructor(appContext) {
@@ -15,7 +16,8 @@ export default class ScreenStartup {
         return `  
             ${this.Nav.render()}
             <div class="pt-16 p-2">
-                <h1 class="bg-blue-500">HELLO STARTUP</h1>      
+                <h1 class="bg-blue-500">HELLO STARTUP</h1>
+                <button id="addNew" data-screen="${ScreenBuilder.SCREENS.ITEM}">KONYV ADATLAP</button>      
             </div>
             ${this.Footer.render()}
         `;

@@ -14,7 +14,7 @@ export default class ScreenForm {
         return `
             ${this.Nav.render()}
             <div class="pt-16 p-2">
-                <h1 class="text-xl text-center">Add new</h1>
+                <h1 class="text-xl text-center">Add new / Edit</h1>
                 
                 <form class="flex flex-col items-center pt-2 p-4 space-y-4">
                     <div class="flex flex-row items-center space-x-2 w-full max-w-lg">

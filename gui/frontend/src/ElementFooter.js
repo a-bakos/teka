@@ -10,9 +10,11 @@ export default class ElementFooter {
 
     render() {
         return `
-            <footer class="fixed bottom-0 w-full bg-red-600 select-none">
-                <div class="flex text-center">
-                    <p class="block w-full">Téka v0.1.0 by Attila Bakos | 2025</p>
+            <footer class="fixed bottom-0 w-full select-none">
+                <div class="flex border-t p-1 text-xs">
+                    <div class="w-1/3"><p class="block w-full">Logged in as: profile name</p></div>
+                    <div class="w-1/3"><p class="block w-full text-center">Téka v0.1.0 (2025)</p></div>
+                    <div class="w-1/3"><p class="block w-full text-right">Created by Attila Bakos</p></div>
                 </div>
             </footer> 
         `;

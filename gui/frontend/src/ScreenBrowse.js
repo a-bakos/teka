@@ -16,7 +16,7 @@ export default class ScreenBrowse {
             ${this.Nav.render()}
             <div class="pt-16 p-2">
                 <h1 class="bg-red-500">Books browser</h1>
-                <button id="addNew" data-screen="${ScreenBuilder.SCREENS.ITEM}">${this.ctx.t("nav.new")}</button>
+                <button id="addNew" data-screen="${ScreenBuilder.SCREENS.ITEM}">KONYV ADATLAP</button>
                 <hr>
                 <a href="">Item1</a><br>            
                 <a href="">Item1</a><br>            
