@@ -9,25 +9,11 @@ import AppContext from "./AppContext";
 
 const SELECTOR_ID_APP_CONTAINER = "app";
 
-////
-
 const ctx = new AppContext();
-const screenBuilder = new ScreenBuilder(ctx);
+ctx.currentScreen = ScreenBuilder.SCREENS.STARTUP; // Start screen
 const appFrame = document.getElementById(SELECTOR_ID_APP_CONTAINER);
-
-function render() {
-    appFrame.innerHTML = screenBuilder.render()
-}
-
-// Initial render
-render();
-
-document.querySelectorAll("nav button").forEach(btn => {
-    btn.addEventListener("click", () => {
-        ctx.currentScreen = btn.dataset.screen;
-        render();
-    })
-})
+const screenBuilder = new ScreenBuilder(ctx, appFrame);
+screenBuilder.render();
 
 // ui elements
 // menu

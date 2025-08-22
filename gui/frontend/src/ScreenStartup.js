@@ -9,11 +9,16 @@ export default class ScreenStartup {
     }
 
     render() {
-        return `
+
+        return `  
+            ${this.Nav.render()}
             <div class="">
                 <h1 class="bg-blue-500">HELLO STARTUP</h1>      
-                ${this.Nav.render()}
-            </div>        
+            </div>
         `;
+    }
+
+    attachEvents() {
+        //
     }
 }
