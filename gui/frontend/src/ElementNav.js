@@ -11,7 +11,7 @@ export default class ElementNav {
 
     render() {
         return `
-            <nav class="w-full bg-blue-600">
+            <nav class="w-full bg-blue-600 select-none fixed">
                 <div class="flex">
                     <button class="${ElementNav.CLASS_MAIN_MENU} w-1/4 py-4 text-white hover:bg-blue-700" data-screen="${ScreenBuilder.SCREENS.BROWSE}">${this.ctx.t("nav.browse")}</button>     
                     <button class="${ElementNav.CLASS_MAIN_MENU} w-1/4 py-4 text-white hover:bg-blue-700" data-screen="${ScreenBuilder.SCREENS.FORM}">${this.ctx.t("nav.new")}</button>
