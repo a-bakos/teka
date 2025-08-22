@@ -11,12 +11,12 @@ export default class ElementNav {
 
     render() {
         return `
-            <nav class="w-full bg-blue-600 select-none fixed">
+            <nav class="w-full border-b select-none fixed">
                 <div class="flex">
-                    <button class="${ElementNav.CLASS_MAIN_MENU} w-1/4 py-4 text-white hover:bg-blue-700" data-screen="${ScreenBuilder.SCREENS.BROWSE}">${this.ctx.t("nav.browse")}</button>     
-                    <button class="${ElementNav.CLASS_MAIN_MENU} w-1/4 py-4 text-white hover:bg-blue-700" data-screen="${ScreenBuilder.SCREENS.FORM}">${this.ctx.t("nav.new")}</button>
-                    <button class="${ElementNav.CLASS_MAIN_MENU} w-1/4 py-4 text-white hover:bg-blue-700" data-screen="${ScreenBuilder.SCREENS.PROFILE}">${this.ctx.t("nav.profile")}</button>
-                    <button class="${ElementNav.CLASS_MAIN_MENU} w-1/4 py-4 text-white hover:bg-blue-700" data-screen="${ScreenBuilder.SCREENS.SETTINGS}">${this.ctx.t("nav.settings")}</button>
+                    <button class="${ElementNav.CLASS_MAIN_MENU} w-1/4 py-4 border-r hover:bg-gray-200" data-screen="${ScreenBuilder.SCREENS.BROWSE}">${this.ctx.t("nav.browse")}</button>     
+                    <button class="${ElementNav.CLASS_MAIN_MENU} w-1/4 py-4 border-r hover:bg-gray-200" data-screen="${ScreenBuilder.SCREENS.FORM}">${this.ctx.t("nav.new")}</button>
+                    <button class="${ElementNav.CLASS_MAIN_MENU} w-1/4 py-4 border-r hover:bg-gray-200" data-screen="${ScreenBuilder.SCREENS.PROFILE}">${this.ctx.t("nav.profile")}</button>
+                    <button class="${ElementNav.CLASS_MAIN_MENU} w-1/4 py-4 hover:bg-blue-700" data-screen="${ScreenBuilder.SCREENS.SETTINGS}">${this.ctx.t("nav.settings")}</button>
                 </div>
             </nav> 
         `;
