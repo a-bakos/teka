@@ -1,19 +1,19 @@
 "use strict"
 
 import ElementNav from "./ElementNav";
+import ElementFooter from "./ElementFooter";
 
 export default class ScreenItem {
     constructor(appContext) {
         this.ctx = appContext;
         this.Nav = new ElementNav(this.ctx)
+        this.Footer = new ElementFooter(this.ctx)
     }
 
     render() {
         return `
             ${this.Nav.render()}
-            <div class="">
-                <h1 class="bg-yellow-500">THE ITEM PAGE</h1>  
-                
+            <div class="pt-16 p-2">
                 <!-- 3-column layout -->
                 <div class="flex w-full mx-auto bg-white rounded shadow">
                                 
@@ -65,11 +65,12 @@ export default class ScreenItem {
                         </div>
                     </div>                                
                                   
-                    <section class="bg-red-200 w-full">
-                        More books from this author
-                    </section>  
                 </div>          
-            </div>        
+                <section class="bg-red-200 w-full">
+                    More books from this author
+                </section>
+            </div>
+            ${this.Footer.render()}
         `;
     }
 
