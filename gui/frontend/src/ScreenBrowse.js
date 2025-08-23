@@ -16,6 +16,24 @@ export default class ScreenBrowse {
             ${this.Nav.render()}
             <div class="pt-16 p-2">
                 <h1 class="bg-red-500">Books browser</h1>
+                
+                each item is shown as
+                Title First | Edit | Clone | Delete | Custom notes Y/N | 
+                Author 
+                Cover
+                
+                Favorites
+                
+                Reading now + Read
+                
+                My library w/ total
+                
+                Search bar: search for title, author
+                
+                Filter by title, author
+                
+                Author list
+                
                 <button id="addNew" data-screen="${ScreenBuilder.SCREENS.ITEM}">KONYV ADATLAP</button>
                 <hr>
                 <a href="">Item1</a><br>            
