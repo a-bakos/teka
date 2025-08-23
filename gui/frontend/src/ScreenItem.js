@@ -68,7 +68,7 @@ export default class ScreenItem {
                             <div class="">
                                 <div><button data-screen="${ScreenBuilder.SCREENS.FORM}" class="bg-blue-500 hover:bg-blue-600 text-white rounded text-lg px-5 py-2 mb-2">Edit</button></div>
                                 <div><button id="book-delete" class="bg-blue-500 hover:bg-blue-600 text-white rounded text-lg px-5 py-2 mb-2">Remove</button></div>
-                                <div><button id="book-clone" class="bg-blue-500 hover:bg-blue-600 text-white rounded text-lg px-5 py-2 mb-2">Duplicate</button></div>
+                                <div><button data-screen="${ScreenBuilder.SCREENS.FORM}" class="bg-blue-500 hover:bg-blue-600 text-white rounded text-lg px-5 py-2 mb-2">Duplicate</button></div>
                             </div>
                         </div>
                     </div>                                
