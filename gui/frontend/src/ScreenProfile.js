@@ -14,31 +14,36 @@ export default class ScreenProfile {
         return `
             ${this.Nav.render()}
             <div class="pt-16 p-2 max-w-md mx-auto space-y-6">
-                <h1 class="text-xl font-bold mb-4">Profile Settings</h1>
+                <h1 class="text-xl font-bold mb-4">${this.ctx.t("profile.title")}</h1>
                 
                 <!-- Update Profile Name -->
                 <div class="flex items-center space-x-2">
-                    <label for="input-profile-name" class="w-32">Profile Name</label>
-                    <input name="input-profile-name" id="input-profile-name" class="border flex-1 p-2 rounded" type="text" placeholder="Profile Name" value="Agatha Christie">
-                    <button class="bg-blue-500 hover:bg-blue-600 text-white rounded px-4 py-2">Update</button>
+                    <label for="input-profile-name" class="w-32">${this.ctx.t("profile.name")}</label>
+                    <input 
+                        name="input-profile-name" 
+                        id="input-profile-name" 
+                        class="border flex-1 p-2 rounded" 
+                        type="text" 
+                        placeholder="Charles Darwin"
+                        value="">
+                    <button class="bg-blue-500 hover:bg-blue-600 text-white rounded px-4 py-2">${this.ctx.t("profile.update")}</button>
                 </div>
                 
                     <!-- Language Switcher -->
                 <div class="flex items-center space-x-2">
-                    <label for="language-select" class="w-32">Language</label>
+                    <label for="language-select" class="w-32">${this.ctx.t("profile.language")}</label>
                     <select id="language-select" class="border flex-1 p-2 rounded">
-                        <option value="en">English</option>
-                        <option value="hu">Hungarian</option>
+                        <option value="en">${this.ctx.t("profile.eng")}</option>
+                        <option value="hu">${this.ctx.t("profile.hun")}</option>
                     </select>
                 </div>
                 
                 <!-- Registered Profiles List -->
                 <div>
-                    <h2 class="font-semibold mb-2">Registered Profiles</h2>
+                    <h2 class="font-semibold mb-2">${this.ctx.t("profile.registeredTitle")}</h2>
                     <ul id="profile-list" class="space-y-1">
-                        <!-- Example items, replace with dynamic rendering -->
                         <li>
-                            <button class="w-full text-left px-3 py-2 rounded border hover:bg-gray-100 bg-blue-100 font-bold">Agatha Christie (current)</button>
+                            <button class="w-full text-left px-3 py-2 rounded border hover:bg-gray-100 bg-blue-100 font-bold">Agatha Christie ${this.ctx.t("profile.current")}</button>
                         </li>
                         <li>
                             <button class="w-full text-left px-3 py-2 rounded border hover:bg-gray-100">Hercule Poirot</button>
@@ -48,17 +53,23 @@ export default class ScreenProfile {
                         </li>
                     </ul>
                 </div>
-               
                    <!-- Add New Profile -->
+                <label for="-new-profile" class="block">
+                    <h2 class="font-semibold mb-2">${this.ctx.t("profile.addTitle")}</h2>
+                </label>
                 <div class="flex items-center space-x-2">
-                    <label for="input-new-profile" class="w-32">Add Profile</label>
-                    <input name="input-new-profile" id="input-new-profile" class="border flex-1 p-2 rounded" type="text" placeholder="New Profile Name">
-                    <button class="bg-green-500 hover:bg-green-600 text-white rounded px-4 py-2">Add</button>
+                    <input 
+                        name="input-new-profile" 
+                        id="input-new-profile" 
+                        class="border flex-1 p-2 rounded" 
+                        type="text"
+                        placeholder="Charles Darwin"">
+                    <button class="bg-green-500 hover:bg-green-600 text-white rounded px-4 py-2">${this.ctx.t("profile.create")}</button>
                 </div>
                 
-                <!-- Remove Current Profile -->
+                <!-- Remove Current Profile --> 
                 <div>
-                    <button id="profile-remove" class="bg-red-500 hover:bg-red-600 text-white rounded px-4 py-2">Remove Current Profile</button>
+                    <button id="profile-remove" class="bg-red-500 hover:bg-red-600 text-white rounded px-4 py-2">${this.ctx.t("profile.removeCurrent")}</button>
                 </div>
             </div>
             ${this.Footer.render()}
