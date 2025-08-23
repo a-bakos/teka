@@ -6,7 +6,7 @@
     },
     "greeting": {
       "en": "Welcome, {{name}}!",
-      "hu": "Üdvözlünk, {{name}}!"
+      "hu": "Üdv, {{name}}!"
     }
   },
   "book": {
@@ -22,11 +22,11 @@
   "nav": {
     "browse": {
       "en": "Browse",
-      "hu": "Bongeszes"
+      "hu": "Böngészés"
     },
     "settings": {
       "en": "Settings",
-      "hu": "Beallitasok"
+      "hu": "Beállítások"
     },
     "profile": {
       "en": "Profile",
@@ -34,7 +34,141 @@
     },
     "new": {
       "en": "New Book",
-      "hu": "Uj Konyv"
+      "hu": "Új könyv"
+    }
+  },
+  "settings": {
+    "title": {
+      "en": "Settings",
+      "hu": "Beállítások"
+    },
+    "export": {
+      "en": "Export Database",
+      "hu": "Adatbázis export"
+    },
+    "import": {
+      "en": "Import Database",
+      "hu": "Adatbázis import"
+    },
+    "credits": {
+      "en": "Created by Attila Bakos",
+      "hu": "Készítette: Bakos Attila"
+    }
+  },
+  "profile": {
+    "title": {
+      "en": "Profile Settings",
+      "hu": "Profilbeállítások"
+    },
+    "name": {
+      "en": "Name",
+      "hu": "Név"
+    },
+    "update": {
+      "en": "Update",
+      "hu": "Mentés"
+    },
+    "language": {
+      "en": "Language",
+      "hu": "Nyelv"
+    },
+    "create": {
+      "en": "Add",
+      "hu": "Hozzáadás"
+    },
+    "addTitle": {
+      "en": "Add new profile",
+      "hu": "Új profil hozzáadása"
+    },
+    "removeCurrent": {
+      "en": "Remove current profile",
+      "hu": "Profil törlése"
+    },
+    "eng": {
+      "en": "English",
+      "hu": "Angol"
+    },
+    "hun": {
+      "en": "Hungarian",
+      "hu": "Magyar"
+    },
+    "registeredTitle": {
+      "en": "Registered Profiles",
+      "hu": "Profilok"
+    },
+    "current": {
+      "en": "(current)",
+      "hu": "(jelenlegi)"
+    }
+  },
+  "newItem": {
+    "screenTitle": {
+      "en": "Add new or Edit",
+      "hu": "Új könyv vagy szerkesztés"
+    },
+    "title": {
+      "en": "Title",
+      "hu": "Cím"
+    },
+    "titlePlaceholder": {
+      "en": "The Talisman",
+      "hu": "A talizmán"
+    },
+    "authors": {
+      "en": "Author(s)",
+      "hu": "Szerző(k)"
+    },
+    "authorPlaceholder": {
+      "en": "Stephen King + Peter Straub",
+      "hu": "Stephen King + Peter Straub"
+    },
+    "publishYear": {
+      "en": "Publish year",
+      "hu": "Kiadás éve"
+    },
+    "publisher": {
+      "en": "Publisher",
+      "hu": "Kiadó"
+    },
+    "publisherPlaceholder": {
+      "en": "Viking Press",
+      "hu": "Európa Könyvkiadó"
+    },
+    "isbn": {
+      "en": "ISBN",
+      "hu": "ISBN"
+    },
+    "isbnPlaceholder": {
+      "en": "0-670-69184-8",
+      "hu": "963-07-5379-1"
+    },
+    "language": {
+      "en": "Language",
+      "hu": "Nyelv"
+    },
+    "eng": {
+      "en": "English",
+      "hu": "Angol"
+    },
+    "hun": {
+      "en": "Hungarian",
+      "hu": "Magyar"
+    },
+    "pages": {
+      "en": "Pages",
+      "hu": "Oldalak"
+    },
+    "notes": {
+      "en": "Notes",
+      "hu": "Megjegyzések"
+    },
+    "image": {
+      "en": "Image",
+      "hu": "Kép"
+    },
+    "addNew": {
+      "en": "Add book",
+      "hu": "Hozzáadás"
     }
   }
 }
