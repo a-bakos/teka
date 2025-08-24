@@ -3,7 +3,7 @@
 import ElementNav from "./ElementNav";
 import ElementFooter from "./ElementFooter";
 
-import iconGitHubLogo from './assets/icons/github-logo-bold.svg';
+import {IconGithubLogo} from './icons.js';
 
 export default class ScreenSettings {
     constructor(appContext) {
@@ -29,7 +29,7 @@ export default class ScreenSettings {
                     <div>Téka v0.1.0 2025</div>
                     <div>${this.ctx.t("settings.credits")}</div>
                     <div>
-                        <img class="inline w-4" src="${iconGitHubLogo}"  alt="GitHub logo"/>
+                        <span class="inline-block w-5">${IconGithubLogo}</span>
                         <a 
                             href="https://github.com/a-bakos/teka" 
                             title="https://github.com/a-bakos/teka" 
