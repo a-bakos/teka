@@ -9,6 +9,16 @@
       "hu": "Üdv, {{name}}!"
     }
   },
+  "footer": {
+    "loggedIn": {
+      "en": "Logged in as:",
+      "hu": "Belepve:"
+    },
+    "credits": {
+      "en": "Created by Attila Bakos",
+      "hu": "Készítette: Bakos Attila"
+    }
+  },
   "book": {
     "add": {
       "en": "Add Book",
