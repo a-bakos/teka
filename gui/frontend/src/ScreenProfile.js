@@ -10,7 +10,8 @@ import {
     IconProfilePageUserMinus
 } from './icons';
 
-import {Events} from "./consts";
+import {Events, NotificationType} from "./consts";
+import AppNotification from "./AppNotification";
 
 export default class ScreenProfile {
 
@@ -103,7 +104,6 @@ export default class ScreenProfile {
                         class="bg-green-500 hover:bg-green-600 text-white rounded px-4 py-2">
                         ${this.ctx.t("profile.create")}
                     </button>
-                    <div id="${ScreenProfile.SELECTOR_ID_ADD_PROFILE_RESULT}"></div>
                 </div>
                 
                 <!-- Remove Current Profile --> 
@@ -127,8 +127,9 @@ export default class ScreenProfile {
 
             try {
                 const id = await window.go.main.App.CreateProfile(inputNewProfileName.value);
-                document.getElementById(ScreenProfile.SELECTOR_ID_ADD_PROFILE_RESULT).innerText = id > 0 ? `Profile created with ID: ${id}` : "Profile creation failed"
                 inputNewProfileName.value = ScreenProfile.EMPTY_STRING;
+
+                new AppNotification(NotificationType.SUCCESS, `Profile created with ID: ${id}`);
             } catch (err) {
                 console.log("Profile creation failed:", err)
             }
