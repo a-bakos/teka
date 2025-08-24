@@ -74,8 +74,22 @@ export default class ScreenItem {
                     </div>                                
                                   
                 </div>          
-                <section class="bg-red-200 w-full">
-                    More books from this author
+                <section class="w-full mt-4">
+                    <h2 class="text-xl font-semibold mb-2">More books from this author</h2>
+                        <div class="flex overflow-x-auto gap-4 py-2">
+                        <!-- Each book card -->
+                        <div class="min-w-[120px] flex-shrink-0 bg-white shadow rounded p-2 cursor-pointer hover:bg-gray-50">
+                            <img src="${coverExample}" alt="Book Cover" class="w-full h-32 object-cover rounded mb-1">
+                            <p class="text-sm font-medium truncate">Book Title 1</p>
+                        </div>
+    
+                        <div class="min-w-[120px] flex-shrink-0 bg-white shadow rounded p-2 cursor-pointer hover:bg-gray-50">
+                            <img src="${coverExample}" alt="Book Cover" class="w-full h-32 object-cover rounded mb-1">
+                            <p class="text-sm font-medium truncate">Book Title 2</p>
+                        </div>
+                    
+                        <!-- Repeat for additional books -->
+                    </div>
                 </section>
             </div>
             ${this.Footer.render()}

@@ -17,11 +17,10 @@ export default class ScreenBrowse {
         return `
             ${this.Nav.render()}
             <div class="pt-16 p-2">
-                <h1 class="bg-red-500">Books browser</h1>
-                
-                ${this.tempFilters()}
                 
                 ${this.tempDashlets()}
+                
+                ${this.tempFilters()}
                 
                 ${this.tempBooksList()}
 
@@ -41,6 +40,15 @@ export default class ScreenBrowse {
     tempDashlets() {
         return `
             <div class="flex flex-wrap gap-4 p-4">
+              <!-- Favorite Books Widget -->
+              <div class="flex-1 min-w-[200px] bg-white shadow rounded p-4 cursor-pointer hover:bg-gray-50">
+                <h3 class="text-lg font-semibold mb-2">My Library</h3>
+                <p class="text-gray-500">You have <span id="favCount">2598</span> books in your library.</p>
+                <div class="mt-2 flex gap-1 flex-wrap" id="favPreview">
+                  <!-- Small covers or icons can go here -->
+                </div>
+              </div>
+
               <!-- Favorite Books Widget -->
               <div class="flex-1 min-w-[200px] bg-white shadow rounded p-4 cursor-pointer hover:bg-gray-50">
                 <h3 class="text-lg font-semibold mb-2">Favorites</h3>
@@ -77,6 +85,7 @@ export default class ScreenBrowse {
               <!-- Filter by title/author -->
               <div class="flex items-center gap-2">
                 <input 
+                    autofocus
                   type="text" 
                   id="filterInput" 
                   placeholder="Filter by Title or Author..." 
