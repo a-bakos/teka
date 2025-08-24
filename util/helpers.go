@@ -20,7 +20,7 @@ func ParsePublishedDate(dateStr string) *time.Time {
 }
 
 func Logger(format string, a ...interface{}) {
-	if constants.FullLoggingEnabled && constants.CliMode {
+	if constants.FullLoggingEnabled {
 		t := time.Now().Format(time.RFC3339)
 		fmt.Printf("["+t+"] ["+printCaller()+"] "+format+"\n", a...)
 	}

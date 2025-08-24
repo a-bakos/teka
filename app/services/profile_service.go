@@ -19,6 +19,9 @@ func NewProfile(name string, id *int) models.Profile {
 }
 
 func CreateProfile(p *models.Profile) int64 {
+	if db.Conn == nil {
+		panic("DB connection is nil")
+	}
 	tx, err := db.Conn.Begin()
 	if err != nil {
 		return constants.DbFailedInsertId
@@ -59,6 +62,22 @@ func CreateProfile(p *models.Profile) int64 {
 func GetProfile() (*models.Profile, error) {
 	return nil, nil
 }
+
+//func GetProfiles() *[]models.Profile {
+//	tx, err := db.Conn.Begin()
+//	if err != nil {
+//		return false
+//	}
+//	defer func() {
+//		if err != nil {
+//			tx.Rollback()
+//		} else {
+//			tx.Commit()
+//		}
+//	}()
+//
+//	profiles, e := repository.GetProfiles(tx)
+//}
 
 func DeleteProfile(by repository.DeleteProfileBy, value string) bool {
 	tx, err := db.Conn.Begin()

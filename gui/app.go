@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"github.com/wailsapp/wails/v2/pkg/options"
 	"github.com/wailsapp/wails/v2/pkg/runtime"
+	"teka/app/services"
+	"teka/db"
 )
 
 // App struct
@@ -21,6 +23,9 @@ func NewApp() *App {
 // so we can call the runtime methods
 func (a *App) startup(ctx context.Context) {
 	a.ctx = ctx
+	if err := db.Init("../temp/tekatest.db"); err != nil {
+		panic(err)
+	}
 }
 
 func (a *App) beforeClose(ctx context.Context) (prevent bool) {
@@ -53,3 +58,10 @@ func (a *App) Greet(name string) string {
 }
 
 func (a *App) AddElement(value string) string { return fmt.Sprintf("%s", value) }
+
+// Expose profile creation to frontend
+func (a *App) CreateProfile(name string) int64 {
+	profile := services.NewProfile(name, nil)
+	id := services.CreateProfile(&profile)
+	return id
+}

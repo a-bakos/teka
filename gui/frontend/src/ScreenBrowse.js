@@ -5,6 +5,7 @@ import ElementNav from "./ElementNav";
 import ElementFooter from "./ElementFooter";
 
 import coverExample from './assets/images/pooh.jpg';
+import {Events} from "./consts";
 
 export default class ScreenBrowse {
     constructor(appContext) {
@@ -32,7 +33,7 @@ export default class ScreenBrowse {
 
     attachEvents() {
         // only custom events, no nav stuff
-        document.getElementById("addNew").addEventListener("click", () => {
+        document.getElementById("addNew").addEventListener(Events.CLICK, () => {
             console.log("ADDING NEW book...");
         });
     }

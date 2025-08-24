@@ -2,6 +2,7 @@
 
 import ScreenBuilder from "./ScreenBuilder";
 import {IconNavBooks, IconNavBook, IconNavUser, IconNavGear} from "./icons.js";
+import {Events} from "./consts";
 
 export default class ElementNav {
     static CLASS_MAIN_MENU = "main-menu"
@@ -27,7 +28,7 @@ export default class ElementNav {
         // If there’s only one <nav> on the page, this is fine:
         const NAV_BUTTONS = "nav button." + ElementNav.CLASS_MAIN_MENU
         document.querySelectorAll(NAV_BUTTONS).forEach(btn => {
-            btn.addEventListener("click", () => onNavigate(btn.dataset.screen));
+            btn.addEventListener(Events.CLICK, () => onNavigate(btn.dataset.screen));
         });
     }
 
