@@ -1,7 +1,5 @@
 "use strict"
 
-import ScreenBuilder from "./ScreenBuilder";
-
 export default class ElementFooter {
 
     constructor(appContext) {
@@ -10,11 +8,11 @@ export default class ElementFooter {
 
     render() {
         return `
-            <footer class="fixed bottom-0 w-full select-none">
+            <footer class="fixed bottom-0 w-full select-none bg-white">
                 <div class="flex border-t p-1 text-xs">
-                    <div class="w-1/3"><p class="block w-full">Logged in as: profile name</p></div>
-                    <div class="w-1/3"><p class="block w-full text-center">Téka v0.1.0 (2025)</p></div>
-                    <div class="w-1/3"><p class="block w-full text-right">Created by Attila Bakos</p></div>
+                    <div class="w-1/3"><p class="block w-full">${this.ctx.t("footer.loggedIn")} profile name</p></div>
+                    <div class="w-1/3"><p class="block w-full text-center">Téka v0.1.0 2025</p></div>
+                    <div class="w-1/3"><p class="block w-full text-right">something here</p></div>
                 </div>
             </footer> 
         `;

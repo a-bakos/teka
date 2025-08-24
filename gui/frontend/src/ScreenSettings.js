@@ -3,6 +3,8 @@
 import ElementNav from "./ElementNav";
 import ElementFooter from "./ElementFooter";
 
+import iconGitHubLogo from './assets/icons/github-logo-bold.svg';
+
 export default class ScreenSettings {
     constructor(appContext) {
         this.ctx = appContext;
@@ -27,7 +29,26 @@ export default class ScreenSettings {
                     <div>Téka v0.1.0 2025</div>
                     <div>${this.ctx.t("settings.credits")}</div>
                     <div>
-                        <a href="https://github.com/a-bakos/teka" class="underline hover:text-blue-600" target="_blank" rel="noopener">GitHub</a>
+                        <img class="inline w-4" src="${iconGitHubLogo}"  alt="GitHub logo"/>
+                        <a 
+                            href="https://github.com/a-bakos/teka" 
+                            title="https://github.com/a-bakos/teka" 
+                            class="underline hover:text-blue-600" 
+                            target="_blank" 
+                            rel="noopener">
+                            GitHub
+                        </a>
+                    </div>
+                    <div>
+                        Icons by
+                        <a 
+                            href="https://phosphoricons.com/" 
+                            title="https://phosphoricons.com/" 
+                            class="underline hover:text-blue-600" 
+                            target="_blank" 
+                            rel="noopener">
+                            Phosphor Icons
+                        </a>                    
                     </div>
                 </div>
             </div>   
