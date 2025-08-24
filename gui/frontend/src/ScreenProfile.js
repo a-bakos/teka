@@ -8,9 +8,18 @@ import {
     IconProfilePageUserSwitch,
     IconProfilePageUserPlus,
     IconProfilePageUserMinus
-} from './icons.js';
+} from './icons';
+
+import {Events} from "./consts";
 
 export default class ScreenProfile {
+
+    static EMPTY_STRING = "";
+
+    static SELECTOR_ID_ADD_PROFILE_BTN = "addProfileBtn";
+    static SELECTOR_ID_ADD_PROFILE_INPUT = "addProfileInput";
+    static SELECTOR_ID_ADD_PROFILE_RESULT = "addProfileResult";
+
     constructor(appContext) {
         this.ctx = appContext;
         this.Nav = new ElementNav(this.ctx);
@@ -33,10 +42,9 @@ export default class ScreenProfile {
                         type="text" 
                         placeholder="Charles Darwin"
                         value="">
-                    <button class="bg-blue-500 hover:bg-blue-600 text-white rounded px-4 py-2">${this.ctx.t("profile.update")}</button>
                 </div>
                 
-                    <!-- Language Switcher -->
+                <!-- Language Switcher -->
                 <div class="flex items-center space-x-2">
                     <label for="language-select" class="w-32">${this.ctx.t("profile.language")}</label>
                     <select id="language-select" class="border flex-1 p-2 rounded">
@@ -44,6 +52,13 @@ export default class ScreenProfile {
                         <option value="hu">${this.ctx.t("profile.hun")}</option>
                     </select>
                 </div>
+                
+                <button 
+                    class="bg-blue-500 hover:bg-blue-600 text-white rounded px-4 py-2">
+                    ${this.ctx.t("profile.update")}
+                </button>
+                
+                <hr>
                 
                 <!-- Registered Profiles List -->
                 <div>
@@ -70,7 +85,7 @@ export default class ScreenProfile {
                     </ul>
                 </div>
                    <!-- Add New Profile -->
-                <label for="-new-profile" class="block">
+                <label for="addProfileInput" class="block">
                     <h2 class="font-semibold mb-2">
                         <span class="inline-block w-7">${IconProfilePageUserPlus}</span>
                         ${this.ctx.t("profile.addTitle")}
@@ -78,12 +93,17 @@ export default class ScreenProfile {
                 </label>
                 <div class="flex items-center space-x-2">
                     <input 
-                        name="input-new-profile" 
-                        id="input-new-profile" 
+                        name="addProfileInput" 
+                        id="${ScreenProfile.SELECTOR_ID_ADD_PROFILE_INPUT}" 
                         class="border flex-1 p-2 rounded" 
                         type="text"
                         placeholder="Charles Darwin"">
-                    <button class="bg-green-500 hover:bg-green-600 text-white rounded px-4 py-2">${this.ctx.t("profile.create")}</button>
+                    <button 
+                        id="${ScreenProfile.SELECTOR_ID_ADD_PROFILE_BTN}" 
+                        class="bg-green-500 hover:bg-green-600 text-white rounded px-4 py-2">
+                        ${this.ctx.t("profile.create")}
+                    </button>
+                    <div id="${ScreenProfile.SELECTOR_ID_ADD_PROFILE_RESULT}"></div>
                 </div>
                 
                 <!-- Remove Current Profile --> 
@@ -99,6 +119,29 @@ export default class ScreenProfile {
     }
 
     attachEvents() {
+        // Add new profile event listener
+        document.getElementById(ScreenProfile.SELECTOR_ID_ADD_PROFILE_BTN).addEventListener(Events.CLICK, async () => {
+            const inputNewProfileName = document.getElementById(ScreenProfile.SELECTOR_ID_ADD_PROFILE_INPUT)
+
+            if (!inputNewProfileName.value) return;
+
+            try {
+                const id = await window.go.main.App.CreateProfile(inputNewProfileName.value);
+                document.getElementById(ScreenProfile.SELECTOR_ID_ADD_PROFILE_RESULT).innerText = id > 0 ? `Profile created with ID: ${id}` : "Profile creation failed"
+                inputNewProfileName.value = ScreenProfile.EMPTY_STRING;
+            } catch (err) {
+                console.log("Profile creation failed:", err)
+            }
+        })
+
+        // Remove profile event listener
+        // todo
+
+        // Switch profile event listener
+        // todo
+
+        // Update profile event listener
+        // todo
     }
 }
 
