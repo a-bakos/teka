@@ -128,7 +128,8 @@ export default class ScreenBrowse {
                   <!-- Col 2: Title + Author -->
                   <div class="flex-1">
                     <h3 data-screen="${ScreenBuilder.SCREENS.ITEM}" class="cursor-pointer text-lg font-semibold text-gray-900">Book Title</h3>
-                    <p class="text-sm text-gray-500">Author Name</p>
+                    <p class="text-sm text-gray-500">Author Name, Author Name 2</p>
+                    <p class="text-sm text-gray-500">1994 | Viking Books | 973 Oldal | 963-07-5379-1</p>
                   </div>
                 
                   <!-- Col 3: Actions -->

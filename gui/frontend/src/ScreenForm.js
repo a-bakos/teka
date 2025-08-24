@@ -86,13 +86,16 @@ export default class ScreenForm {
                             placeholder="${this.ctx.t("newItem.isbnPlaceholder")}" 
                             value="">
                     </div>
+                    
+                    <!-- 
                     <div class="flex flex-row items-center space-x-2 w-full max-w-lg">
                         <label class="w-32 text-left min-w-[90px]" for="">${this.ctx.t("newItem.language")}</label>
                         <select class="border flex-1 p-2 rounded" name="" id="">
                             <option value="hu">${this.ctx.t("newItem.hun")}</option>
                             <option value="en">${this.ctx.t("newItem.eng")}</option>
                         </select>
-                    </div>
+                    </div>-->
+                    
                     <div class="flex flex-row items-center space-x-2 w-full max-w-lg">
                         <label class="w-32 text-left min-w-[90px]" for="">${this.ctx.t("newItem.pages")}</label>
                         <input 
