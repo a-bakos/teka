@@ -2,9 +2,20 @@ package db
 
 import (
 	"database/sql"
+	_ "github.com/mattn/go-sqlite3"
+	"teka/constants"
 )
 
 var Conn *sql.DB
+
+func Init(filepath string) error {
+	var err error
+	Conn, err = sql.Open(constants.DbDriver, filepath)
+	if err != nil {
+		return err
+	}
+	return Conn.Ping()
+}
 
 // RunInTx is a generic transaction runner
 // Why a transaction?
