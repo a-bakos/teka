@@ -27,7 +27,6 @@ export default class ScreenBrowse {
                 ${this.tempFilters()}
                 
                 <section id="${ScreenBrowse.ID_NAME_ALL_BOOKS_CONTAINER}"></section>
-                ${this.tempBooksList()}
                         
             </div>
             ${this.Footer.render()}        
@@ -72,22 +71,47 @@ export default class ScreenBrowse {
                   
                   <!-- Col 1: Small cover -->
                   <div class="w-16 h-24 flex-shrink-0">
-                    <img data-screen="${ScreenBuilder.SCREENS.ITEM}" src="${coverExample}" alt="Book Cover" class="cursor-pointer w-full h-full object-cover rounded">
+                    <img 
+                        data-screen="${ScreenBuilder.SCREENS.ITEM}" 
+                        src="${coverExample}" 
+                        alt="Book Cover" 
+                        class="cursor-pointer w-full h-full object-cover rounded">
                   </div>
                 
                   <!-- Col 2: Title + Author -->
                   <div class="flex-1">
-                    <h3 data-screen="${ScreenBuilder.SCREENS.ITEM}" class="cursor-pointer text-lg font-semibold text-gray-900">${book.title}</h3>
+                    <h3 
+                        data-screen="${ScreenBuilder.SCREENS.ITEM}"
+                        class="cursor-pointer text-lg font-semibold text-gray-900">
+                        ${book.title}
+                    </h3>
                     <p class="text-sm text-gray-500">${book.author_names}</p>
                     <p class="text-sm text-gray-500">${book.published_date} | ${book.publisher} | ${book.page_count} Oldal | ${book.isbn}</p>
                   </div>
                 
                   <!-- Col 3: Actions -->
                   <div class="flex items-center gap-2 text-sm">
-                    <button data-screen="${ScreenBuilder.SCREENS.ITEM}" class="px-2 py-1 bg-yellow-500 text-white rounded hover:bg-yellow-600">View</button>
-                    <button class="px-2 py-1 bg-blue-500 text-white rounded hover:bg-blue-600">Edit</button>
-                    <button class="px-2 py-1 bg-green-500 text-white rounded hover:bg-green-600">Clone</button>
-                    <button class="px-2 py-1 bg-red-500 text-white rounded hover:bg-red-600">Delete</button>
+                    <button 
+                        data-iid="${book.item_id}"
+                        data-screen="${ScreenBuilder.SCREENS.ITEM}" 
+                        class="px-2 py-1 bg-yellow-500 text-white rounded hover:bg-yellow-600">
+                        View
+                    </button>
+                    <button 
+                        data-iid="${book.item_id}" 
+                        class="px-2 py-1 bg-blue-500 text-white rounded hover:bg-blue-600">
+                        Edit
+                    </button>
+                    <button 
+                        data-iid="${book.item_id}" 
+                        class="px-2 py-1 bg-green-500 text-white rounded hover:bg-green-600">
+                        Clone
+                    </button>
+                    <button 
+                        data-iid="${book.item_id}" 
+                        class="px-2 py-1 bg-red-500 text-white rounded hover:bg-red-600">
+                        Delete
+                    </button>
                   </div>
                 
                   <!-- Col 4: Status indicators -->
@@ -185,14 +209,4 @@ export default class ScreenBrowse {
         `;
     }
 
-    tempBooksList() {
-        let html = "";
-
-        for (let i = 0; i <= 4; i++) {
-            html += `
-                `;
-        }
-
-        return html;
-    }
 }
