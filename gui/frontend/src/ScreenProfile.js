@@ -12,14 +12,15 @@ import {
 
 import {Events, NotificationType} from "./consts";
 import AppNotification from "./AppNotification";
+import ScreenBuilder from "./ScreenBuilder";
 
 export default class ScreenProfile {
 
     static EMPTY_STRING = "";
 
-    static SELECTOR_ID_ADD_PROFILE_BTN = "addProfileBtn";
-    static SELECTOR_ID_ADD_PROFILE_INPUT = "addProfileInput";
-    static SELECTOR_ID_ADD_PROFILE_RESULT = "addProfileResult";
+    static ID_NAME_ADD_PROFILE_BTN = "addProfileBtn";
+    static ID_NAME_ADD_PROFILE_INPUT = "addProfileInput";
+    static ID_NAME_PROFILES_CONTAINER = "profilesContainer"
 
     constructor(appContext) {
         this.ctx = appContext;
@@ -67,24 +68,11 @@ export default class ScreenProfile {
                         <span class="inline-block w-7">${IconProfilePageUsers}</span>                        
                         ${this.ctx.t("profile.registeredTitle")}
                     </h2>
-                    <ul id="profile-list" class="space-y-1">
-                        <li>
-                            <button class="w-full text-left px-3 py-2 rounded border hover:bg-gray-100 bg-blue-100 font-bold">Agatha Christie ${this.ctx.t("profile.current")}</button>
-                        </li>
-                        <li class="relative">
-                            <button class="w-full text-left px-3 py-2 rounded border hover:bg-gray-100">
-                                Hercule Poirot
-                                <span class="w-7 absolute inline-block right-0">${IconProfilePageUserSwitch}</span>
-                            </button>
-                        </li>
-                        <li class="relative">
-                            <button class="w-full text-left px-3 py-2 rounded border hover:bg-gray-100">
-                                Miss Marple
-                                <span class="w-7 absolute inline-block right-0">${IconProfilePageUserSwitch}</span>
-                            </button>
-                        </li>
-                    </ul>
+
+                    <div id="${ScreenProfile.ID_NAME_PROFILES_CONTAINER}"></div>
+
                 </div>
+                
                    <!-- Add New Profile -->
                 <label for="addProfileInput" class="block">
                     <h2 class="font-semibold mb-2">
@@ -95,12 +83,12 @@ export default class ScreenProfile {
                 <div class="flex items-center space-x-2">
                     <input 
                         name="addProfileInput" 
-                        id="${ScreenProfile.SELECTOR_ID_ADD_PROFILE_INPUT}" 
+                        id="${ScreenProfile.ID_NAME_ADD_PROFILE_INPUT}" 
                         class="border flex-1 p-2 rounded" 
                         type="text"
                         placeholder="Charles Darwin"">
                     <button 
-                        id="${ScreenProfile.SELECTOR_ID_ADD_PROFILE_BTN}" 
+                        id="${ScreenProfile.ID_NAME_ADD_PROFILE_BTN}" 
                         class="bg-green-500 hover:bg-green-600 text-white rounded px-4 py-2">
                         ${this.ctx.t("profile.create")}
                     </button>
@@ -118,10 +106,57 @@ export default class ScreenProfile {
         `;
     }
 
+    async afterRender() {
+        // Load profiles list
+        const container = document.getElementById(ScreenProfile.ID_NAME_PROFILES_CONTAINER);
+        container.innerHTML = ScreenProfile.EMPTY_STRING;
+        container.appendChild(ScreenBuilder.createPreloader());
+
+        const profiles = await this.getProfiles();
+        if (profiles) {
+            setTimeout(() => {
+                container.appendChild(profiles);
+                container.querySelector(ScreenBuilder.SELECTOR_CLASS_PRELOADER).remove();
+            }, ScreenBuilder.ARTIFICIAL_DELAY)
+        }
+    }
+
+    async getProfiles() {
+        // profiles is [{ id: "", name: ""}, { ... }]
+        const profiles = await window.go.main.App.GetProfiles();
+
+        if (profiles.length === 0) {
+            const el = document.createElement("div");
+            el.classList.add("w-full", "px-3", "py-2", "rounded", "border");
+            el.innerText = "No users found";
+            return el;
+        }
+
+        const ul = document.createElement("ul");
+        ul.className = "space-y-1";
+
+        for (const profile of profiles) {
+            const li = document.createElement("li");
+            li.className = "relative";
+            li.innerHTML = `
+                <button 
+                    data-uid="${profile.id}" 
+                    class="w-full text-left px-3 py-2 rounded border hover:bg-gray-100">
+                    ${profile.name}
+                    <span class="w-7 absolute inline-block right-0">${IconProfilePageUserSwitch}</span>
+                </button>
+            `;
+
+            ul.appendChild(li);
+        }
+
+        return ul;
+    }
+
     attachEvents() {
         // Add new profile event listener
-        document.getElementById(ScreenProfile.SELECTOR_ID_ADD_PROFILE_BTN).addEventListener(Events.CLICK, async () => {
-            const inputNewProfileName = document.getElementById(ScreenProfile.SELECTOR_ID_ADD_PROFILE_INPUT)
+        document.getElementById(ScreenProfile.ID_NAME_ADD_PROFILE_BTN).addEventListener(Events.CLICK, async () => {
+            const inputNewProfileName = document.getElementById(ScreenProfile.ID_NAME_ADD_PROFILE_INPUT)
 
             if (!inputNewProfileName.value) {
                 new AppNotification(NotificationType.GENERIC, `No profile name set`, true);

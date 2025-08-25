@@ -7,6 +7,7 @@ import (
 	"github.com/wailsapp/wails/v2/pkg/runtime"
 	"teka/app/services"
 	"teka/db"
+	"teka/models"
 )
 
 // App struct
@@ -64,4 +65,8 @@ func (a *App) CreateProfile(name string) int64 {
 	profile := services.NewProfile(name, nil)
 	id := services.CreateProfile(&profile)
 	return id
+}
+
+func (a *App) GetProfiles() []models.Profile {
+	return services.GetProfiles()
 }
