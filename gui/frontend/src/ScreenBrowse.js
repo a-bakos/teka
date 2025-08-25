@@ -32,10 +32,6 @@ export default class ScreenBrowse {
     }
 
     attachEvents() {
-        // only custom events, no nav stuff
-        document.getElementById("addNew").addEventListener(Events.CLICK, () => {
-            console.log("ADDING NEW book...");
-        });
     }
 
     tempDashlets() {

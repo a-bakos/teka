@@ -123,7 +123,11 @@ export default class ScreenProfile {
         document.getElementById(ScreenProfile.SELECTOR_ID_ADD_PROFILE_BTN).addEventListener(Events.CLICK, async () => {
             const inputNewProfileName = document.getElementById(ScreenProfile.SELECTOR_ID_ADD_PROFILE_INPUT)
 
-            if (!inputNewProfileName.value) return;
+            if (!inputNewProfileName.value) {
+                new AppNotification(NotificationType.GENERIC, `No profile name set`, true);
+                inputNewProfileName.focus()
+                return;
+            }
 
             try {
                 const id = await window.go.main.App.CreateProfile(inputNewProfileName.value);
@@ -131,6 +135,7 @@ export default class ScreenProfile {
 
                 new AppNotification(NotificationType.SUCCESS, `Profile created with ID: ${id}`);
             } catch (err) {
+                new AppNotification(NotificationType.ERROR, `Profile creation failed`);
                 console.log("Profile creation failed:", err)
             }
         })
