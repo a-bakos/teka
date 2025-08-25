@@ -58,7 +58,7 @@ export default class ScreenStartup {
         const profiles = await window.go.main.App.GetProfiles();
 
         const container = document.createElement("div");
-        container.className = "grid grid-cols-1 gap-8";
+        container.className = "grid grid-cols-3 gap-8";
 
         for (const profile of profiles) {
             const div = document.createElement("div");

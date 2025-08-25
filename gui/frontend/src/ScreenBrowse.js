@@ -8,6 +8,9 @@ import coverExample from './assets/images/pooh.jpg';
 import {Events} from "./consts";
 
 export default class ScreenBrowse {
+    static EMPTY_STRING = "";
+    static ID_NAME_ALL_BOOKS_CONTAINER = "allBooksContainer";
+
     constructor(appContext) {
         this.ctx = appContext
         this.Nav = new ElementNav(this.ctx)
@@ -23,16 +26,87 @@ export default class ScreenBrowse {
                 
                 ${this.tempFilters()}
                 
+                <section id="${ScreenBrowse.ID_NAME_ALL_BOOKS_CONTAINER}"></section>
                 ${this.tempBooksList()}
-
                         
             </div>
             ${this.Footer.render()}        
         `;
     }
 
+    async afterRender() {
+        const container = document.getElementById(ScreenBrowse.ID_NAME_ALL_BOOKS_CONTAINER);
+        container.innerHTML = ScreenBrowse.EMPTY_STRING;
+        container.appendChild(ScreenBuilder.createPreloader());
+
+        const books = await this.getBooks();
+        if (books) {
+            setTimeout(() => {
+                container.appendChild(books);
+                container.querySelector(ScreenBuilder.SELECTOR_CLASS_PRELOADER).remove();
+            }, ScreenBuilder.ARTIFICIAL_DELAY)
+        }
+    }
+
+    async getBooks() {
+        const books = await window.go.main.App.GetBooks();
+
+        if (books.length === 0) {
+            const el = document.createElement("div");
+            el.className = "w-full px-3 py-2 rounded border";
+            el.innerText = "No books found";
+            return el;
+        }
+
+        const ul = document.createElement("ul");
+        ul.className = "mb-12";
+
+        console.log(books)
+
+        for (const book of books) {
+            const li = document.createElement("li");
+            li.innerHTML = `
+                <div 
+                    data-iid="${book.item_id}" 
+                    class="flex items-center gap-4 p-2 border-b hover:bg-gray-50">
+                  
+                  <!-- Col 1: Small cover -->
+                  <div class="w-16 h-24 flex-shrink-0">
+                    <img data-screen="${ScreenBuilder.SCREENS.ITEM}" src="${coverExample}" alt="Book Cover" class="cursor-pointer w-full h-full object-cover rounded">
+                  </div>
+                
+                  <!-- Col 2: Title + Author -->
+                  <div class="flex-1">
+                    <h3 data-screen="${ScreenBuilder.SCREENS.ITEM}" class="cursor-pointer text-lg font-semibold text-gray-900">${book.title}</h3>
+                    <p class="text-sm text-gray-500">${book.author_names}</p>
+                    <p class="text-sm text-gray-500">${book.published_date} | ${book.publisher} | ${book.page_count} Oldal | ${book.isbn}</p>
+                  </div>
+                
+                  <!-- Col 3: Actions -->
+                  <div class="flex items-center gap-2 text-sm">
+                    <button data-screen="${ScreenBuilder.SCREENS.ITEM}" class="px-2 py-1 bg-yellow-500 text-white rounded hover:bg-yellow-600">View</button>
+                    <button class="px-2 py-1 bg-blue-500 text-white rounded hover:bg-blue-600">Edit</button>
+                    <button class="px-2 py-1 bg-green-500 text-white rounded hover:bg-green-600">Clone</button>
+                    <button class="px-2 py-1 bg-red-500 text-white rounded hover:bg-red-600">Delete</button>
+                  </div>
+                
+                  <!-- Col 4: Status indicators -->
+                  <div class="flex flex-col items-end text-xs text-gray-700">
+                    <span>Notes: Yes</span>
+                    <span>Fav: ⭐</span>
+                  </div>
+                </div>
+            `;
+
+            ul.appendChild(li);
+        }
+
+        return ul;
+    }
+
     attachEvents() {
     }
+
 
     tempDashlets() {
         return `
@@ -116,33 +190,7 @@ export default class ScreenBrowse {
 
         for (let i = 0; i <= 4; i++) {
             html += `
-                <div class="flex items-center gap-4 p-2 border-b hover:bg-gray-50">
-                  <!-- Col 1: Small cover -->
-                  <div class="w-16 h-24 flex-shrink-0">
-                    <img data-screen="${ScreenBuilder.SCREENS.ITEM}" src="${coverExample}" alt="Book Cover" class="cursor-pointer w-full h-full object-cover rounded">
-                  </div>
-                
-                  <!-- Col 2: Title + Author -->
-                  <div class="flex-1">
-                    <h3 data-screen="${ScreenBuilder.SCREENS.ITEM}" class="cursor-pointer text-lg font-semibold text-gray-900">Book Title</h3>
-                    <p class="text-sm text-gray-500">Author Name, Author Name 2</p>
-                    <p class="text-sm text-gray-500">1994 | Viking Books | 973 Oldal | 963-07-5379-1</p>
-                  </div>
-                
-                  <!-- Col 3: Actions -->
-                  <div class="flex items-center gap-2 text-sm">
-                    <button data-screen="${ScreenBuilder.SCREENS.ITEM}" class="px-2 py-1 bg-yellow-500 text-white rounded hover:bg-yellow-600">View</button>
-                    <button class="px-2 py-1 bg-blue-500 text-white rounded hover:bg-blue-600">Edit</button>
-                    <button class="px-2 py-1 bg-green-500 text-white rounded hover:bg-green-600">Clone</button>
-                    <button class="px-2 py-1 bg-red-500 text-white rounded hover:bg-red-600">Delete</button>
-                  </div>
-                
-                  <!-- Col 4: Status indicators -->
-                  <div class="flex flex-col items-end text-xs text-gray-700">
-                    <span>Notes: Yes</span>
-                    <span>Fav: ⭐</span>
-                  </div>
-                </div>`;
+                `;
         }
 
         return html;

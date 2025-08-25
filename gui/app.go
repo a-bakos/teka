@@ -70,3 +70,7 @@ func (a *App) CreateProfile(name string) int64 {
 func (a *App) GetProfiles() []models.Profile {
 	return services.GetProfiles()
 }
+
+func (a *App) GetBooks() []models.Book {
+	return services.GetBooks()
+}

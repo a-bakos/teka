@@ -10,11 +10,11 @@ import (
 
 type Book struct {
 	Item
-	Publisher     *string
-	PublishedDate *time.Time
-	PageCount     *int
-	ISBN          *string
-	AuthorNames   string // e.g. "Alice + Bob"
+	Publisher     *string    `json:"publisher"`
+	PublishedDate *time.Time `json:"published_date"`
+	PageCount     *int       `json:"page_count"`
+	ISBN          *string    `json:"isbn"`
+	AuthorNames   string     `json:"author_names"` // e.g. "Alice + Bob"
 }
 
 func (b Book) HasValidIsbn() bool {
