@@ -37,6 +37,31 @@ func InsertProfile(tx *sql.Tx, p *models.Profile) (int64, error) {
 	return id, nil
 }
 
+func GetProfiles(tx *sql.Tx) []models.Profile {
+	var profiles []models.Profile
+	profileRows, err := tx.Query(`SELECT * FROM profiles`)
+	if err != nil {
+		util.Logger("Error %v", err)
+		return profiles
+	}
+	if err == sql.ErrNoRows {
+		return profiles
+	}
+
+	for profileRows.Next() {
+		var p models.Profile
+		err = profileRows.Scan(&p.ID, &p.Name)
+		if err != nil {
+			util.Logger("Error in processing profile rows %v", err)
+			continue
+		}
+
+		profiles = append(profiles, p)
+	}
+
+	return profiles
+}
+
 func GetProfile(tx *sql.Tx, by GetProfileBy, value string) (models.Profile, error) {
 	switch by {
 	case GetProfileByName:

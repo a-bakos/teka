@@ -127,7 +127,7 @@ export default class ScreenProfile {
 
         if (profiles.length === 0) {
             const el = document.createElement("div");
-            el.classList.add("w-full", "px-3", "py-2", "rounded", "border");
+            el.className = "w-full px-3 py-2 rounded border";
             el.innerText = "No users found";
             return el;
         }
