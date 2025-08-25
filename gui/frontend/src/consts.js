@@ -2,6 +2,7 @@ export const Events = {
     CLICK: "click",
     INPUT: "input",
     CHANGE: "change",
+    TRANSITION_END: "transitionend"
 };
 
 export const NotificationType = {

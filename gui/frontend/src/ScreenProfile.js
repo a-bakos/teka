@@ -130,9 +130,9 @@ export default class ScreenProfile {
             }
 
             try {
+                // todo need to handle existing users!
                 const id = await window.go.main.App.CreateProfile(inputNewProfileName.value);
                 inputNewProfileName.value = ScreenProfile.EMPTY_STRING;
-
                 new AppNotification(NotificationType.SUCCESS, `Profile created with ID: ${id}`);
             } catch (err) {
                 new AppNotification(NotificationType.ERROR, `Profile creation failed`);

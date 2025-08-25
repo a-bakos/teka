@@ -104,13 +104,13 @@ export default class AppNotification {
             closeButton.addEventListener(Events.CLICK, () => {
                 if (document.getElementById(this.currentNotificationId)) {
                     let pill = document.getElementById(this.currentNotificationId)
-                    pill.classList.add(
-                        AppNotification.TW_CLASS_ANI_MOVE_TO,
-                        AppNotification.TW_CLASS_ANI_VISIBILITY_TO
-                    );
                     pill.classList.remove(
                         AppNotification.TW_CLASS_ANI_MOVE_FROM,
                         AppNotification.TW_CLASS_ANI_VISIBILITY_FROM
+                    );
+                    pill.classList.add(
+                        AppNotification.TW_CLASS_ANI_MOVE_TO,
+                        AppNotification.TW_CLASS_ANI_VISIBILITY_TO
                     );
 
                     // Remove item from DOM
@@ -120,11 +120,21 @@ export default class AppNotification {
                 }
             });
         }
+
         if (this.selfDestroy) {
             let pill = document.getElementById(this.currentNotificationId);
-            // Remove item from DOM
             setTimeout(() => {
-                pill.remove();
+                pill.classList.remove(
+                    AppNotification.TW_CLASS_ANI_MOVE_FROM,
+                    AppNotification.TW_CLASS_ANI_VISIBILITY_FROM
+                );
+                pill.classList.add(
+                    AppNotification.TW_CLASS_ANI_MOVE_TO,
+                    AppNotification.TW_CLASS_ANI_VISIBILITY_TO
+                );
+                pill.addEventListener(Events.TRANSITION_END, () => {
+                    pill.remove();
+                }, {once: true});
             }, AppNotification.SELF_DESTROY_TIMEOUT);
         }
     }
