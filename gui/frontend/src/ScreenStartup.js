@@ -5,16 +5,17 @@ import ElementFooter from "./ElementFooter";
 
 import {IconStartupUser} from "./icons.js";
 import ScreenBuilder from "./ScreenBuilder";
+import AppNotification from "./AppNotification";
+import {NotificationType} from "./consts";
 
 export default class ScreenStartup {
     constructor(appContext) {
-        this.ctx = appContext
-        this.Nav = new ElementNav(this.ctx)
-        this.Footer = new ElementFooter(this.ctx)
+        this.ctx = appContext;
+        this.Nav = new ElementNav(this.ctx);
+        this.Footer = new ElementFooter(this.ctx);
     }
 
     render() {
-
         return `  
             ${this.Nav.render()}
             <section class="flex flex-col items-center justify-center min-h-screen bg-gray-50">
@@ -38,12 +39,15 @@ export default class ScreenStartup {
                         <p class="text-lg font-medium">New Profile</p>
                     </div>
                 </div>
-            </section>  
+            </section>
             ${this.Footer.render()}
         `;
     }
 
     attachEvents() {
-        //
+        new AppNotification(NotificationType.SUCCESS, `Profile created with ID: ${200}`, true);
+        new AppNotification(NotificationType.WARNING, `Profile created with ID: ${200}`);
+        new AppNotification(NotificationType.ERROR, `Profile created with ID: ${200}`, true);
+        new AppNotification(NotificationType.GENERIC, `Profile created with ID: ${200}`);
     }
 }
