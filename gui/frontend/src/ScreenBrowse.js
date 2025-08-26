@@ -47,34 +47,46 @@ export default class ScreenBrowse {
                 container.appendChild(books);
                 container.querySelector(ScreenBuilder.SELECTOR_CLASS_PRELOADER).remove();
             }, ScreenBuilder.ARTIFICIAL_DELAY)
-        }
 
-        setTimeout(() => {
-            const deleteBtns = document.querySelectorAll(ScreenBrowse.SELECTOR_CLASS_DELETE_BOOK);
-            console.log(deleteBtns)
-            for (let btn of deleteBtns) {
-                btn.addEventListener(Events.CLICK, async () => {
-                    let id = btn.dataset.iid;
-                    console.log(id)
-                    try {
-                        const _isDeleted = await window.go.main.App.DeleteBook(id);
-                        new AppNotification(NotificationType.SUCCESS, `Book deleted: ${id}`);
-                    } catch (err) {
-                        new AppNotification(NotificationType.ERROR, `Book deletion failed`);
-                        console.log("Book deletion failed:", err)
-                    }
-                });
-            }
-        }, ScreenBuilder.ARTIFICIAL_DELAY + 10)
+            setTimeout(() => {
+                const deleteBtns = document.querySelectorAll(ScreenBrowse.SELECTOR_CLASS_DELETE_BOOK);
+                console.log(deleteBtns)
+                for (let btn of deleteBtns) {
+                    btn.addEventListener(Events.CLICK, async () => {
+
+                        // Are you sure modal?
+
+                        let id = btn.dataset.iid;
+                        console.log(id)
+                        try {
+                            const _isDeleted = await window.go.main.App.DeleteBook(id);
+                            new AppNotification(NotificationType.SUCCESS, `Book deleted: ${id}`);
+                            // remove item from DOM
+                            const parent = btn.closest("li");
+                            parent.remove();
+                        } catch (err) {
+                            new AppNotification(NotificationType.ERROR, `Book deletion failed`);
+                            console.log("Book deletion failed:", err)
+                        }
+                    });
+                }
+            }, ScreenBuilder.ARTIFICIAL_DELAY + 10)
+        }
     }
 
     async getBooks() {
         const books = await window.go.main.App.GetBooks();
 
-        if (books.length === 0) {
+        if (!books || books.length === 0) {
             const el = document.createElement("div");
-            el.className = "w-full px-3 py-2 rounded border";
-            el.innerText = "No books found";
+            el.className = "w-full px-3 py-2 rounded border text-xl text-center";
+            el.innerHTML = `
+                <p>No books found</p>
+                <button 
+                    class="mt-3 rounded border" 
+                    data-screen="${ScreenBuilder.SCREENS.FORM}">
+                    Start adding
+                </button>`;
             return el;
         }
 
@@ -89,7 +101,7 @@ export default class ScreenBrowse {
                 <div 
                     data-iid="${book.item_id}" 
                     class="flex items-center gap-4 p-2 border-b hover:bg-gray-50">
-                  
+
                   <!-- Col 1: Small cover -->
                   <div class="w-16 h-24 flex-shrink-0">
                     <img 

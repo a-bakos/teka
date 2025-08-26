@@ -21,10 +21,10 @@ func (a App) Run() {
 	// _ = services.DeleteProfile(repository.DeleteProfileById, "2")
 
 	// New book definition
-	// newbook := services.NewBook() // this collects all the data from the user
+	newbook := services.NewBook() // this collects all the data from the user
 
 	// Book add
-	// _ = services.CreateBook(&newbook) // returns book id
+	_ = services.CreateBook(&newbook) // returns book id
 
 	// Get all books
 	// services.GetBooks()
