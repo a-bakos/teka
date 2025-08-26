@@ -53,14 +53,8 @@ func (a *App) onSecondInstanceLaunch(data options.SecondInstanceData) {
 	fmt.Println("Second instance args:", data.Args)
 }
 
-// Greet returns a greeting for the given name
-func (a *App) Greet(name string) string {
-	return fmt.Sprintf("Hello %s, It's show time!", name)
-}
+// Backend bindings
 
-func (a *App) AddElement(value string) string { return fmt.Sprintf("%s", value) }
-
-// Expose profile creation to frontend
 func (a *App) CreateProfile(name string) int64 {
 	profile := services.NewProfile(name, nil)
 	id := services.CreateProfile(&profile)
