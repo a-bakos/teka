@@ -30,9 +30,17 @@ func (a App) Run() {
 	// services.GetBooks()
 
 	// Delete book by book id
-	r := services.DeleteBook("20")
-	fmt.Println(r)
+	//r := services.DeleteBook("20")
+	//fmt.Println(r)
 
+	p, _ := services.GetProfileById("1")
+	fmt.Println(p)
+
+	p2, _ := services.GetProfileByName("Adam")
+	fmt.Println(p2)
+
+	p3, _ := services.GetProfileByName("AA")
+	fmt.Println(p3)
 }
 
 // methods exposed to JS via Wails

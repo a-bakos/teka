@@ -6,12 +6,12 @@ import (
 	"teka/util"
 )
 
-func deleteFromTable(tx *sql.Tx, table string, column string, id string) (bool, error) {
+func deleteFromTable(tx *sql.Tx, table string, column string, value string) (bool, error) {
 	query := fmt.Sprintf("DELETE FROM %s WHERE %s = ?", table, column)
 
-	res, err := tx.Exec(query, id)
+	res, err := tx.Exec(query, value)
 	if err != nil {
-		util.Logger("Error deleting from %s: %s (%v)", table, id, err)
+		util.Logger("Error deleting from %s: %s (%v)", table, value, err)
 		return false, err
 	}
 
@@ -22,10 +22,10 @@ func deleteFromTable(tx *sql.Tx, table string, column string, id string) (bool, 
 	}
 
 	if r > 0 {
-		util.Logger("Deleted from %s: %s", table, id)
+		util.Logger("Deleted from %s: %s", table, value)
 		return true, nil
 	} else {
-		util.Logger("%s entry doesn't exist: %s", table, id)
+		util.Logger("%s entry doesn't exist: %s", table, value)
 		return false, nil
 	}
 }

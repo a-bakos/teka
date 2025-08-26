@@ -93,10 +93,10 @@ func DeleteBook(tx *sql.Tx, id string) (bool, error) {
 		table  string
 		column string
 	}{
-		{"books", "item_id"},
-		{"items", "id"},
-		{"item_creators", "item_id"},
-		{"profile_item_flags", "item_id"},
+		{constants.DbTableBooks, "item_id"},
+		{constants.DbTableItems, "id"},
+		{constants.DbTableCreators, "item_id"},
+		{constants.DbTableProfileItemFlags, "item_id"},
 	}
 
 	for _, d := range deletes {

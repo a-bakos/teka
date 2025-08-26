@@ -2,6 +2,7 @@ package repository
 
 import (
 	"database/sql"
+	"fmt"
 	"strings"
 	"teka/constants"
 	"teka/models"
@@ -62,53 +63,34 @@ func GetProfiles(tx *sql.Tx) []models.Profile {
 	return profiles
 }
 
-func GetProfile(tx *sql.Tx, by GetProfileBy, value string) (models.Profile, error) {
+func GetProfile(tx *sql.Tx, by GetProfileBy, value string) (*models.Profile, error) {
 	switch by {
 	case GetProfileByName:
-		return getProfileByName(tx, value)
+		name := strings.TrimSpace(value)
+		return queryProfile(tx, `SELECT id, name FROM profiles WHERE name = ?`, name)
 	case GetProfileById:
-		return getProfileById(tx, value)
+		id := strings.TrimSpace(value)
+		queriedId, err := util.StringToInt64(id)
+		if err != nil {
+			util.Logger("Error converting ID: %v", err)
+			return nil, err
+		}
+		return queryProfile(tx, `SELECT id, name FROM profiles WHERE id = ?`, queriedId)
 	default:
-		return models.Profile{}, nil // todo
+		return nil, fmt.Errorf("unsupported profile lookup: %v", by)
 	}
 }
 
-func getProfileByName(tx *sql.Tx, name string) (models.Profile, error) {
-	util.Logger("Getting profile by name: %s", name)
+func queryProfile(tx *sql.Tx, query string, arg interface{}) (*models.Profile, error) {
 	var p models.Profile
-	name = strings.TrimSpace(name)
-	err := tx.QueryRow(`SELECT id, name FROM profiles WHERE name = ?`, name).Scan(&p.ID, &p.Name)
+	err := tx.QueryRow(query, arg).Scan(&p.ID, &p.Name)
 	if err == sql.ErrNoRows {
-		util.Logger("Not found: %s (%s)", name, err)
-		return models.Profile{}, nil
+		return nil, err
 	}
-	if err != nil && err != sql.ErrNoRows {
-		util.Logger("Error: %s", err)
-		return models.Profile{}, err
-	}
-
-	return p, nil
-}
-
-func getProfileById(tx *sql.Tx, id string) (models.Profile, error) {
-	util.Logger("Getting profile by ID: %d", id)
-	id = strings.TrimSpace(id)
-	queriedID, err := util.StringToInt64(id)
 	if err != nil {
-		util.Logger("Error converting ID: %s", err)
-		return models.Profile{}, err
+		util.Logger("Query error: %v", err)
 	}
-	var p models.Profile
-	err = tx.QueryRow(`SELECT id, name FROM profiles WHERE id = ?`, queriedID).Scan(&p.ID, &p.Name)
-	if err == sql.ErrNoRows {
-		util.Logger("Not found: %s (%s)", id, err)
-		return models.Profile{}, err
-	}
-	if err != nil && err != sql.ErrNoRows {
-		util.Logger("Error: %s", err)
-		return models.Profile{}, err
-	}
-	return p, nil
+	return &p, nil
 }
 
 func DeleteProfile(tx *sql.Tx, by DeleteProfileBy, value string) (bool, error) {
@@ -147,7 +129,7 @@ func deleteProfileByName(tx *sql.Tx, name string) (bool, error) {
 func deleteProfileById(tx *sql.Tx, id string) (bool, error) {
 	res, err := tx.Exec("DELETE FROM profiles WHERE id = ?", id)
 	if err != nil {
-		util.Logger("Error deleting profile: %d (%v)", id, err)
+		util.Logger("Error deleting profile: %s (%v)", id, err)
 		return false, err
 	}
 	var r int64

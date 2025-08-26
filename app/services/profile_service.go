@@ -59,8 +59,36 @@ func CreateProfile(p *models.Profile) int64 {
 	return profileID
 }
 
-func GetProfile() (*models.Profile, error) {
-	return nil, nil
+func GetProfileByName(name string) (*models.Profile, error) {
+	tx, err := db.Conn.Begin()
+	if err != nil {
+		return nil, err
+	}
+	defer func() {
+		if err != nil {
+			tx.Rollback()
+		} else {
+			tx.Commit()
+		}
+	}()
+
+	return repository.GetProfile(tx, repository.GetProfileByName, name)
+}
+
+func GetProfileById(id string) (*models.Profile, error) {
+	tx, err := db.Conn.Begin()
+	if err != nil {
+		return nil, err
+	}
+	defer func() {
+		if err != nil {
+			tx.Rollback()
+		} else {
+			tx.Commit()
+		}
+	}()
+
+	return repository.GetProfile(tx, repository.GetProfileById, id)
 }
 
 func GetProfiles() []models.Profile {
