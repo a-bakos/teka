@@ -67,6 +67,14 @@ func (a *App) CreateProfile(name string) int64 {
 	return id
 }
 
+func (a *App) DeleteBook(id string) bool {
+	return services.DeleteBook(id)
+}
+
+// todo
+// addBook
+// updateBook
+
 // ------------------------
 // From backend to frontend
 // ------------------------

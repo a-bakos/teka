@@ -95,7 +95,7 @@ func DeleteBook(tx *sql.Tx, id string) (bool, error) {
 	}{
 		{constants.DbTableBooks, "item_id"},
 		{constants.DbTableItems, "id"},
-		{constants.DbTableCreators, "item_id"},
+		{constants.DbTableItemCreators, "item_id"},
 		{constants.DbTableProfileItemFlags, "item_id"},
 	}
 

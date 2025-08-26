@@ -5,11 +5,14 @@ import ElementNav from "./ElementNav";
 import ElementFooter from "./ElementFooter";
 
 import coverExample from './assets/images/pooh.jpg';
-import {Events} from "./consts";
+import {Events, NotificationType} from "./consts";
+import AppNotification from "./AppNotification";
 
 export default class ScreenBrowse {
     static EMPTY_STRING = "";
     static ID_NAME_ALL_BOOKS_CONTAINER = "allBooksContainer";
+    static CLASS_NAME_DELETE_BOOK = "deleteBook";
+    static SELECTOR_CLASS_DELETE_BOOK = "." + ScreenBrowse.CLASS_NAME_DELETE_BOOK;
 
     constructor(appContext) {
         this.ctx = appContext
@@ -45,6 +48,24 @@ export default class ScreenBrowse {
                 container.querySelector(ScreenBuilder.SELECTOR_CLASS_PRELOADER).remove();
             }, ScreenBuilder.ARTIFICIAL_DELAY)
         }
+
+        setTimeout(() => {
+            const deleteBtns = document.querySelectorAll(ScreenBrowse.SELECTOR_CLASS_DELETE_BOOK);
+            console.log(deleteBtns)
+            for (let btn of deleteBtns) {
+                btn.addEventListener(Events.CLICK, async () => {
+                    let id = btn.dataset.iid;
+                    console.log(id)
+                    try {
+                        const _isDeleted = await window.go.main.App.DeleteBook(id);
+                        new AppNotification(NotificationType.SUCCESS, `Book deleted: ${id}`);
+                    } catch (err) {
+                        new AppNotification(NotificationType.ERROR, `Book deletion failed`);
+                        console.log("Book deletion failed:", err)
+                    }
+                });
+            }
+        }, ScreenBuilder.ARTIFICIAL_DELAY + 10)
     }
 
     async getBooks() {
@@ -107,9 +128,9 @@ export default class ScreenBrowse {
                         class="px-2 py-1 bg-green-500 text-white rounded hover:bg-green-600">
                         Clone
                     </button>
-                    <button 
+                    <button
                         data-iid="${book.item_id}" 
-                        class="px-2 py-1 bg-red-500 text-white rounded hover:bg-red-600">
+                        class="${ScreenBrowse.CLASS_NAME_DELETE_BOOK} px-2 py-1 bg-red-500 text-white rounded hover:bg-red-600">
                         Delete
                     </button>
                   </div>

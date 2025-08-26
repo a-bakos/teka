@@ -93,6 +93,7 @@ func queryProfile(tx *sql.Tx, query string, arg interface{}) (*models.Profile, e
 	return &p, nil
 }
 
+// TODO : abstraction for the below functions
 func DeleteProfile(tx *sql.Tx, by DeleteProfileBy, value string) (bool, error) {
 	switch by {
 	case DeleteProfileByName:
