@@ -53,13 +53,23 @@ func (a *App) onSecondInstanceLaunch(data options.SecondInstanceData) {
 	fmt.Println("Second instance args:", data.Args)
 }
 
-// Backend bindings
+// ---------------- //
+// Backend bindings //
+// ---------------- //
+
+// ------------------------
+// From frontend to backend
+// ------------------------
 
 func (a *App) CreateProfile(name string) int64 {
 	profile := services.NewProfile(name, nil)
 	id := services.CreateProfile(&profile)
 	return id
 }
+
+// ------------------------
+// From backend to frontend
+// ------------------------
 
 func (a *App) GetProfiles() []models.Profile {
 	return services.GetProfiles()

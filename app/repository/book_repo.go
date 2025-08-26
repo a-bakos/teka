@@ -12,7 +12,8 @@ type GetBookBy int
 
 const (
 	GetBookByName GetBookBy = iota
-	GetBookById
+	GetBookByBookId
+	GetBookByItemId
 )
 
 func GetBookByTitleAutoTx(title string) (int64, error) {
@@ -84,6 +85,31 @@ type QueryArgs struct {
 	BookPublisher     *string
 	BookPublishedDate *string
 	BookPageCount     *int
+}
+
+func DeleteBook(tx *sql.Tx, id string) (bool, error) {
+	// To properly delete a book, all 4 deletion needs to complete
+	deletes := []struct {
+		table  string
+		column string
+	}{
+		{"books", "item_id"},
+		{"items", "id"},
+		{"item_creators", "item_id"},
+		{"profile_item_flags", "item_id"},
+	}
+
+	for _, d := range deletes {
+		ok, err := deleteFromTable(tx, d.table, d.column, id)
+		if err != nil {
+			return false, err
+		}
+		if !ok {
+			util.Logger("Warning: nothing deleted from %s for %s", d.table, id)
+		}
+	}
+
+	return true, nil // todo handle when row doesn't exist and no error
 }
 
 // todo booksfilter will be added

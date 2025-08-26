@@ -118,8 +118,30 @@ func UpdateBook() string {
 	return "Update Book"
 }
 
-func DeleteBook() string {
-	return "Delete Book"
+func DeleteBook(id string) bool {
+	tx, err := db.Conn.Begin()
+	if err != nil {
+		return false
+	}
+	defer func() {
+		if err != nil {
+			tx.Rollback()
+		} else {
+			tx.Commit()
+		}
+	}()
+
+	deleted, err := repository.DeleteBook(tx, id)
+	if err != nil {
+		util.Logger("Failed deleting book: %s (%v)", id, err)
+		return false
+	}
+	if deleted == true {
+		util.Logger("Book deleted successfully! %s", id)
+		return true
+	}
+
+	return false
 }
 
 func GetBooks() []models.Book {

@@ -2,6 +2,7 @@ package models
 
 import (
 	"strings"
+	"teka/constants"
 	"time"
 	"unicode"
 )
@@ -27,8 +28,8 @@ func (b Book) HasValidIsbn() bool {
 	}
 
 	isbn := strings.TrimSpace(*b.ISBN)
-	isbn = strings.ReplaceAll(isbn, "-", "")
-	isbn = strings.ReplaceAll(isbn, " ", "")
+	isbn = strings.ReplaceAll(isbn, "-", constants.EmptyString)
+	isbn = strings.ReplaceAll(isbn, " ", constants.EmptyString)
 
 	isbnMinLen := 10
 	isbnMaxLen := 13
