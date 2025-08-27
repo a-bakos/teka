@@ -18,7 +18,11 @@ import {Events} from "./consts";
 // Screens = templates + local event wiring
 // AppContext = state brain (remembers where you are, language, user, etc)
 
+
 export default class ScreenBuilder {
+
+    static ID_NAME_APP_CONTAINER = "app";
+
     static SCREENS = {
         STARTUP: "startup",
         BROWSE: "browse",

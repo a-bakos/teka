@@ -15,7 +15,7 @@ func NewBook() models.Book {
 
 	return models.Book{
 		Item: models.Item{
-			Title:       "Jamie Goes to Hungary",
+			Title:       "Jamie Goes to Spain",
 			Description: "Jamie Oliver's culinary journey through Egypt, exploring traditional recipes and cooking techniques.",
 			ItemType:    constants.ItemTypeBook,
 			CreatedBy:   1,

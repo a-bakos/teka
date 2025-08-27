@@ -7,6 +7,7 @@ import {IconStartupUser} from "./icons.js";
 import ScreenBuilder from "./ScreenBuilder";
 import AppNotification from "./AppNotification";
 import {Events, NotificationType} from "./consts";
+import Modal from "./Modal";
 
 export default class ScreenStartup {
     static EMPTY_STRING = "";

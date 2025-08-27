@@ -7,6 +7,7 @@ import ElementFooter from "./ElementFooter";
 import coverExample from './assets/images/pooh.jpg';
 import {Events, NotificationType} from "./consts";
 import AppNotification from "./AppNotification";
+import Modal from "./Modal";
 
 export default class ScreenBrowse {
     static EMPTY_STRING = "";
@@ -53,20 +54,29 @@ export default class ScreenBrowse {
                 console.log(deleteBtns)
                 for (let btn of deleteBtns) {
                     btn.addEventListener(Events.CLICK, async () => {
-
-                        // Are you sure modal?
-
-                        let id = btn.dataset.iid;
-                        console.log(id)
                         try {
-                            const _isDeleted = await window.go.main.App.DeleteBook(id);
-                            new AppNotification(NotificationType.SUCCESS, `Book deleted: ${id}`);
-                            // remove item from DOM
-                            const parent = btn.closest("li");
-                            parent.remove();
+                            const modal = new Modal("Are you sure you want to delete?");
+                            const confirmed = await modal.waitForChoice();
+
+                            if (!confirmed) {
+                                console.log("User canceled");
+                                return;
+                            }
+
+                            let id = btn.dataset.iid;
+                            console.log("Deleting item with id:", id);
+                            try {
+                                const _isDeleted = await window.go.main.App.DeleteBook(id);
+                                new AppNotification(NotificationType.SUCCESS, `Book deleted: ${id}`);
+                                // remove item from DOM
+                                const parent = btn.closest("li");
+                                parent.remove();
+                            } catch (err) {
+                                new AppNotification(NotificationType.ERROR, `Book deletion failed`);
+                                console.log("Book deletion failed:", err)
+                            }
                         } catch (err) {
-                            new AppNotification(NotificationType.ERROR, `Book deletion failed`);
-                            console.log("Book deletion failed:", err)
+                            console.error(err);
                         }
                     });
                 }

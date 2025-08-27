@@ -1,12 +1,12 @@
 import {Events, NotificationType} from "./consts";
 import randomStringGenerator from "./utils";
 import {IconError, IconGeneric, IconSuccess, IconWarning} from "./icons";
+import ScreenBuilder from "./ScreenBuilder";
 
 export default class AppNotification {
     static EMPTY_STRING = "";
     static DEFAULT_NOTIFICATION_EL = "div";
 
-    static ID_NAME_APP_CONTAINER = "app";
     static ID_NAME_BASE_NOTIFICATION_PILL = "appNotificationPill-";
     static ID_NAME_BASE_NOTIFICATION_CLOSE = "appNotificationClose-";
     static CLASSNAME_NOTIFICATION_PILL = "appNotificationPill";
@@ -29,7 +29,7 @@ export default class AppNotification {
         this.msg = msg;
         this.selfDestroy = selfDestroy;
 
-        this.elAppFrame = document.getElementById(AppNotification.ID_NAME_APP_CONTAINER);
+        this.elAppFrame = document.getElementById(ScreenBuilder.ID_NAME_APP_CONTAINER);
 
         let rand = randomStringGenerator();
         this.currentNotificationId = AppNotification.ID_NAME_BASE_NOTIFICATION_PILL + rand;
