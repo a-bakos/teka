@@ -48,10 +48,6 @@ export default class ScreenStartup {
     }
 
     attachEvents() {
-        new AppNotification(NotificationType.SUCCESS, `Profile created with ID: ${200}`, true);
-        new AppNotification(NotificationType.WARNING, `Profile created with ID: ${200}`);
-        new AppNotification(NotificationType.ERROR, `Profile created with ID: ${200}`, true);
-        new AppNotification(NotificationType.GENERIC, `Profile created with ID: ${200}`);
     }
 
     async getProfiles() {

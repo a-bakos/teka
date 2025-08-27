@@ -12,6 +12,7 @@ import Modal from "./Modal";
 export default class ScreenBrowse {
     static EMPTY_STRING = "";
     static ID_NAME_ALL_BOOKS_CONTAINER = "allBooksContainer";
+    static ID_NAME_FILTER_INPUT = "filterInput";
     static CLASS_NAME_DELETE_BOOK = "deleteBook";
     static SELECTOR_CLASS_DELETE_BOOK = "." + ScreenBrowse.CLASS_NAME_DELETE_BOOK;
 
@@ -25,13 +26,7 @@ export default class ScreenBrowse {
         return `
             ${this.Nav.render()}
             <div class="pt-16 p-2">
-                
-                ${this.tempDashlets()}
-                
-                ${this.tempFilters()}
-                
                 <section id="${ScreenBrowse.ID_NAME_ALL_BOOKS_CONTAINER}"></section>
-                        
             </div>
             ${this.Footer.render()}        
         `;
@@ -47,27 +42,29 @@ export default class ScreenBrowse {
             setTimeout(() => {
                 container.appendChild(books);
                 container.querySelector(ScreenBuilder.SELECTOR_CLASS_PRELOADER).remove();
+                document.getElementById(ScreenBrowse.ID_NAME_FILTER_INPUT).focus();
             }, ScreenBuilder.ARTIFICIAL_DELAY)
 
             setTimeout(() => {
+                /**
+                 * Delete button events w/ confirmation modals
+                 */
                 const deleteBtns = document.querySelectorAll(ScreenBrowse.SELECTOR_CLASS_DELETE_BOOK);
-                console.log(deleteBtns)
                 for (let btn of deleteBtns) {
                     btn.addEventListener(Events.CLICK, async () => {
                         try {
-                            const modal = new Modal("Are you sure you want to delete?");
+                            const id = btn.dataset.iid;
+                            const bookTitle = document.querySelector(`h3[data-iid="${id}"]`).innerText.trim();
+                            const modal = new Modal(`Are you sure you want to delete the following item?<br>${bookTitle}`);
                             const confirmed = await modal.waitForChoice();
 
                             if (!confirmed) {
-                                console.log("User canceled");
                                 return;
                             }
 
-                            let id = btn.dataset.iid;
-                            console.log("Deleting item with id:", id);
                             try {
                                 const _isDeleted = await window.go.main.App.DeleteBook(id);
-                                new AppNotification(NotificationType.SUCCESS, `Book deleted: ${id}`);
+                                new AppNotification(NotificationType.SUCCESS, `Book deleted: ${bookTitle}`);
                                 // remove item from DOM
                                 const parent = btn.closest("li");
                                 parent.remove();
@@ -82,6 +79,15 @@ export default class ScreenBrowse {
                 }
             }, ScreenBuilder.ARTIFICIAL_DELAY + 10)
         }
+    }
+
+    getSectionDash() {
+        const dash = document.createElement("section");
+        dash.innerHTML = `
+            ${this.tempDashlets()}
+            ${this.tempFilters()}
+        `;
+        return dash;
     }
 
     async getBooks() {
@@ -124,6 +130,7 @@ export default class ScreenBrowse {
                   <!-- Col 2: Title + Author -->
                   <div class="flex-1">
                     <h3 
+                        data-iid="${book.item_id}"
                         data-screen="${ScreenBuilder.SCREENS.ITEM}"
                         class="cursor-pointer text-lg font-semibold text-gray-900">
                         ${book.title}
@@ -168,7 +175,10 @@ export default class ScreenBrowse {
             ul.appendChild(li);
         }
 
-        return ul;
+        const container = document.createElement("div");
+        container.appendChild(this.getSectionDash());
+        container.appendChild(ul);
+        return container;
     }
 
     attachEvents() {
@@ -223,9 +233,9 @@ export default class ScreenBrowse {
               <!-- Filter by title/author -->
               <div class="flex items-center gap-2">
                 <input 
-                    autofocus
+                  autofocus
                   type="text" 
-                  id="filterInput" 
+                  id="${ScreenBrowse.ID_NAME_FILTER_INPUT}" 
                   placeholder="Filter by Title or Author..." 
                   class="px-3 py-2 border rounded focus:outline-none focus:ring focus:border-blue-300">
                 <button 

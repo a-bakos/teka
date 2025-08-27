@@ -31,7 +31,7 @@ export default class Modal {
 
         const modalContent = document.createElement("p");
         modalContent.className = "text-lg font-medium text-gray-800 mb-6";
-        modalContent.innerText = this.msg;
+        modalContent.innerHTML = this.msg;
 
         modalBox.appendChild(modalContent);
 
