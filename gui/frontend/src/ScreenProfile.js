@@ -20,12 +20,12 @@ export default class ScreenProfile {
 
     static ID_NAME_ADD_PROFILE_BTN = "addProfileBtn";
     static ID_NAME_ADD_PROFILE_INPUT = "addProfileInput";
-    static ID_NAME_PROFILES_CONTAINER = "profilesContainer"
+    static ID_NAME_PROFILES_CONTAINER = "profilesContainer";
 
     constructor(appContext) {
         this.ctx = appContext;
         this.Nav = new ElementNav(this.ctx);
-        this.Footer = new ElementFooter(this.ctx)
+        this.Footer = new ElementFooter(this.ctx);
     }
 
     render() {
@@ -117,7 +117,7 @@ export default class ScreenProfile {
             setTimeout(() => {
                 container.appendChild(profiles);
                 container.querySelector(ScreenBuilder.SELECTOR_CLASS_PRELOADER).remove();
-            }, ScreenBuilder.ARTIFICIAL_DELAY)
+            }, ScreenBuilder.ARTIFICIAL_DELAY);
         }
     }
 
@@ -173,7 +173,7 @@ export default class ScreenProfile {
                 new AppNotification(NotificationType.ERROR, `Profile creation failed`);
                 console.log("Profile creation failed:", err)
             }
-        })
+        });
 
         // Remove profile event listener
         // todo

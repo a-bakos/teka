@@ -39,13 +39,13 @@ export default class Modal {
         buttonWrap.className = "flex justify-center gap-4";
 
         const buttonYes = document.createElement("button");
-        buttonYes.id = this.currentModalBtnYesId
+        buttonYes.id = this.currentModalBtnYesId;
         buttonYes.className = "px-4 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition";
         buttonYes.innerText = "Yes";
         buttonYes.value = "true";
 
         const buttonNo = document.createElement("button");
-        buttonNo.id = this.currentModalBtnNoId
+        buttonNo.id = this.currentModalBtnNoId;
         buttonNo.className = "px-4 py-2 rounded-lg bg-gray-200 text-gray-700 hover:bg-gray-300 transition";
         buttonNo.innerText = "No";
         buttonNo.value = "false";

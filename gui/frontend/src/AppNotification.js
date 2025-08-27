@@ -5,6 +5,8 @@ import ScreenBuilder from "./ScreenBuilder";
 
 export default class AppNotification {
     static EMPTY_STRING = "";
+    static EMPTY_ARRAY = [];
+
     static DEFAULT_NOTIFICATION_EL = "div";
 
     static ID_NAME_BASE_NOTIFICATION_PILL = "appNotificationPill-";
@@ -18,6 +20,7 @@ export default class AppNotification {
 
     static MULTIPLE_NOTIFICATION_POSITION_OFFSET = 8;
     static SELF_DESTROY_TIMEOUT = 2000;
+    static STACKING_TIMEOUT = 10;
 
     // Animation: notification pill to move off-screen
     static TW_CLASS_ANI_MOVE_FROM = "translate-y-0"; // default visible state
@@ -71,12 +74,11 @@ export default class AppNotification {
         classList = AppNotification.EMPTY_STRING,
         elType = AppNotification.DEFAULT_NOTIFICATION_EL
     ) {
-        console.log(classList)
-        let el = document.createElement(elType)
+        let el = document.createElement(elType);
         el.id = this.currentNotificationId;
         el.className = `${AppNotification.CLASSNAME_NOTIFICATION_PILL} fixed bottom-12 right-6 flex items-center max-w-md px-6 py-3 pr-3 text-lg text-white rounded-xl shadow-lg hover:shadow-2xl hover:scale-105 transform transition-all duration-300 ease-out ${AppNotification.TW_CLASS_ANI_MOVE_FROM} ${AppNotification.TW_CLASS_ANI_VISIBILITY_FROM} ` + classList;
 
-        el = this.maybeStackNotifications(el)
+        el = this.maybeStackNotifications(el);
 
         // ICON | MESSAGE | CLOSE BTN
         el.innerHTML = `
@@ -103,7 +105,7 @@ export default class AppNotification {
             const closeButton = document.getElementById(this.currentNotificationCloseId);
             closeButton.addEventListener(Events.CLICK, () => {
                 if (document.getElementById(this.currentNotificationId)) {
-                    let pill = document.getElementById(this.currentNotificationId)
+                    let pill = document.getElementById(this.currentNotificationId);
                     pill.classList.remove(
                         AppNotification.TW_CLASS_ANI_MOVE_FROM,
                         AppNotification.TW_CLASS_ANI_VISIBILITY_FROM
@@ -142,7 +144,7 @@ export default class AppNotification {
     maybeStackNotifications(currentEl) {
         setTimeout(() => {
             let pills = document.querySelectorAll(AppNotification.SELECTOR_CLASS_NOTIFICATION_PILL);
-            let bottoms = [];
+            let bottoms = AppNotification.EMPTY_ARRAY;
             if (pills.length > 1) {
                 pills.forEach((el, val) => {
                     // Find the first class that starts with "bottom-"
@@ -150,15 +152,15 @@ export default class AppNotification {
                     // Break at "bottom-" to get the position number, store it
                     res = res.replace(AppNotification.TW_CLASS_BOTTOM_PREFIX, AppNotification.EMPTY_STRING);
                     bottoms.push(parseInt(res))
-                })
+                });
                 // Reverse sort position values, get the largest and add offset, insert to classlist of current element
-                bottoms.sort()
-                let largestFirst = bottoms.toReversed()
-                let newBottomPosition = largestFirst[0] + AppNotification.MULTIPLE_NOTIFICATION_POSITION_OFFSET
+                bottoms.sort();
+                let largestFirst = bottoms.toReversed();
+                let newBottomPosition = largestFirst[0] + AppNotification.MULTIPLE_NOTIFICATION_POSITION_OFFSET;
                 currentEl.classList.add(AppNotification.TW_CLASS_BOTTOM_PREFIX + newBottomPosition);
                 currentEl.classList.remove(AppNotification.TW_CLASS_BOTTOM_DEFAULT_POSITION);
             }
-        }, 10);
+        }, AppNotification.STACKING_TIMEOUT);
         return currentEl;
     }
 }

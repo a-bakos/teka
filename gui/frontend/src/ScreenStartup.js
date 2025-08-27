@@ -2,12 +2,8 @@
 
 import ElementNav from "./ElementNav";
 import ElementFooter from "./ElementFooter";
-
 import {IconStartupUser} from "./icons.js";
 import ScreenBuilder from "./ScreenBuilder";
-import AppNotification from "./AppNotification";
-import {Events, NotificationType} from "./consts";
-import Modal from "./Modal";
 
 export default class ScreenStartup {
     static EMPTY_STRING = "";
@@ -43,7 +39,7 @@ export default class ScreenStartup {
             setTimeout(() => {
                 container.appendChild(profiles);
                 container.querySelector(ScreenBuilder.SELECTOR_CLASS_PRELOADER).remove();
-            }, ScreenBuilder.ARTIFICIAL_DELAY)
+            }, ScreenBuilder.ARTIFICIAL_DELAY);
         }
     }
 
@@ -88,7 +84,7 @@ export default class ScreenStartup {
         p.className = "text-lg font-medium";
         p.innerText = "New Profile";
         newProfileButton.appendChild(innerDiv);
-        newProfileButton.appendChild(p)
+        newProfileButton.appendChild(p);
 
         container.appendChild(newProfileButton)
 

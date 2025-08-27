@@ -3,7 +3,7 @@
 export default class ElementFooter {
 
     constructor(appContext) {
-        this.ctx = appContext
+        this.ctx = appContext;
     }
 
     render() {

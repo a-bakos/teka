@@ -9,8 +9,8 @@ import coverExample from './assets/images/pooh.jpg';
 export default class ScreenItem {
     constructor(appContext) {
         this.ctx = appContext;
-        this.Nav = new ElementNav(this.ctx)
-        this.Footer = new ElementFooter(this.ctx)
+        this.Nav = new ElementNav(this.ctx);
+        this.Footer = new ElementFooter(this.ctx);
     }
 
     render() {
@@ -97,10 +97,10 @@ export default class ScreenItem {
     }
 
     attachEvents() {
-        const zoom = document.getElementById("cover-magnify")
+        const zoom = document.getElementById("cover-magnify");
         zoom.addEventListener("click", () => {
             // create modal
             console.log("zoom clicked")
-        })
+        });
     }
 }

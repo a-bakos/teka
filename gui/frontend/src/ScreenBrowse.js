@@ -17,9 +17,9 @@ export default class ScreenBrowse {
     static SELECTOR_CLASS_DELETE_BOOK = "." + ScreenBrowse.CLASS_NAME_DELETE_BOOK;
 
     constructor(appContext) {
-        this.ctx = appContext
-        this.Nav = new ElementNav(this.ctx)
-        this.Footer = new ElementFooter(this.ctx)
+        this.ctx = appContext;
+        this.Nav = new ElementNav(this.ctx);
+        this.Footer = new ElementFooter(this.ctx);
     }
 
     render() {
@@ -49,8 +49,8 @@ export default class ScreenBrowse {
                 /**
                  * Delete button events w/ confirmation modals
                  */
-                const deleteBtns = document.querySelectorAll(ScreenBrowse.SELECTOR_CLASS_DELETE_BOOK);
-                for (let btn of deleteBtns) {
+                const deleteButtons = document.querySelectorAll(ScreenBrowse.SELECTOR_CLASS_DELETE_BOOK);
+                for (let btn of deleteButtons) {
                     btn.addEventListener(Events.CLICK, async () => {
                         try {
                             const id = btn.dataset.iid;
@@ -70,14 +70,13 @@ export default class ScreenBrowse {
                                 parent.remove();
                             } catch (err) {
                                 new AppNotification(NotificationType.ERROR, `Book deletion failed`);
-                                console.log("Book deletion failed:", err)
                             }
                         } catch (err) {
                             console.error(err);
                         }
                     });
                 }
-            }, ScreenBuilder.ARTIFICIAL_DELAY + 10)
+            }, ScreenBuilder.ARTIFICIAL_DELAY + 10);
         }
     }
 
@@ -108,8 +107,6 @@ export default class ScreenBrowse {
 
         const ul = document.createElement("ul");
         ul.className = "mb-12";
-
-        console.log(books)
 
         for (const book of books) {
             const li = document.createElement("li");

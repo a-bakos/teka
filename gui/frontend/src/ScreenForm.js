@@ -5,9 +5,9 @@ import ElementFooter from "./ElementFooter";
 
 export default class ScreenForm {
     constructor(appContext) {
-        this.ctx = appContext
-        this.Nav = new ElementNav(this.ctx)
-        this.Footer = new ElementFooter(this.ctx)
+        this.ctx = appContext;
+        this.Nav = new ElementNav(this.ctx);
+        this.Footer = new ElementFooter(this.ctx);
     }
 
     render() {

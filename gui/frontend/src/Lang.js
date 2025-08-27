@@ -1,6 +1,6 @@
 "use strict"
 
-import langFile from './lang.json'
+import langFile from './lang.json';
 
 export const LANG_EN = 'en';
 export const LANG_HU = 'hu';

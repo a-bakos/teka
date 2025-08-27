@@ -18,4 +18,4 @@ export const Keycode = {
     NUM2: 50,
     NUM3: 51,
     NUM4: 52
-}
+};

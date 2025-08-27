@@ -5,10 +5,10 @@ import {IconNavBooks, IconNavBook, IconNavUser, IconNavGear} from "./icons.js";
 import {Events} from "./consts";
 
 export default class ElementNav {
-    static CLASS_MAIN_MENU = "main-menu"
+    static CLASS_MAIN_MENU = "main-menu";
 
     constructor(appContext) {
-        this.ctx = appContext
+        this.ctx = appContext;
     }
 
     render() {
@@ -26,13 +26,13 @@ export default class ElementNav {
 
     attachEvents(onNavigate) {
         // If there’s only one <nav> on the page, this is fine:
-        const NAV_BUTTONS = "nav button." + ElementNav.CLASS_MAIN_MENU
+        const NAV_BUTTONS = "nav button." + ElementNav.CLASS_MAIN_MENU;
         document.querySelectorAll(NAV_BUTTONS).forEach(btn => {
             btn.addEventListener(Events.CLICK, () => onNavigate(btn.dataset.screen));
         });
     }
 
     navIcon(icon) {
-        return `<span class="inline-block w-7 text-red-500">${icon}</span>`
+        return `<span class="inline-block w-7 text-red-500">${icon}</span>`;
     }
 }
