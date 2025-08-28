@@ -1,3 +1,8 @@
+export const Bool = {
+    TRUE: "true",
+    FALSE: "false"
+}
+
 export const Events = {
     CLICK: "click",
     INPUT: "input",

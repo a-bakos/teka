@@ -5,6 +5,7 @@ export default class AppContext {
     constructor() {
         this.currentUserId = null;
         this.currentScreen = ScreenBuilder.SCREENS.STARTUP;
+        this.previousScreen = null;
         this.currentItem = null;
         this.formType = null;
         this.i18n = new Lang(LANG_HU);
@@ -21,6 +22,14 @@ export default class AppContext {
 
     resetCurrentUserId() {
         this.currentUserId = null;
+    }
+
+    setCurrentScreen(screen) {
+        this.currentScreen = screen;
+    }
+
+    setPreviousScreen(screen) {
+        this.previousScreen = screen;
     }
 
     setCurrentItemId(id) {

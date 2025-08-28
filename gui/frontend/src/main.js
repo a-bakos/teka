@@ -8,5 +8,5 @@ const SELECTOR_ID_APP_CONTAINER = "app";
 const ctx = new AppContext();
 ctx.currentScreen = ScreenBuilder.SCREENS.STARTUP; // Start screen
 const appFrame = document.getElementById(SELECTOR_ID_APP_CONTAINER);
-const screenBuilder = new ScreenBuilder(ctx, appFrame);
-screenBuilder.render();
+
+new ScreenBuilder(ctx, appFrame).render();

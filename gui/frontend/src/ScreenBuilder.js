@@ -4,7 +4,7 @@ import ScreenForm from "./ScreenForm";
 import ScreenBrowse from "./ScreenBrowse";
 import ScreenStartup from "./ScreenStartup";
 import ScreenProfile from "./ScreenProfile";
-import {Events} from "./consts";
+import {Bool, Events} from "./consts";
 
 // Example Flow: User clicks "Browse" from Startup
 // ScreenStartup.render() generates HTML with data-screen="browse"
@@ -75,10 +75,11 @@ export default class ScreenBuilder {
             this.appFrame.addEventListener(Events.CLICK, (e) => {
                 const btn = e.target.closest(ScreenBuilder.NAV_SCREEN_TRIGGER);
                 if (!btn) return; // click was not on a nav trigger
-                this.ctx.currentScreen = btn.dataset.screen;
+                this.ctx.setPreviousScreen(this.ctx.currentScreen);
+                this.ctx.setCurrentScreen(btn.dataset.screen);
                 this.render();
             });
-            this.appFrame.dataset.bound = "true";
+            this.appFrame.dataset.bound = Bool.TRUE;
         }
 
         // Call screen-specific event wiring (optional)

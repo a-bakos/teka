@@ -6,10 +6,9 @@ export const LANG_EN = 'en';
 export const LANG_HU = 'hu';
 
 export default class Lang {
-    static LANG_EN = 'en';
     static DICT_SPLIT = '.';
 
-    constructor(defaultLang = Lang.LANG_EN) {
+    constructor(defaultLang = LANG_EN) {
         this.dictionary = langFile;
         this.currentLang = defaultLang;
     }
