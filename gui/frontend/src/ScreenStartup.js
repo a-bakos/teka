@@ -4,10 +4,14 @@ import ElementNav from "./ElementNav";
 import ElementFooter from "./ElementFooter";
 import {IconStartupUser} from "./icons.js";
 import ScreenBuilder from "./ScreenBuilder";
+import {Events} from "./consts";
 
 export default class ScreenStartup {
     static EMPTY_STRING = "";
     static ID_NAME_PROFILE_SELECTOR_CONTAINER = "profileSelectorContainer";
+
+    static CLASS_NAME_PROFILE_SELECTOR = "profileSelector";
+    static SELECTOR_PROFILE_SELECTOR = "." + ScreenStartup.CLASS_NAME_PROFILE_SELECTOR;
 
     constructor(appContext) {
         this.ctx = appContext;
@@ -39,7 +43,15 @@ export default class ScreenStartup {
             setTimeout(() => {
                 container.appendChild(profiles);
                 container.querySelector(ScreenBuilder.SELECTOR_CLASS_PRELOADER).remove();
+
+                const profileSelectors = document.querySelectorAll(ScreenStartup.SELECTOR_PROFILE_SELECTOR);
+                for (const profileSelector of profileSelectors) {
+                    profileSelector.addEventListener(Events.CLICK, () => {
+                        this.ctx.setCurrentUserId(profileSelector.dataset.uid);
+                    });
+                }
             }, ScreenBuilder.ARTIFICIAL_DELAY);
+
         }
     }
 
@@ -55,7 +67,7 @@ export default class ScreenStartup {
 
         for (const profile of profiles) {
             const div = document.createElement("div");
-            div.className = "flex flex-col items-center cursor-pointer hover:scale-105 transform transition";
+            div.className = `${ScreenStartup.CLASS_NAME_PROFILE_SELECTOR} flex flex-col items-center cursor-pointer hover:scale-105 transform transition`;
             div.dataset.screen = ScreenBuilder.SCREENS.BROWSE;
             div.dataset.uid = profile.id;
 
@@ -77,9 +89,11 @@ export default class ScreenStartup {
         const newProfileButton = document.createElement("div");
         newProfileButton.dataset.screen = ScreenBuilder.SCREENS.BROWSE; // todo change this later
         newProfileButton.className = "flex flex-col items-center cursor-pointer hover:scale-105 transform transition";
+        
         const innerDiv = document.createElement("div");
         innerDiv.className = "w-24 h-24 rounded-full bg-gray-300 flex items-center justify-center mb-2 text-3xl font-bold text-gray-600";
         innerDiv.innerText = "+";
+
         const p = document.createElement("p");
         p.className = "text-lg font-medium";
         p.innerText = "New Profile";

@@ -12,6 +12,7 @@ export default class ElementNav {
     }
 
     render() {
+        console.log(this.ctx);
         return `
             <nav class="w-full border-b select-none fixed bg-white">
                 <div class="flex">

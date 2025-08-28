@@ -14,4 +14,8 @@ export default class AppContext {
     t(key, vars = {}) {
         return this.i18n.t(key, vars);
     }
+
+    setCurrentUserId(id) {
+        this.currentUserId = id;
+    }
 }

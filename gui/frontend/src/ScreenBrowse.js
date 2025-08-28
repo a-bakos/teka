@@ -111,7 +111,7 @@ export default class ScreenBrowse {
         for (const book of books) {
             const li = document.createElement("li");
             li.innerHTML = `
-                <div 
+                <div
                     data-iid="${book.item_id}" 
                     class="flex items-center gap-4 p-2 border-b hover:bg-gray-50">
 
@@ -137,7 +137,7 @@ export default class ScreenBrowse {
                   </div>
                 
                   <!-- Col 3: Actions -->
-                  <div class="flex items-center gap-2 text-sm">
+                  <div class="flex items-center gap-2 text-sm select-none">
                     <button 
                         data-iid="${book.item_id}"
                         data-screen="${ScreenBuilder.SCREENS.ITEM}" 
@@ -230,7 +230,6 @@ export default class ScreenBrowse {
               <!-- Filter by title/author -->
               <div class="flex items-center gap-2">
                 <input 
-                  autofocus
                   type="text" 
                   id="${ScreenBrowse.ID_NAME_FILTER_INPUT}" 
                   placeholder="Filter by Title or Author..." 
