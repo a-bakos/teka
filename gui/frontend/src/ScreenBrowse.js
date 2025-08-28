@@ -43,6 +43,13 @@ export default class ScreenBrowse {
                 container.appendChild(books);
                 container.querySelector(ScreenBuilder.SELECTOR_CLASS_PRELOADER).remove();
                 document.getElementById(ScreenBrowse.ID_NAME_FILTER_INPUT).focus();
+
+                const allBooks = document.querySelectorAll(".itemBook div");
+                for (const book of allBooks) {
+                    book.addEventListener(Events.CLICK, () => {
+                        this.ctx.setCurrentItemId(book.dataset.iid);
+                    });
+                }
             }, ScreenBuilder.ARTIFICIAL_DELAY)
 
             setTimeout(() => {
@@ -110,6 +117,7 @@ export default class ScreenBrowse {
 
         for (const book of books) {
             const li = document.createElement("li");
+            li.className = "itemBook";
             li.innerHTML = `
                 <div
                     data-iid="${book.item_id}" 

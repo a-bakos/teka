@@ -18,4 +18,16 @@ export default class AppContext {
     setCurrentUserId(id) {
         this.currentUserId = id;
     }
+
+    resetCurrentUserId() {
+        this.currentUserId = null;
+    }
+
+    setCurrentItemId(id) {
+        this.currentItem = id;
+    }
+
+    resetCurrentItemId() {
+        this.currentItem = null;
+    }
 }

@@ -9,6 +9,11 @@ export default class ElementNav {
 
     constructor(appContext) {
         this.ctx = appContext;
+
+        // TODO work this out
+        if (this.ctx.currentScreen != "item") {
+            this.ctx.resetCurrentItemId();
+        }
     }
 
     render() {
