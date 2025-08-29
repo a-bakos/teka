@@ -131,3 +131,19 @@ func DeleteProfile(by repository.DeleteProfileBy, value string) bool {
 	}
 	return false
 }
+
+func GetCollection(profileId string) ([]models.Book, error) {
+	tx, err := db.Conn.Begin()
+	if err != nil {
+		return nil, err
+	}
+	defer func() {
+		if err != nil {
+			tx.Rollback()
+		} else {
+			tx.Commit()
+		}
+	}()
+
+	return repository.GetCollection(tx, profileId)
+}

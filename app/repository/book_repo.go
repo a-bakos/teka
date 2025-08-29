@@ -128,7 +128,7 @@ func GetBooks(tx *sql.Tx) []models.Book {
 		    books.publisher,
 		    books.published_date, 
 		    books.page_count,
-		    GROUP_CONCAT(creators.name, '+') AS author_names -- group for multi-authors = author1+author2
+		    GROUP_CONCAT(creators.name, ?) AS author_names -- group for multi-authors = author1+author2
 		FROM items 
 		INNER JOIN books 
 			ON items.id = books.item_id
@@ -149,7 +149,10 @@ func GetBooks(tx *sql.Tx) []models.Book {
 		    books.publisher, 
 		    books.published_date, 
 		    books.page_count;
-	`)
+	`,
+		constants.MultiAuthorSeparator,
+	)
+
 	if err != nil {
 		util.Logger("Failed: %v", err)
 	}

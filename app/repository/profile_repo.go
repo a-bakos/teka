@@ -148,3 +148,77 @@ func deleteProfileById(tx *sql.Tx, id string) (bool, error) {
 
 	return false, err
 }
+
+func GetCollection(tx *sql.Tx, profileId string) ([]models.Book, error) {
+	rows, err := tx.Query(`
+		SELECT 
+			i.id AS item_id,
+			i.title,
+			i.description,
+			i.item_type,
+			i.created_at,
+			i.updated_at,
+			i.created_by,
+			i.updated_by,
+			b.isbn,
+			b.publisher,
+			b.published_date,
+			b.page_count,
+			GROUP_CONCAT(cr.name, ?) AS author_names -- group for multi-authors = author1+author2
+		FROM collections c
+		JOIN items i ON i.id = c.item_id
+		JOIN books b ON b.item_id = i.id
+		JOIN item_creators ic ON i.id = ic.item_id
+		JOIN creators cr ON ic.creator_id = cr.id
+		WHERE c.profile_id = ?
+		GROUP BY 
+			i.id, 
+			i.title, 
+			i.description, 
+			i.item_type,
+			i.created_at, 
+			i.updated_at, 
+			i.created_by, 
+			i.updated_by,
+			b.isbn, 
+			b.publisher, 
+			b.published_date, 
+			b.page_count`,
+		constants.MultiAuthorSeparator,
+		profileId,
+	)
+
+	if err != nil {
+		util.Logger("Error %v", err)
+		return nil, err
+	}
+
+	var collection []models.Book
+	for rows.Next() {
+		var b models.Book
+
+		err = rows.Scan(
+			&b.Item.ID,
+			&b.Item.Title,
+			&b.Item.Description,
+			&b.Item.ItemType,
+			&b.Item.CreatedAt,
+			&b.Item.UpdatedAt,
+			&b.Item.CreatedBy,
+			&b.Item.UpdatedBy,
+			&b.ISBN,
+			&b.Publisher,
+			&b.PublishedDate,
+			&b.PageCount,
+			&b.AuthorNames,
+		)
+		if err != nil {
+			util.Logger("Failed scan: %v", err)
+			return nil, err
+		}
+
+		collection = append(collection, b)
+	}
+
+	return collection, nil
+}

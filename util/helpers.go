@@ -1,6 +1,7 @@
 package util
 
 import (
+	"encoding/json"
 	"fmt"
 	"runtime"
 	"teka/constants"
@@ -43,4 +44,9 @@ func StringToInt64(s string) (int64, error) {
 		return 0, err
 	}
 	return result, nil
+}
+
+func PrintStruct(s interface{}) {
+	b, _ := json.MarshalIndent(s, "", "  ")
+	fmt.Println(string(b))
 }
