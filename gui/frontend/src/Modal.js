@@ -1,5 +1,5 @@
 import ScreenBuilder from "./ScreenBuilder";
-import randomStringGenerator from "./utils";
+import {randomStringGenerator} from "./utils";
 import {Events} from "./consts";
 
 export default class Modal {

@@ -1,5 +1,5 @@
 import {Events, NotificationType} from "./consts";
-import randomStringGenerator from "./utils";
+import {randomStringGenerator} from "./utils";
 import {IconError, IconGeneric, IconSuccess, IconWarning} from "./icons";
 import ScreenBuilder from "./ScreenBuilder";
 

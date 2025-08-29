@@ -24,3 +24,5 @@ export const Keycode = {
     NUM3: 51,
     NUM4: 52
 };
+
+export const MultiAuthorSeparator = "+";

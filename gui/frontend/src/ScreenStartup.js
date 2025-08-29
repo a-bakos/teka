@@ -21,7 +21,6 @@ export default class ScreenStartup {
 
     render() {
         return `  
-            ${this.Nav.render()}
             <section class="flex flex-col items-center justify-center min-h-screen bg-gray-50">
                 <h1 class="text-3xl font-bold mb-8">Select a Profile</h1>
             
@@ -89,7 +88,7 @@ export default class ScreenStartup {
         const newProfileButton = document.createElement("div");
         newProfileButton.dataset.screen = ScreenBuilder.SCREENS.BROWSE; // todo change this later
         newProfileButton.className = "flex flex-col items-center cursor-pointer hover:scale-105 transform transition";
-        
+
         const innerDiv = document.createElement("div");
         innerDiv.className = "w-24 h-24 rounded-full bg-gray-300 flex items-center justify-center mb-2 text-3xl font-bold text-gray-600";
         innerDiv.innerText = "+";
