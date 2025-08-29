@@ -222,3 +222,34 @@ func GetCollection(tx *sql.Tx, profileId string) ([]models.Book, error) {
 
 	return collection, nil
 }
+
+func GetProfileItemFlags(tx *sql.Tx, profileId, itemId string) models.ProfileItemFlags {
+	var pif models.ProfileItemFlags
+	err := tx.QueryRow(`
+		SELECT
+		    pif.profile_id,
+		    pif.item_id,
+		    pif.reading_status,
+		    pif.is_favourite,
+		    pif.notes,
+		    pif.updated_at
+		FROM profile_item_flags pif
+		WHERE 
+		    pif.profile_id = ?
+		AND
+		    pif.item_id = ?
+	`, profileId, itemId).Scan(
+		&pif.ProfileID,
+		&pif.ItemID,
+		&pif.Status,
+		&pif.IsFavorite,
+		&pif.Notes,
+		&pif.UpdatedAt,
+	)
+
+	if err != nil {
+		return models.ProfileItemFlags{}
+	}
+
+	return pif
+}

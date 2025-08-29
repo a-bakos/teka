@@ -147,3 +147,19 @@ func GetCollection(profileId string) ([]models.Book, error) {
 
 	return repository.GetCollection(tx, profileId)
 }
+
+func GetProfileItemFlags(profileId, itemId string) models.ProfileItemFlags {
+	tx, err := db.Conn.Begin()
+	if err != nil {
+		return models.ProfileItemFlags{}
+	}
+	defer func() {
+		if err != nil {
+			tx.Rollback()
+		} else {
+			tx.Commit()
+		}
+	}()
+
+	return repository.GetProfileItemFlags(tx, profileId, itemId)
+}

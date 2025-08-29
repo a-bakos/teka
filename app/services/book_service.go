@@ -88,30 +88,24 @@ func CreateBook(b *models.Book) int64 {
 	linkAuthorsToBook(tx, bookID, existingAuthorIDs)
 	linkAuthorsToBook(tx, bookID, newAuthorIDs)
 
-	// Link existing authors to book
-	//for _, existingAuthorID := range existingAuthorIDs {
-	//	_, err = repository.InsertItemCreator(tx, bookID, existingAuthorID, constants.RoleAuthor)
-	//	if err != nil {
-	//		util.Logger("InsertItemCreator error: %s", err)
-	//		return constants.DbFailedInsertId
-	//	}
-	//}
-
-	// Link book to new authors
-	//for _, newAuthorID := range newAuthorIDs {
-	//	_, err := repository.InsertItemCreator(tx, bookID, newAuthorID, constants.RoleAuthor)
-	//	if err != nil {
-	//		util.Logger("InsertItemCreator error: %s", err)
-	//		return constants.DbFailedInsertId
-	//	}
-	//}
-
 	util.Logger("End for book ID: %d", bookID)
 	return bookID
 }
 
-func GetBook() string {
-	return "Get Book"
+func GetBook(id string) models.Book {
+	tx, err := db.Conn.Begin()
+	if err != nil {
+		return models.Book{}
+	}
+	defer func() {
+		if err != nil {
+			tx.Rollback()
+		} else {
+			tx.Commit()
+		}
+	}()
+
+	return repository.GetBook(tx, id)
 }
 
 func UpdateBook() string {

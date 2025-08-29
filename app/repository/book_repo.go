@@ -112,6 +112,71 @@ func DeleteBook(tx *sql.Tx, id string) (bool, error) {
 	return true, nil // todo handle when row doesn't exist and no error
 }
 
+func GetBook(tx *sql.Tx, id string) models.Book {
+	var b models.Book
+	err := tx.QueryRow(`
+		SELECT 
+		    items.id,
+		    items.title,
+		    items.description, 
+		    items.item_type,
+		    items.created_at,
+		    items.updated_at,
+		    items.created_by,
+		    items.updated_by,   
+		    books.isbn,
+		    books.publisher,
+		    books.published_date, 
+		    books.page_count,
+		    GROUP_CONCAT(creators.name, ?) AS author_names -- group for multi-authors = author1+author2
+		FROM items 
+		INNER JOIN books 
+			ON items.id = books.item_id
+		INNER JOIN item_creators
+			ON items.id = item_creators.item_id
+		INNER JOIN creators
+			ON item_creators.creator_id = creators.id
+		WHERE books.item_id = ?
+		GROUP BY
+		    items.id,
+		    items.title,
+		    items.description, 
+		    items.item_type,
+		    items.created_at,
+		    items.updated_at,
+		    items.created_by,
+		    items.updated_by,
+		    books.isbn,
+		    books.publisher, 
+		    books.published_date, 
+		    books.page_count;
+		`,
+		constants.MultiAuthorSeparator,
+		id,
+	).Scan(
+		&b.ID,
+		&b.Title,
+		&b.Description,
+		&b.ItemType,
+		&b.CreatedAt,
+		&b.UpdatedAt,
+		&b.CreatedBy,
+		&b.UpdatedBy,
+		&b.ISBN,
+		&b.Publisher,
+		&b.PublishedDate,
+		&b.PageCount,
+		&b.AuthorNames,
+	)
+
+	if err != nil {
+		util.Logger("Failed: %v", err)
+		return models.Book{}
+	}
+
+	return b
+}
+
 // todo booksfilter will be added
 func GetBooks(tx *sql.Tx) []models.Book {
 	booksRows, err := tx.Query(`
