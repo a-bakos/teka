@@ -86,3 +86,11 @@ func (a *App) GetProfiles() []models.Profile {
 func (a *App) GetBooks() []models.Book {
 	return services.GetBooks()
 }
+
+func (a *App) GetBook(id string) models.Book {
+	return services.GetBook(id)
+}
+
+func (a *App) GetProfileItemFlags(profileId, itemId string) models.ProfileItemFlags {
+	return services.GetProfileItemFlags(profileId, itemId)
+}

@@ -96,6 +96,23 @@ export default class ScreenItem {
         `;
     }
 
+    async afterRender() {
+        try {
+            if (this.ctx.currentItem) {
+                const bookId = this.ctx.currentItem;
+                const book = await window.go.main.App.GetBook(bookId);
+                console.log(book)
+                const profileId = this.ctx.currentUserId;
+                const pif = await window.go.main.App.GetProfileItemFlags(profileId, bookId);
+                console.log(pif)
+            } else {
+                console.log('cant find item id')
+            }
+        } catch (err) {
+            //
+        }
+    }
+
     attachEvents() {
         const zoom = document.getElementById("cover-magnify");
         zoom.addEventListener("click", () => {
