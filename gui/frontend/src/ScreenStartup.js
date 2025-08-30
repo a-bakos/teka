@@ -22,11 +22,7 @@ export default class ScreenStartup {
     render() {
         return `  
             <section class="flex flex-col items-center justify-center min-h-screen bg-gray-50">
-                <h1 class="text-3xl font-bold mb-8">Select a Profile</h1>
-            
-                <!-- Existing profiles -->
                 <div id="${ScreenStartup.ID_NAME_PROFILE_SELECTOR_CONTAINER}"></div>
-
             </section>
             ${this.Footer.render()}
         `;

@@ -46,7 +46,7 @@ export default class ScreenForm {
                             <option value="Jane Austen">
                         </datalist>
                     </div>
-                    <p class="text-xs text-right">tobb szerzo esetesn hasznald a plusz jelet</p>
+                    <p class="text-xs text-right">${this.ctx.t("newItem.multiAuthorHelper")}</p>
                     <div class="flex flex-row items-center space-x-2 w-full max-w-lg">
                         <label class="w-32 text-left min-w-[90px]" for="publish-year">${this.ctx.t("newItem.publishYear")}</label>
                         <input 

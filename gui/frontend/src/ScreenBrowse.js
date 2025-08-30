@@ -103,11 +103,11 @@ export default class ScreenBrowse {
             const el = document.createElement("div");
             el.className = "w-full px-3 py-2 rounded border text-xl text-center";
             el.innerHTML = `
-                <p>No books found</p>
+                <p>${this.ctx.t("browse.noBooks")}</p>
                 <button 
                     class="mt-3 rounded border" 
                     data-screen="${ScreenBuilder.SCREENS.FORM}">
-                    Start adding
+                    ${this.ctx.t("browse.addBooks")}
                 </button>`;
             return el;
         }
@@ -128,7 +128,7 @@ export default class ScreenBrowse {
                     <img 
                         data-screen="${ScreenBuilder.SCREENS.ITEM}" 
                         src="${coverExample}" 
-                        alt="Book Cover" 
+                        alt="" 
                         class="cursor-pointer w-full h-full object-cover rounded">
                   </div>
                 
@@ -141,7 +141,9 @@ export default class ScreenBrowse {
                         ${book.title}
                     </h3>
                     <p class="text-sm text-gray-500">${book.author_names}</p>
-                    <p class="text-sm text-gray-500">${book.published_date} | ${book.publisher} | ${book.page_count} Oldal | ${book.isbn}</p>
+                    <p class="text-sm text-gray-500">
+                        ${this.addMetadata(book)}
+                    </p>
                   </div>
                 
                   <!-- Col 3: Actions -->
@@ -150,22 +152,22 @@ export default class ScreenBrowse {
                         data-iid="${book.item_id}"
                         data-screen="${ScreenBuilder.SCREENS.ITEM}" 
                         class="px-2 py-1 bg-yellow-500 text-white rounded hover:bg-yellow-600">
-                        View
+                        ${this.ctx.t("globals.view")}
                     </button>
                     <button 
                         data-iid="${book.item_id}" 
                         class="px-2 py-1 bg-blue-500 text-white rounded hover:bg-blue-600">
-                        Edit
+                        ${this.ctx.t("globals.edit")}
                     </button>
                     <button 
                         data-iid="${book.item_id}" 
                         class="px-2 py-1 bg-green-500 text-white rounded hover:bg-green-600">
-                        Clone
+                        ${this.ctx.t("globals.duplicate")}
                     </button>
                     <button
                         data-iid="${book.item_id}" 
                         class="${ScreenBrowse.CLASS_NAME_DELETE_BOOK} px-2 py-1 bg-red-500 text-white rounded hover:bg-red-600">
-                        Delete
+                        ${this.ctx.t("globals.remove")}
                     </button>
                   </div>
                 
@@ -189,13 +191,31 @@ export default class ScreenBrowse {
     attachEvents() {
     }
 
+    addMetadata(book) {
+        let html = ScreenBrowse.EMPTY_STRING;
+
+        if (undefined !== book.published_date) {
+            html += `<span class="" title="${this.ctx.t("itemDetails.publishDate")}">${book.published_date}</span>`;
+        }
+        if (undefined !== book.publisher) {
+            html += `<span class="" title="${this.ctx.t("itemDetails.publisher")}">${book.publisher}</span>`;
+        }
+        if (undefined !== book.page_count) {
+            html += `<span class="" title="${this.ctx.t("itemDetails.pages")}">${book.page_count}</span>`;
+        }
+        if (undefined !== book.isbn) {
+            html += `<span class="" title="${this.ctx.t("itemDetails.isbn")}">${book.isbn}</span>`;
+        }
+
+        return html;
+    }
 
     tempDashlets() {
         return `
             <div class="flex flex-wrap gap-4 p-4">
               <!-- Favorite Books Widget -->
               <div class="flex-1 min-w-[200px] bg-white shadow rounded p-4 cursor-pointer hover:bg-gray-50">
-                <h3 class="text-lg font-semibold mb-2">My Library</h3>
+                <h3 class="text-lg font-semibold mb-2">${this.ctx.t("browse.myLibraryTitle")}</h3>
                 <p class="text-gray-500">You have <span id="favCount">2598</span> books in your library.</p>
                 <div class="mt-2 flex gap-1 flex-wrap" id="favPreview">
                   <!-- Small covers or icons can go here -->
@@ -204,7 +224,7 @@ export default class ScreenBrowse {
 
               <!-- Favorite Books Widget -->
               <div class="flex-1 min-w-[200px] bg-white shadow rounded p-4 cursor-pointer hover:bg-gray-50">
-                <h3 class="text-lg font-semibold mb-2">Favorites</h3>
+                <h3 class="text-lg font-semibold mb-2">${this.ctx.t("browse.favsTitle")}</h3>
                 <p class="text-gray-500">You have <span id="favCount">5</span> favorite books.</p>
                 <div class="mt-2 flex gap-1 flex-wrap" id="favPreview">
                   <!-- Small covers or icons can go here -->
@@ -213,7 +233,7 @@ export default class ScreenBrowse {
             
               <!-- Reading Now Widget -->
               <div class="flex-1 min-w-[200px] bg-white shadow rounded p-4 cursor-pointer hover:bg-gray-50">
-                <h3 class="text-lg font-semibold mb-2">Reading Now</h3>
+                <h3 class="text-lg font-semibold mb-2">${this.ctx.t("browse.statusReadingTitle")}</h3>
                 <p class="text-gray-500">Currently reading <span id="readingCount">2</span> books.</p>
                 <div class="mt-2 flex gap-1 flex-wrap" id="readingPreview">
                   <!-- Small covers -->
@@ -222,7 +242,7 @@ export default class ScreenBrowse {
             
               <!-- Read Books Widget -->
               <div class="flex-1 min-w-[200px] bg-white shadow rounded p-4 cursor-pointer hover:bg-gray-50">
-                <h3 class="text-lg font-semibold mb-2">Read Books</h3>
+                <h3 class="text-lg font-semibold mb-2">${this.ctx.t("browse.statusReadTitle")}</h3>
                 <p class="text-gray-500">You finished <span id="readCount">12</span> books.</p>
                 <div class="mt-2 flex gap-1 flex-wrap" id="readPreview">
                   <!-- Small covers -->
@@ -240,12 +260,12 @@ export default class ScreenBrowse {
                 <input 
                   type="text" 
                   id="${ScreenBrowse.ID_NAME_FILTER_INPUT}" 
-                  placeholder="Filter by Title or Author..." 
+                  placeholder="${this.ctx.t("browse.filterInputPlaceholder")}" 
                   class="px-3 py-2 border rounded focus:outline-none focus:ring focus:border-blue-300">
                 <button 
                   id="filterBtn" 
                   class="px-3 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
-                  Filter
+                  ${this.ctx.t("browse.filterBtn")}
                 </button>
               </div>
             

@@ -1,4 +1,30 @@
 {
+  "globals": {
+    "yes": {
+      "en": "Yes",
+      "hu": "Igen"
+    },
+    "no": {
+      "en": "No",
+      "hu": "Nem"
+    },
+    "view": {
+      "en": "View",
+      "hu": "Megtekintés"
+    },
+    "edit": {
+      "en": "Edit",
+      "hu": "Szerkesztés"
+    },
+    "remove": {
+      "en": "Remove",
+      "hu": "Törlés"
+    },
+    "duplicate": {
+      "en": "Duplicate",
+      "hu": "Duplikálás"
+    }
+  },
   "app": {
     "title": {
       "en": "Book Catalog",
@@ -12,7 +38,7 @@
   "footer": {
     "loggedIn": {
       "en": "Logged in as:",
-      "hu": "Belepve:"
+      "hu": "Belépve:"
     },
     "credits": {
       "en": "Created by Attila Bakos",
@@ -132,6 +158,10 @@
       "en": "Stephen King + Peter Straub",
       "hu": "Stephen King + Peter Straub"
     },
+    "multiAuthorHelper": {
+      "en": "",
+      "hu": "tobb szerzo esetesn hasznald a plusz jelet"
+    },
     "publishYear": {
       "en": "Publish year",
       "hu": "Kiadás éve"
@@ -179,6 +209,102 @@
     "addNew": {
       "en": "Add book",
       "hu": "Hozzáadás"
+    }
+  },
+  "itemDetails": {
+    "authors": {
+      "en": "Author(s)",
+      "hu": "Szerző(k)"
+    },
+    "publisher": {
+      "en": "Publisher",
+      "hu": "Kiadó"
+    },
+    "publishDate": {
+      "en": "Publish Date",
+      "hu": "Kiadás éve"
+    },
+    "isbn": {
+      "en": "ISBN",
+      "hu": "ISBN"
+    },
+    "pages": {
+      "en": "Pages",
+      "hu": "Oldalak"
+    },
+    "notes": {
+      "en": "Notes",
+      "hu": "Jegyzetek"
+    },
+    "id": {
+      "en": "Book ID",
+      "hu": "Cikkszám"
+    },
+    "addedAt": {
+      "en": "Added at",
+      "hu": "Hozzáadva"
+    },
+    "addedBy": {
+      "en": "Added by",
+      "hu": "Hozzáadta"
+    },
+    "lastUpdated": {
+      "en": "Last updated",
+      "hu": "Frissítve"
+    },
+    "updatedBy": {
+      "en": "Updated by",
+      "hu": "Frissítette"
+    },
+    "moreFromAuthor": {
+      "en": "More books from this author",
+      "hu": "További könyvek a szerzőtől"
+    },
+    "favAdd": {
+      "en": "Add to Favourites",
+      "hu": "Kedvencekhez adás"
+    },
+    "favRemove": {
+      "en": "Remove from Favourites",
+      "hu": "Eltávolítás a kedvencekből"
+    },
+    "upload": {
+      "en": "Upload",
+      "hu": "Feltöltés"
+    }
+  },
+  "browse": {
+    "noBooks": {
+      "en": "No books found",
+      "hu": "Nincsenek könyvek"
+    },
+    "addBooks": {
+      "en": "Start adding",
+      "hu": "Uj hozzáadas"
+    },
+    "myLibraryTitle": {
+      "en": "My library",
+      "hu": "Könyvtáram"
+    },
+    "favsTitle": {
+      "en": "Favorites",
+      "hu": "Kedvencek"
+    },
+    "statusReadingTitle": {
+      "en": "Reading",
+      "hu": "Olvasom"
+    },
+    "statusReadTitle": {
+      "en": "Read Books",
+      "hu": "Olvasottak"
+    },
+    "filterBtn": {
+      "en": "Filter",
+      "hu": "Szurés"
+    },
+    "filterInputPlaceholder": {
+      "en": "Filter by Title or Author...",
+      "hu": "Keresés cimre vagy szerzőre..."
     }
   }
 }

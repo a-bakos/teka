@@ -47,8 +47,14 @@ export default class ScreenItem {
                                 
                     <!-- Left column: Image -->
                     <div id="${ScreenItem.ID_NAME_COL_BOOK_COVER}" class="w-1/4 border bg-gray-50 p-2">
-                        <img src="${coverExample}" alt="Sample" class="rounded shadow mb-2">
-                        <div><button id="${ScreenItem.ID_NAME_COVER_UPLOAD}" class="bg-blue-500 hover:bg-blue-600 text-white rounded text-lg px-5 py-2 mb-2">Upload</button></div>
+                        <img src="${coverExample}" alt="" class="rounded shadow mb-2">
+                        <div>
+                            <button 
+                                id="${ScreenItem.ID_NAME_COVER_UPLOAD}" 
+                                class="bg-blue-500 hover:bg-blue-600 text-white rounded text-lg px-5 py-2 mb-2">
+                                ${this.ctx.t("itemDetails.upload")}
+                            </button>
+                        </div>
                     </div>
                                             
                    <!-- Middle column: Main details -->
@@ -61,14 +67,14 @@ export default class ScreenItem {
                                 <div class="w-2/5" id="${ScreenItem.ID_NAME_FAV_HOLDER}"></div>
                             </div>
                             <div class="text-gray-700">
-                                <div><strong>Author:</strong> <span id="${ScreenItem.ID_NAME_BOOK_AUTHOR}"></span></div>
-                                <div><strong>Publisher:</strong> <span id="${ScreenItem.ID_NAME_BOOK_PUBLISHER}"></span></div>
-                                <div><strong>Publish Date:</strong> <span id="${ScreenItem.ID_NAME_BOOK_PUBLISH_DATE}"></span></div>
-                                <div><strong>ISBN:</strong> <span id="${ScreenItem.ID_NAME_BOOK_ISBN}"></span></div>
+                                <div><strong>${this.ctx.t("itemDetails.authors")}:</strong> <span id="${ScreenItem.ID_NAME_BOOK_AUTHOR}"></span></div>
+                                <div><strong>${this.ctx.t("itemDetails.publisher")}:</strong> <span id="${ScreenItem.ID_NAME_BOOK_PUBLISHER}"></span></div>
+                                <div><strong>${this.ctx.t("itemDetails.publishDate")}:</strong> <span id="${ScreenItem.ID_NAME_BOOK_PUBLISH_DATE}"></span></div>
+                                <div><strong>${this.ctx.t("itemDetails.isbn")}:</strong> <span id="${ScreenItem.ID_NAME_BOOK_ISBN}"></span></div>
                                 <!--<div><strong>Language:</strong> <span id="${ScreenItem.ID_NAME_}"></span></div>-->
-                                <div><strong>Pages:</strong> <span id="${ScreenItem.ID_NAME_BOOK_PAGES}"></span></div>
+                                <div><strong>${this.ctx.t("itemDetails.pages")}:</strong> <span id="${ScreenItem.ID_NAME_BOOK_PAGES}"></span></div>
                                 <div>
-                                    <span class="font-semibold">Notes:</span>
+                                    <span class="font-semibold">${this.ctx.t("itemDetails.notes")}:</span>
                                     <p id="${ScreenItem.ID_NAME_PROFILE_NOTES}" class="text-gray-600"></p>
                                 </div>
                             </div>
@@ -79,23 +85,41 @@ export default class ScreenItem {
                     <div id="${ScreenItem.ID_NAME_COL_BOOK_META}" class="w-1/4 bg-gray-50 p-2">
                         <div class="">
                             <div class="">
-                                <div><strong>Book ID:</strong> <span id="${ScreenItem.ID_NAME_BOOK_ID}"></span></div>
-                                <div><strong>Added at:</strong> <span id="${ScreenItem.ID_NAME_ADDED_AT}"></span></div>
-                                <div><strong>Added by:</strong> <span id="${ScreenItem.ID_NAME_ADDED_BY}"></span></div>
-                                <div><strong>Last updated:</strong> <span id="${ScreenItem.ID_NAME_LAST_UPDATED}"></span></div>
-                                <div><strong>Updated by:</strong> <span id="${ScreenItem.ID_NAME_UPDATED_BY}"></span></div>
+                                <div><strong>${this.ctx.t("itemDetails.id")}:</strong> <span id="${ScreenItem.ID_NAME_BOOK_ID}"></span></div>
+                                <div><strong>${this.ctx.t("itemDetails.addedAt")}:</strong> <span id="${ScreenItem.ID_NAME_ADDED_AT}"></span></div>
+                                <div><strong>${this.ctx.t("itemDetails.addedBy")}:</strong> <span id="${ScreenItem.ID_NAME_ADDED_BY}"></span></div>
+                                <div><strong>${this.ctx.t("itemDetails.lastUpdated")}:</strong> <span id="${ScreenItem.ID_NAME_LAST_UPDATED}"></span></div>
+                                <div><strong>${this.ctx.t("itemDetails.updatedBy")}:</strong> <span id="${ScreenItem.ID_NAME_UPDATED_BY}"></span></div>
                             </div>
                             <div class="">
-                                <div><button data-screen="${ScreenBuilder.SCREENS.FORM}" class="bg-blue-500 hover:bg-blue-600 text-white rounded text-lg px-5 py-2 mb-2">Edit</button></div>
-                                <div><button id="book-delete" class="bg-blue-500 hover:bg-blue-600 text-white rounded text-lg px-5 py-2 mb-2">Remove</button></div>
-                                <div><button data-screen="${ScreenBuilder.SCREENS.FORM}" class="bg-blue-500 hover:bg-blue-600 text-white rounded text-lg px-5 py-2 mb-2">Duplicate</button></div>
+                                <div>
+                                    <button 
+                                        data-screen="${ScreenBuilder.SCREENS.FORM}" 
+                                        class="bg-blue-500 hover:bg-blue-600 text-white rounded text-lg px-5 py-2 mb-2">
+                                        ${this.ctx.t("globals.edit")}
+                                    </button>
+                                </div>
+                                <div>
+                                    <button 
+                                        id="book-delete" 
+                                        class="bg-blue-500 hover:bg-blue-600 text-white rounded text-lg px-5 py-2 mb-2">
+                                        ${this.ctx.t("globals.remove")}
+                                    </button>
+                                </div>
+                                <div>
+                                    <button 
+                                        data-screen="${ScreenBuilder.SCREENS.FORM}" 
+                                        class="bg-blue-500 hover:bg-blue-600 text-white rounded text-lg px-5 py-2 mb-2">
+                                        ${this.ctx.t("globals.duplicate")}
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>                                           
                 </div>
 
                 <section class="w-full mt-4">
-                    <h2 class="text-xl font-semibold mb-2">More books from this author</h2>
+                    <h2 class="text-xl font-semibold mb-2">${this.ctx.t("itemDetails.moreFromAuthor")}</h2>
 
                     <div id="${ScreenItem.ID_NAME_RELATED_BOOKS}" class="flex overflow-x-auto gap-4 py-2">
                         <!-- Each book card -->
@@ -150,16 +174,16 @@ export default class ScreenItem {
         const favBtn = document.createElement("button");
         favBtn.id = ScreenItem.ID_NAME_FAV_BTN;
         favBtn.className = "bg-blue-500 hover:bg-blue-600 text-white rounded text-lg px-5 py-2 mb-2 shadow";
-        favBtn.innerText = "Add to Favourites";
+        favBtn.innerText = this.ctx.t("itemDetails.favAdd");
         favBtn.dataset.iid = bookDetails.item_id;
         favBtn.dataset.isFav = Bool.FALSE;
         if (profileItemFlags.is_favorite) {
-            favBtn.innerText = "Remove from Favourites";
+            favBtn.innerText = this.ctx.t("itemDetails.favRemove");
             favBtn.dataset.isFav = Bool.TRUE;
         }
         document.getElementById(ScreenItem.ID_NAME_FAV_HOLDER).appendChild(favBtn);
 
-        document.getElementById(ScreenItem.ID_NAME_PROFILE_NOTES).innerHTML = profileItemFlags.notes;
+        document.getElementById(ScreenItem.ID_NAME_PROFILE_NOTES).innerHTML = profileItemFlags.notes ? profileItemFlags.notes : "<em>No notes added.</em>";
 
         document.getElementById(ScreenItem.ID_NAME_BOOK_ID).innerText = bookDetails.item_id;
         document.getElementById(ScreenItem.ID_NAME_ADDED_AT).innerText = "";
