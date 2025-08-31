@@ -2,8 +2,19 @@
 
 import ElementNav from "./ElementNav";
 import ElementFooter from "./ElementFooter";
+import ScreenBuilder from "./ScreenBuilder";
+import {formatDate} from "./utils";
 
 export default class ScreenForm {
+    static EMPTY_STRING = "";
+    static ID_NAME_INPUT_TITLE = "formInputTitle";
+    static ID_NAME_INPUT_AUTHORS = "formInputAuthors";
+    static ID_NAME_INPUT_YEAR = "formInputYear";
+    static ID_NAME_INPUT_PUBLISHER = "formInputPublisher";
+    static ID_NAME_INPUT_ISBN = "formInputIsbn";
+    static ID_NAME_INPUT_PAGES = "formInputPages";
+    static ID_NAME_INPUT_NOTES = "formInputNotes";
+
     constructor(appContext) {
         this.ctx = appContext;
         this.Nav = new ElementNav(this.ctx);
@@ -11,11 +22,20 @@ export default class ScreenForm {
     }
 
     render() {
+        let pageTitle;
+        if (
+            this.ctx.getPreviousScreen() === ScreenBuilder.SCREENS.ITEM &&
+            this.ctx.getCurrentItemId() !== null
+        ) {
+            pageTitle = this.ctx.t("newItem.screenTitleEdit");
+        } else {
+            pageTitle = this.ctx.t("newItem.screenTitleNew");
+        }
         return `
             ${this.Nav.render()}
             <div class="pt-16 p-2">
-                <h1 class="text-xl text-center">${this.ctx.t("newItem.screenTitle")}</h1>
-                
+                <h1 class="text-xl text-center">${pageTitle}</h1>
+
                 <form class="flex flex-col items-center pt-2 p-4 space-y-4">
                     <div class="flex flex-row items-center space-x-2 w-full max-w-lg">
                         <label class="w-32 text-left min-w-[90px]" for="">${this.ctx.t("newItem.title")}<span class="text-red-700">*</span></label>
@@ -24,7 +44,7 @@ export default class ScreenForm {
                             class="border flex-1 p-2 rounded" 
                             type="text" 
                             name="" 
-                            id="" 
+                            id="${ScreenForm.ID_NAME_INPUT_TITLE}" 
                             placeholder="${this.ctx.t("newItem.titlePlaceholder")}" 
                             value="">
                     </div>
@@ -35,7 +55,7 @@ export default class ScreenForm {
                             class="border flex-1 p-2 rounded" 
                             type="text" 
                             name="author"
-                            id="author" 
+                            id="${ScreenForm.ID_NAME_INPUT_AUTHORS}" 
                             placeholder="${this.ctx.t("newItem.authorPlaceholder")}" 
                             list="author-list"
                             value="">
@@ -53,7 +73,7 @@ export default class ScreenForm {
                             class="border flex-1 p-2 rounded" 
                             type="number" 
                             name="publish-year" 
-                            id="publish-year" 
+                            id="${ScreenForm.ID_NAME_INPUT_YEAR}" 
                             min="1000" 
                             max="9999" 
                             placeholder="1984">
@@ -64,7 +84,7 @@ export default class ScreenForm {
                             class="border flex-1 p-2 rounded" 
                             type="text" 
                             name="publisher" 
-                            id="publisher" 
+                            id="${ScreenForm.ID_NAME_INPUT_PUBLISHER}" 
                             placeholder="${this.ctx.t("newItem.publisherPlaceholder")}" 
                             list="publisher-list" 
                             value="">
@@ -80,9 +100,9 @@ export default class ScreenForm {
                         <input 
                             class="border flex-1 p-2 rounded" 
                             type="text" 
-                            pattern="[0-9\-]+" 
+                            pattern="[0-9\-]*"
                             name="" 
-                            id="" 
+                            id="${ScreenForm.ID_NAME_INPUT_ISBN}"
                             placeholder="${this.ctx.t("newItem.isbnPlaceholder")}" 
                             value="">
                     </div>
@@ -102,13 +122,20 @@ export default class ScreenForm {
                             class="border flex-1 p-2 rounded" 
                             type="number" 
                             name="" 
-                            id="" 
+                            id="${ScreenForm.ID_NAME_INPUT_PAGES}" 
                             placeholder="921" 
                             value="">
                     </div>
                     <div class="flex flex-row items-center space-x-2 w-full max-w-lg">
-                        <label class="w-32 text-left min-w-[90px]" for="">${this.ctx.t("newItem.notes")}</label>
-                        <textarea class="border flex-1 p-2 rounded" name="" id="" cols="30" rows="2"></textarea>
+                        <label 
+                            class="w-32 text-left min-w-[90px]" 
+                            for="">${this.ctx.t("newItem.notes")}</label>
+                        <textarea 
+                            class="border flex-1 p-2 rounded" 
+                            name="" 
+                            id="${ScreenForm.ID_NAME_INPUT_NOTES}" 
+                            cols="30" 
+                            rows="2"></textarea>
                     </div>
                     
                     <div class="flex flex-row items-center space-x-2 w-full max-w-lg">
@@ -125,7 +152,37 @@ export default class ScreenForm {
         `;
     }
 
-    attachEvents(onNavigate) {
-        //
+    async afterRender() {
+        if (this.ctx.getCurrentItemId()) {
+            const book = await this.getBook()
+            if (book) {
+                document.getElementById(ScreenForm.ID_NAME_INPUT_TITLE).value = book.title;
+                document.getElementById(ScreenForm.ID_NAME_INPUT_AUTHORS).value = book.author_names;
+                document.getElementById(ScreenForm.ID_NAME_INPUT_YEAR).value = formatDate(book.published_date);
+                document.getElementById(ScreenForm.ID_NAME_INPUT_PUBLISHER).value = book.publisher;
+                document.getElementById(ScreenForm.ID_NAME_INPUT_ISBN).value = book.isbn;
+                document.getElementById(ScreenForm.ID_NAME_INPUT_PAGES).value = book.page_count;
+
+                const flags = await this.getItemFlags();
+                console.log(flags)
+                if (flags) {
+                    document.getElementById(ScreenForm.ID_NAME_INPUT_NOTES).innerText = flags.notes;
+                }
+            }
+        }
+    }
+
+    attachEvents() {
+    }
+
+    async getBook() {
+        const bookId = this.ctx.getCurrentItemId();
+        return await window.go.main.App.GetBook(bookId);
+    }
+
+    async getItemFlags() {
+        const profileId = this.ctx.getCurrentUserId();
+        const bookId = this.ctx.getCurrentItemId();
+        return await window.go.main.App.GetProfileItemFlags(profileId, bookId);
     }
 }

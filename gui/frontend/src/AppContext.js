@@ -19,6 +19,10 @@ export default class AppContext {
         return this.i18n.t(key, vars);
     }
 
+    getCurrentUserId() {
+        return this.currentUser.id;
+    }
+
     setCurrentUserId(id) {
         this.currentUser.id = id;
     }
@@ -35,6 +39,10 @@ export default class AppContext {
         return this.currentUser.name;
     }
 
+    getCurrentScreen() {
+        return this.currentScreen;
+    }
+
     setCurrentScreen(screen) {
         this.currentScreen = screen;
     }
@@ -43,8 +51,16 @@ export default class AppContext {
         this.previousScreen = screen;
     }
 
+    getPreviousScreen() {
+        return this.previousScreen;
+    }
+
     setCurrentItemId(id) {
         this.currentItem = id;
+    }
+
+    getCurrentItemId() {
+        return this.currentItem;
     }
 
     resetCurrentItemId() {

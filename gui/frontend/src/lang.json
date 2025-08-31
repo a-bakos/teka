@@ -138,9 +138,13 @@
     }
   },
   "newItem": {
-    "screenTitle": {
-      "en": "Add new or Edit",
-      "hu": "Új könyv vagy szerkesztés"
+    "screenTitleEdit": {
+      "en": "Edit",
+      "hu": "Szerkesztés"
+    },
+    "screenTitleNew": {
+      "en": "Add new",
+      "hu": "Új könyv"
     },
     "title": {
       "en": "Title",

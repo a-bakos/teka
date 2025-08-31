@@ -10,9 +10,7 @@ export function splitAuthors(authorNames) {
     return "authors";
 }
 
-// todo
 export function formatDate(date) {
-    //
-
-    return date;
+    const d = new Date(date);
+    return d.getFullYear();
 }

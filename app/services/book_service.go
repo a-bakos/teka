@@ -138,6 +138,11 @@ func DeleteBook(id string) bool {
 	return false
 }
 
+// todo
+// filter: get books where
+// creator id(s) and book id (to exclude current book)
+// => more books from this author
+
 func GetBooks() []models.Book {
 	tx, err := db.Conn.Begin()
 	if err != nil {

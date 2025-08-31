@@ -6,7 +6,7 @@ import ScreenBuilder from "./ScreenBuilder";
 
 import coverExample from './assets/images/pooh.jpg';
 import {formatDate, splitAuthors} from "./utils";
-import {Bool} from "./consts";
+import {Bool, Events} from "./consts";
 
 export default class ScreenItem {
     static ID_NAME_COL_BOOK_COVER = "colBookCover";
@@ -31,6 +31,10 @@ export default class ScreenItem {
     static ID_NAME_ADDED_BY = "metaAddedBy";
     static ID_NAME_LAST_UPDATED = "metaLastUpdated";
     static ID_NAME_UPDATED_BY = "metaUpdatedBy";
+
+    static ID_NAME_BTN_EDIT = "bookEdit";
+    static ID_NAME_BTN_DELETE = "bookDelete";
+    static ID_NAME_BTN_DUPLICATE = "bookDuplicate";
 
     constructor(appContext) {
         this.ctx = appContext;
@@ -93,22 +97,24 @@ export default class ScreenItem {
                             </div>
                             <div class="">
                                 <div>
-                                    <button 
-                                        data-screen="${ScreenBuilder.SCREENS.FORM}" 
+                                    <button
+                                        id="${ScreenItem.ID_NAME_BTN_EDIT}" 
+                                        data-screen="${ScreenBuilder.SCREENS.FORM}"
                                         class="bg-blue-500 hover:bg-blue-600 text-white rounded text-lg px-5 py-2 mb-2">
                                         ${this.ctx.t("globals.edit")}
                                     </button>
                                 </div>
                                 <div>
                                     <button 
-                                        id="book-delete" 
+                                        id="${ScreenItem.ID_NAME_BTN_DELETE}" 
                                         class="bg-blue-500 hover:bg-blue-600 text-white rounded text-lg px-5 py-2 mb-2">
                                         ${this.ctx.t("globals.remove")}
                                     </button>
                                 </div>
                                 <div>
                                     <button 
-                                        data-screen="${ScreenBuilder.SCREENS.FORM}" 
+                                        id="${ScreenItem.ID_NAME_BTN_DUPLICATE}"
+                                        data-screen="${ScreenBuilder.SCREENS.FORM}"
                                         class="bg-blue-500 hover:bg-blue-600 text-white rounded text-lg px-5 py-2 mb-2">
                                         ${this.ctx.t("globals.duplicate")}
                                     </button>
@@ -184,6 +190,21 @@ export default class ScreenItem {
         document.getElementById(ScreenItem.ID_NAME_FAV_HOLDER).appendChild(favBtn);
 
         document.getElementById(ScreenItem.ID_NAME_PROFILE_NOTES).innerHTML = profileItemFlags.notes ? profileItemFlags.notes : "<em>No notes added.</em>";
+
+        // Btns
+        let btns = new Array();
+        const btnEdit = document.getElementById(ScreenItem.ID_NAME_BTN_EDIT);
+        btnEdit.dataset.iid = bookDetails.item_id;
+        const btnDelete = document.getElementById(ScreenItem.ID_NAME_BTN_DELETE);
+        btnDelete.dataset.iid = bookDetails.item_id;
+        const btnDuplicate = document.getElementById(ScreenItem.ID_NAME_BTN_DUPLICATE);
+        btnDuplicate.dataset.iid = bookDetails.item_id;
+        btns.push(btnEdit, btnDelete, btnDuplicate);
+        for (const btn of btns) {
+            btn.addEventListener(Events.CLICK, () => {
+                this.ctx.setCurrentItemId(btn.dataset.iid);
+            });
+        }
 
         document.getElementById(ScreenItem.ID_NAME_BOOK_ID).innerText = bookDetails.item_id;
         document.getElementById(ScreenItem.ID_NAME_ADDED_AT).innerText = "";
