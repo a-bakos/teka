@@ -11,7 +11,7 @@ export default class ElementNav {
         this.ctx = appContext;
 
         // TODO work this out
-        if (this.ctx.currentScreen != "item") {
+        if (this.ctx.currentScreen !== "item") {
             this.ctx.resetCurrentItemId();
         }
     }

@@ -3,7 +3,10 @@ import Lang, {LANG_EN, LANG_HU} from "./Lang";
 
 export default class AppContext {
     constructor() {
-        this.currentUserId = null;
+        this.currentUser = {
+            id: null,
+            name: null,
+        };
         this.currentScreen = ScreenBuilder.SCREENS.STARTUP;
         this.previousScreen = null;
         this.currentItem = null;
@@ -17,11 +20,19 @@ export default class AppContext {
     }
 
     setCurrentUserId(id) {
-        this.currentUserId = id;
+        this.currentUser.id = id;
     }
 
     resetCurrentUserId() {
-        this.currentUserId = null;
+        this.currentUser.id = null;
+    }
+
+    setCurrentUserName(name) {
+        this.currentUser.name = name;
+    }
+
+    getCurrentUserName() {
+        return this.currentUser.name;
     }
 
     setCurrentScreen(screen) {

@@ -11,7 +11,9 @@ export default class ScreenStartup {
     static ID_NAME_PROFILE_SELECTOR_CONTAINER = "profileSelectorContainer";
 
     static CLASS_NAME_PROFILE_SELECTOR = "profileSelector";
+    static CLASS_NAME_PROFILE_NAME = "profileName";
     static SELECTOR_PROFILE_SELECTOR = "." + ScreenStartup.CLASS_NAME_PROFILE_SELECTOR;
+    static SELECTOR_PROFILE_NAME = "." + ScreenStartup.CLASS_NAME_PROFILE_NAME;
 
     constructor(appContext) {
         this.ctx = appContext;
@@ -43,6 +45,8 @@ export default class ScreenStartup {
                 for (const profileSelector of profileSelectors) {
                     profileSelector.addEventListener(Events.CLICK, () => {
                         this.ctx.setCurrentUserId(profileSelector.dataset.uid);
+                        const profileName = profileSelector.querySelector(ScreenStartup.SELECTOR_PROFILE_NAME);
+                        this.ctx.setCurrentUserName(profileName.innerText.trim());
                     });
                 }
             }, ScreenBuilder.ARTIFICIAL_DELAY);
@@ -71,7 +75,7 @@ export default class ScreenStartup {
             span.innerHTML = IconStartupUser;
 
             const p = document.createElement("p");
-            p.className = "text-lg font-medium";
+            p.className = `${ScreenStartup.CLASS_NAME_PROFILE_NAME} text-lg font-medium`;
             p.innerHTML = profile.name;
 
             div.appendChild(span);
