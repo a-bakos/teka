@@ -23,13 +23,18 @@ export default class ScreenForm {
 
     render() {
         let pageTitle;
+        let addOrUpdateBtn;
         if (
             this.ctx.getPreviousScreen() === ScreenBuilder.SCREENS.ITEM &&
             this.ctx.getCurrentItemId() !== null
         ) {
+            // Edit item
             pageTitle = this.ctx.t("newItem.screenTitleEdit");
+            addOrUpdateBtn = this.ctx.t("newItem.updateItemBtn");
         } else {
+            // New item
             pageTitle = this.ctx.t("newItem.screenTitleNew");
+            addOrUpdateBtn = this.ctx.t("newItem.addNewBtn");
         }
         return `
             ${this.Nav.render()}
@@ -144,7 +149,11 @@ export default class ScreenForm {
                     </div>
                     
                     <div class="flex flex-row items-center space-x-2 w-full max-w-lg">
-                        <button type="submit" class="bg-gray-200 w-full py-2 text-xl rounded">${this.ctx.t("newItem.addNew")}</button>
+                        <button 
+                            type="submit" 
+                            class="bg-gray-200 w-full py-2 text-xl rounded">
+                            ${addOrUpdateBtn}
+                        </button>
                     </div>
                 </form>
             </div>

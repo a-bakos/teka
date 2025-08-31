@@ -210,9 +210,13 @@
       "en": "Image",
       "hu": "Kép"
     },
-    "addNew": {
+    "addNewBtn": {
       "en": "Add book",
       "hu": "Hozzáadás"
+    },
+    "updateItemBtn": {
+      "en": "Update",
+      "hu": "Frissites"
     }
   },
   "itemDetails": {

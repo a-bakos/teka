@@ -1,13 +1,22 @@
+import * as constants from "./consts";
+
 export function randomStringGenerator() {
     return (Math.random() + 1).toString(36).substring(7);
 }
 
-
-// todo
 export function splitAuthors(authorNames) {
-    // authorNames.split at constants.MultiAuthorSeparator
+    const authors = authorNames.split(constants.MultiAuthorSeparator)
 
-    return "authors";
+    let authorValue = "";
+    for (let i = 0; i < authors.length; i++) {
+        authorValue += authors[i]
+        if (i !== authors.length - 1) {
+            authorValue += ", ";
+        }
+    }
+    authorValue.trim();
+
+    return authorValue;
 }
 
 export function formatDate(date) {

@@ -8,6 +8,7 @@ import coverExample from './assets/images/pooh.jpg';
 import {Events, NotificationType} from "./consts";
 import AppNotification from "./AppNotification";
 import Modal from "./Modal";
+import {splitAuthors} from "./utils";
 
 export default class ScreenBrowse {
     static EMPTY_STRING = "";
@@ -140,10 +141,8 @@ export default class ScreenBrowse {
                         class="cursor-pointer text-lg font-semibold text-gray-900">
                         ${book.title}
                     </h3>
-                    <p class="text-sm text-gray-500">${book.author_names}</p>
-                    <p class="text-sm text-gray-500">
-                        ${this.addMetadata(book)}
-                    </p>
+                    <p class="text-sm text-gray-500">${splitAuthors(book.author_names)}</p>
+                    <p class="text-sm text-gray-500">${this.addMetadata(book)}</p>
                   </div>
                 
                   <!-- Col 3: Actions -->
