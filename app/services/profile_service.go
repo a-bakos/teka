@@ -163,3 +163,24 @@ func GetProfileItemFlags(profileId, itemId string) models.ProfileItemFlags {
 
 	return repository.GetProfileItemFlags(tx, profileId, itemId)
 }
+
+func GetStats(profileId string) models.Stats {
+	tx, err := db.Conn.Begin()
+	if err != nil {
+		return models.Stats{}
+	}
+	defer func() {
+		if err != nil {
+			tx.Rollback()
+		} else {
+			tx.Commit()
+		}
+	}()
+
+	stats, err := repository.GetStats(tx, profileId)
+	if err != nil {
+		return models.Stats{}
+	}
+
+	return stats
+}

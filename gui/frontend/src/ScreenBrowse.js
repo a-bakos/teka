@@ -21,6 +21,11 @@ export default class ScreenBrowse {
     static CLASS_NAME_DUPLICATE_BOOK = "duplicateBook";
     static SELECTOR_CLASS_DUPLICATE_BOOK = "." + ScreenBrowse.CLASS_NAME_DUPLICATE_BOOK;
 
+    static ID_NAME_STATS_TOTAL = "booksTotal";
+    static ID_NAME_STATS_FAVS = "favCount";
+    static ID_NAME_STATS_READING = "readingCount";
+    static ID_NAME_STATS_READ = "readCount";
+
     constructor(appContext) {
         this.ctx = appContext;
         this.Nav = new ElementNav(this.ctx);
@@ -42,6 +47,8 @@ export default class ScreenBrowse {
         container.innerHTML = ScreenBrowse.EMPTY_STRING;
         container.appendChild(ScreenBuilder.createPreloader());
 
+        const stats = await window.go.main.App.GetMyStats(this.ctx.getCurrentUserId());
+
         const books = await this.getBooks();
         if (books) {
             setTimeout(() => {
@@ -57,7 +64,7 @@ export default class ScreenBrowse {
                 }
             }, ScreenBuilder.ARTIFICIAL_DELAY)
 
-            setTimeout(() => {
+            setTimeout(async () => {
                 /**
                  * Edit button events
                  */
@@ -108,7 +115,16 @@ export default class ScreenBrowse {
                         }
                     });
                 }
+
+                if (stats) {
+                    document.getElementById(ScreenBrowse.ID_NAME_STATS_TOTAL).innerText = stats.my_books_count;
+                    document.getElementById(ScreenBrowse.ID_NAME_STATS_FAVS).innerText = stats.my_favs_count;
+                    document.getElementById(ScreenBrowse.ID_NAME_STATS_READING).innerText = stats.reading_count;
+                    document.getElementById(ScreenBrowse.ID_NAME_STATS_READ).innerText = stats.read_count
+                }
+
             }, ScreenBuilder.ARTIFICIAL_DELAY + 10);
+
         }
     }
 
@@ -241,7 +257,7 @@ export default class ScreenBrowse {
               <!-- Favorite Books Widget -->
               <div class="flex-1 min-w-[200px] bg-white shadow rounded p-4 cursor-pointer hover:bg-gray-50">
                 <h3 class="text-lg font-semibold mb-2">${this.ctx.t("browse.myLibraryTitle")}</h3>
-                <p class="text-gray-500">You have <span id="favCount">2598</span> books in your library.</p>
+                <p class="text-gray-500">You have <span id="${ScreenBrowse.ID_NAME_STATS_TOTAL}"></span> books in your library.</p>
                 <div class="mt-2 flex gap-1 flex-wrap" id="favPreview">
                   <!-- Small covers or icons can go here -->
                 </div>
@@ -250,7 +266,7 @@ export default class ScreenBrowse {
               <!-- Favorite Books Widget -->
               <div class="flex-1 min-w-[200px] bg-white shadow rounded p-4 cursor-pointer hover:bg-gray-50">
                 <h3 class="text-lg font-semibold mb-2">${this.ctx.t("browse.favsTitle")}</h3>
-                <p class="text-gray-500">You have <span id="favCount">5</span> favorite books.</p>
+                <p class="text-gray-500">You have <span id="${ScreenBrowse.ID_NAME_STATS_FAVS}"></span> favorite books.</p>
                 <div class="mt-2 flex gap-1 flex-wrap" id="favPreview">
                   <!-- Small covers or icons can go here -->
                 </div>
@@ -259,7 +275,7 @@ export default class ScreenBrowse {
               <!-- Reading Now Widget -->
               <div class="flex-1 min-w-[200px] bg-white shadow rounded p-4 cursor-pointer hover:bg-gray-50">
                 <h3 class="text-lg font-semibold mb-2">${this.ctx.t("browse.statusReadingTitle")}</h3>
-                <p class="text-gray-500">Currently reading <span id="readingCount">2</span> books.</p>
+                <p class="text-gray-500">Currently reading <span id="${ScreenBrowse.ID_NAME_STATS_READING}"></span> books.</p>
                 <div class="mt-2 flex gap-1 flex-wrap" id="readingPreview">
                   <!-- Small covers -->
                 </div>
@@ -268,7 +284,7 @@ export default class ScreenBrowse {
               <!-- Read Books Widget -->
               <div class="flex-1 min-w-[200px] bg-white shadow rounded p-4 cursor-pointer hover:bg-gray-50">
                 <h3 class="text-lg font-semibold mb-2">${this.ctx.t("browse.statusReadTitle")}</h3>
-                <p class="text-gray-500">You finished <span id="readCount">12</span> books.</p>
+                <p class="text-gray-500">You finished <span id="${ScreenBrowse.ID_NAME_STATS_READ}"></span> books.</p>
                 <div class="mt-2 flex gap-1 flex-wrap" id="readPreview">
                   <!-- Small covers -->
                 </div>

@@ -79,6 +79,10 @@ func (a *App) GetProfileItemFlags(profileId, itemId string) models.ProfileItemFl
 	return services.GetProfileItemFlags(profileId, itemId)
 }
 
+func (a *App) GetMyStats(profileId string) models.Stats {
+	return services.GetStats(profileId)
+}
+
 // todo
 // addBook
 // updateBook
