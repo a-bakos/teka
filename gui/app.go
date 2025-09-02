@@ -71,6 +71,14 @@ func (a *App) DeleteBook(id string) bool {
 	return services.DeleteBook(id)
 }
 
+func (a *App) GetBook(id string) models.Book {
+	return services.GetBook(id)
+}
+
+func (a *App) GetProfileItemFlags(profileId, itemId string) models.ProfileItemFlags {
+	return services.GetProfileItemFlags(profileId, itemId)
+}
+
 // todo
 // addBook
 // updateBook
@@ -85,12 +93,4 @@ func (a *App) GetProfiles() []models.Profile {
 
 func (a *App) GetBooks() []models.Book {
 	return services.GetBooks()
-}
-
-func (a *App) GetBook(id string) models.Book {
-	return services.GetBook(id)
-}
-
-func (a *App) GetProfileItemFlags(profileId, itemId string) models.ProfileItemFlags {
-	return services.GetProfileItemFlags(profileId, itemId)
 }
