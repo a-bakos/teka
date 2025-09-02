@@ -6,7 +6,9 @@ import ScreenBuilder from "./ScreenBuilder";
 
 import coverExample from './assets/images/pooh.jpg';
 import {formatDate, splitAuthors} from "./utils";
-import {Bool, Events} from "./consts";
+import {Bool, Events, NotificationType} from "./consts";
+import AppNotification from "./AppNotification";
+import Modal from "./Modal";
 
 export default class ScreenItem {
     static ID_NAME_COL_BOOK_COVER = "colBookCover";
@@ -173,7 +175,7 @@ export default class ScreenItem {
         document.getElementById(ScreenItem.ID_NAME_BOOK_TITLE).innerText = bookDetails.title;
         document.getElementById(ScreenItem.ID_NAME_BOOK_AUTHOR).innerText = splitAuthors(bookDetails.author_names);
         document.getElementById(ScreenItem.ID_NAME_BOOK_PUBLISHER).innerText = bookDetails.publisher;
-        document.getElementById(ScreenItem.ID_NAME_BOOK_PUBLISH_DATE).innerText = formatDate(bookDetails.published_date);
+        document.getElementById(ScreenItem.ID_NAME_BOOK_PUBLISH_DATE).innerText = formatDate(bookDetails.published_date).toString();
         document.getElementById(ScreenItem.ID_NAME_BOOK_ISBN).innerText = bookDetails.isbn;
         document.getElementById(ScreenItem.ID_NAME_BOOK_PAGES).innerText = bookDetails.page_count;
 
@@ -191,18 +193,42 @@ export default class ScreenItem {
 
         document.getElementById(ScreenItem.ID_NAME_PROFILE_NOTES).innerHTML = profileItemFlags.notes ? profileItemFlags.notes : "<em>No notes added.</em>";
 
-        // Btns
-        let btns = new Array();
+        // Buttons
+        let buttons = new Array();
         const btnEdit = document.getElementById(ScreenItem.ID_NAME_BTN_EDIT);
         btnEdit.dataset.iid = bookDetails.item_id;
         const btnDelete = document.getElementById(ScreenItem.ID_NAME_BTN_DELETE);
         btnDelete.dataset.iid = bookDetails.item_id;
         const btnDuplicate = document.getElementById(ScreenItem.ID_NAME_BTN_DUPLICATE);
         btnDuplicate.dataset.iid = bookDetails.item_id;
-        btns.push(btnEdit, btnDelete, btnDuplicate);
-        for (const btn of btns) {
-            btn.addEventListener(Events.CLICK, () => {
+        buttons.push(btnEdit, btnDelete, btnDuplicate);
+        for (const btn of buttons) {
+            btn.addEventListener(Events.CLICK, async () => {
                 this.ctx.setCurrentItemId(btn.dataset.iid);
+
+                if (btn.id === ScreenItem.ID_NAME_BTN_DELETE) {
+                    try {
+                        const modal = new Modal(`Are you sure you want to delete the following item?<br>${bookDetails.title}`);
+                        const confirmed = await modal.waitForChoice();
+
+                        if (!confirmed) {
+                            return;
+                        }
+
+                        const isDeleted = await window.go.main.App.DeleteBook(btnDelete.dataset.iid);
+                        if (isDeleted) {
+                            new AppNotification(NotificationType.SUCCESS, `Book deleted: ${bookDetails.title}`);
+                            // reset current item id
+                            setTimeout(() => {
+                                // todo go back to browse screen
+                            }, 2000);
+                        } else {
+                            new AppNotification(NotificationType.ERROR, `Book deletion failed`);
+                        }
+                    } catch (err) {
+                        console.error(err);
+                    }
+                }
             });
         }
 
