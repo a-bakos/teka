@@ -47,8 +47,6 @@ export default class ScreenBrowse {
         container.innerHTML = ScreenBrowse.EMPTY_STRING;
         container.appendChild(ScreenBuilder.createPreloader());
 
-        const stats = await window.go.main.App.GetMyStats(this.ctx.getCurrentUserId());
-
         const books = await this.getBooks();
         if (books) {
             setTimeout(() => {
@@ -115,26 +113,22 @@ export default class ScreenBrowse {
                         }
                     });
                 }
-
-                if (stats) {
-                    document.getElementById(ScreenBrowse.ID_NAME_STATS_TOTAL).innerText = stats.my_books_count;
-                    document.getElementById(ScreenBrowse.ID_NAME_STATS_FAVS).innerText = stats.my_favs_count;
-                    document.getElementById(ScreenBrowse.ID_NAME_STATS_READING).innerText = stats.reading_count;
-                    document.getElementById(ScreenBrowse.ID_NAME_STATS_READ).innerText = stats.read_count
-                }
-
             }, ScreenBuilder.ARTIFICIAL_DELAY + 10);
 
         }
     }
 
-    getSectionDash() {
+    async getSectionDash() {
         const dash = document.createElement("section");
         dash.innerHTML = `
-            ${this.tempDashlets()}
+            ${await this.sectionDashlets()}
             ${this.tempFilters()}
         `;
         return dash;
+    }
+
+    async getStats() {
+        return await window.go.main.App.GetMyStats(this.ctx.getCurrentUserId());
     }
 
     async getBooks() {
@@ -224,8 +218,9 @@ export default class ScreenBrowse {
         }
 
         const container = document.createElement("div");
-        container.appendChild(this.getSectionDash());
+        container.appendChild(await this.getSectionDash());
         container.appendChild(ul);
+
         return container;
     }
 
@@ -251,44 +246,26 @@ export default class ScreenBrowse {
         return html;
     }
 
-    tempDashlets() {
+    addWidget(title, content) {
+        return `
+            <div class="flex-1 min-w-[200px] bg-white shadow rounded p-4 cursor-pointer hover:bg-gray-50">
+                <h3 class="text-lg font-semibold mb-2">${title}</h3>
+                <p class="text-gray-500">${content}</p>
+            </div>`;
+    }
+
+    async sectionDashlets() {
+        const stats = await this.getStats()
         return `
             <div class="flex flex-wrap gap-4 p-4">
-              <!-- Favorite Books Widget -->
-              <div class="flex-1 min-w-[200px] bg-white shadow rounded p-4 cursor-pointer hover:bg-gray-50">
-                <h3 class="text-lg font-semibold mb-2">${this.ctx.t("browse.myLibraryTitle")}</h3>
-                <p class="text-gray-500">You have <span id="${ScreenBrowse.ID_NAME_STATS_TOTAL}"></span> books in your library.</p>
-                <div class="mt-2 flex gap-1 flex-wrap" id="favPreview">
-                  <!-- Small covers or icons can go here -->
-                </div>
-              </div>
-
-              <!-- Favorite Books Widget -->
-              <div class="flex-1 min-w-[200px] bg-white shadow rounded p-4 cursor-pointer hover:bg-gray-50">
-                <h3 class="text-lg font-semibold mb-2">${this.ctx.t("browse.favsTitle")}</h3>
-                <p class="text-gray-500">You have <span id="${ScreenBrowse.ID_NAME_STATS_FAVS}"></span> favorite books.</p>
-                <div class="mt-2 flex gap-1 flex-wrap" id="favPreview">
-                  <!-- Small covers or icons can go here -->
-                </div>
-              </div>
-            
-              <!-- Reading Now Widget -->
-              <div class="flex-1 min-w-[200px] bg-white shadow rounded p-4 cursor-pointer hover:bg-gray-50">
-                <h3 class="text-lg font-semibold mb-2">${this.ctx.t("browse.statusReadingTitle")}</h3>
-                <p class="text-gray-500">Currently reading <span id="${ScreenBrowse.ID_NAME_STATS_READING}"></span> books.</p>
-                <div class="mt-2 flex gap-1 flex-wrap" id="readingPreview">
-                  <!-- Small covers -->
-                </div>
-              </div>
-            
-              <!-- Read Books Widget -->
-              <div class="flex-1 min-w-[200px] bg-white shadow rounded p-4 cursor-pointer hover:bg-gray-50">
-                <h3 class="text-lg font-semibold mb-2">${this.ctx.t("browse.statusReadTitle")}</h3>
-                <p class="text-gray-500">You finished <span id="${ScreenBrowse.ID_NAME_STATS_READ}"></span> books.</p>
-                <div class="mt-2 flex gap-1 flex-wrap" id="readPreview">
-                  <!-- Small covers -->
-                </div>
-              </div>
+                <!-- Favorite Books Widget -->
+                ${this.addWidget(this.ctx.t("browse.myLibraryTitle"), `You have <span id="${ScreenBrowse.ID_NAME_STATS_TOTAL}">${stats.my_books_count}</span> books in your library.`)}
+                <!-- Favorite Books Widget -->
+                ${this.addWidget(this.ctx.t("browse.favsTitle"), `You have <span id="${ScreenBrowse.ID_NAME_STATS_FAVS}">${stats.my_favs_count}</span> favorite books.`)}
+                <!-- Reading Now Widget -->
+                ${this.addWidget(this.ctx.t("browse.statusReadingTitle"), `Currently reading <span id="${ScreenBrowse.ID_NAME_STATS_READING}">${stats.reading_count}</span> books.`)}
+                <!-- Read Books Widget -->
+                ${this.addWidget(this.ctx.t("browse.statusReadTitle"), `You finished <span id="${ScreenBrowse.ID_NAME_STATS_READ}">${stats.read_count}</span> books.`)}
             </div>
         `;
     }
