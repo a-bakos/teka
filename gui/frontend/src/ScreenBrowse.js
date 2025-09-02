@@ -8,7 +8,7 @@ import coverExample from './assets/images/pooh.jpg';
 import {Action, Events, NotificationType} from "./consts";
 import AppNotification from "./AppNotification";
 import Modal from "./Modal";
-import {splitAuthors} from "./utils";
+import {formatDate, splitAuthors} from "./utils";
 
 export default class ScreenBrowse {
     static EMPTY_STRING = "";
@@ -220,7 +220,7 @@ export default class ScreenBrowse {
         let html = ScreenBrowse.EMPTY_STRING;
 
         if (undefined !== book.published_date) {
-            html += `<span class="" title="${this.ctx.t("itemDetails.publishDate")}">${book.published_date}</span>`;
+            html += `<span class="" title="${this.ctx.t("itemDetails.publishDate")}">${formatDate(book.published_date)}</span>`;
         }
         if (undefined !== book.publisher) {
             html += `<span class="" title="${this.ctx.t("itemDetails.publisher")}">${book.publisher}</span>`;

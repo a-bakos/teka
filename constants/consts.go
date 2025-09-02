@@ -1,5 +1,7 @@
 package constants
 
+const AppVersion string = "0.1.0"
+
 const DbDriver string = "sqlite3"
 const DbPath string = "./temp/tekatest.db"
 const DbFailedInsertId int64 = 0

@@ -4,6 +4,7 @@ import ElementNav from "./ElementNav";
 import ElementFooter from "./ElementFooter";
 
 import {IconGithubLogo} from './icons.js';
+import {Events} from "./consts";
 
 export default class ScreenSettings {
     constructor(appContext) {
@@ -22,6 +23,10 @@ export default class ScreenSettings {
                 <div class="flex items-center space-x-2">
                     <button id="export-db" class="bg-blue-500 hover:bg-blue-600 text-white rounded px-4 py-2 flex-1">${this.ctx.t("settings.export")}</button>
                     <button id="import-db" class="bg-green-500 hover:bg-green-600 text-white rounded px-4 py-2 flex-1">${this.ctx.t("settings.import")}</button>
+                </div>
+                
+                <div>
+                    <button id="debugToggle" class="bg-red-500 hover:bg-red-300 text-white rounded px-4 py-2 flex-1">Debug TOGGLE</button>
                 </div>
 
                 <!-- App Credits -->
@@ -57,5 +62,16 @@ export default class ScreenSettings {
     }
 
     attachEvents() {
+        const debugToggle = document.getElementById("debugToggle");
+        debugToggle.addEventListener(Events.CLICK, () => {
+            console.log(this.ctx)
+            if (this.ctx.debugMode === false) {
+                console.log('false')
+                this.ctx.debugMode = true;
+            } else {
+                console.log('true')
+                this.ctx.debugMode = false;
+            }
+        });
     }
 }

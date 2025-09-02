@@ -87,6 +87,10 @@ func (a *App) GetProfileItemFlags(profileId, itemId string) models.ProfileItemFl
 // From backend to frontend
 // ------------------------
 
+func (a *App) GetVersion() string {
+	return services.GetVersion()
+}
+
 func (a *App) GetProfiles() []models.Profile {
 	return services.GetProfiles()
 }

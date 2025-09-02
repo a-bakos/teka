@@ -15,10 +15,20 @@ export default class AppContext {
         this.formType = null;
         this.i18n = new Lang(LANG_HU);
         this.i18n.init();
+        this.debugMode = false;
+        this.version = null;
     }
 
     t(key, vars = {}) {
         return this.i18n.t(key, vars);
+    }
+
+    setVersion(version) {
+        this.version = version;
+    }
+
+    getVersion() {
+        return this.version;
     }
 
     setActionRequest(action) {

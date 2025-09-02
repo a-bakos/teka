@@ -26,11 +26,14 @@ export default class ScreenStartup {
             <section class="flex flex-col items-center justify-center min-h-screen bg-gray-50">
                 <div id="${ScreenStartup.ID_NAME_PROFILE_SELECTOR_CONTAINER}"></div>
             </section>
-            ${this.Footer.render()}
         `;
     }
 
     async afterRender() {
+        const version = await window.go.main.App.GetVersion();
+        console.log(version)
+        this.ctx.setVersion(version);
+
         const container = document.getElementById(ScreenStartup.ID_NAME_PROFILE_SELECTOR_CONTAINER);
         container.innerHTML = ScreenStartup.EMPTY_STRING;
         container.appendChild(ScreenBuilder.createPreloader());
