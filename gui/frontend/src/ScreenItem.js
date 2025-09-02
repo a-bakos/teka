@@ -6,7 +6,7 @@ import ScreenBuilder from "./ScreenBuilder";
 
 import coverExample from './assets/images/pooh.jpg';
 import {formatDate, splitAuthors} from "./utils";
-import {Bool, Events, NotificationType} from "./consts";
+import {Action, Bool, Events, NotificationType} from "./consts";
 import AppNotification from "./AppNotification";
 import Modal from "./Modal";
 
@@ -206,6 +206,17 @@ export default class ScreenItem {
             btn.addEventListener(Events.CLICK, async () => {
                 this.ctx.setCurrentItemId(btn.dataset.iid);
 
+                // Edit
+                if (btn.id === ScreenItem.ID_NAME_BTN_EDIT) {
+                    this.ctx.setActionRequest(Action.EDIT);
+                }
+
+                // Duplicate
+                if (btn.id === ScreenItem.ID_NAME_BTN_DUPLICATE) {
+                    this.ctx.setActionRequest(Action.CLONE);
+                }
+
+                // Delete
                 if (btn.id === ScreenItem.ID_NAME_BTN_DELETE) {
                     try {
                         const modal = new Modal(`Are you sure you want to delete the following item?<br>${bookDetails.title}`);

@@ -1,5 +1,6 @@
 import ScreenBuilder from "./ScreenBuilder";
 import Lang, {LANG_EN, LANG_HU} from "./Lang";
+import {Action} from "./consts";
 
 export default class AppContext {
     constructor() {
@@ -9,6 +10,7 @@ export default class AppContext {
         };
         this.currentScreen = ScreenBuilder.SCREENS.STARTUP;
         this.previousScreen = null;
+        this.actionRequest = null;
         this.currentItem = null;
         this.formType = null;
         this.i18n = new Lang(LANG_HU);
@@ -17,6 +19,18 @@ export default class AppContext {
 
     t(key, vars = {}) {
         return this.i18n.t(key, vars);
+    }
+
+    setActionRequest(action) {
+        this.actionRequest = action;
+    }
+
+    getActionRequest() {
+        return this.actionRequest;
+    }
+
+    resetActionRequest() {
+        this.actionRequest = null;
     }
 
     getCurrentUserId() {
@@ -65,5 +79,17 @@ export default class AppContext {
 
     resetCurrentItemId() {
         this.currentItem = null;
+    }
+
+    isActionRequestEdit() {
+        return this.getActionRequest() === Action.EDIT &&
+            this.getCurrentItemId() !== null &&
+            (this.getPreviousScreen() === ScreenBuilder.SCREENS.ITEM || this.getPreviousScreen() === ScreenBuilder.SCREENS.BROWSE);
+    }
+
+    isActionRequestClone() {
+        return this.getActionRequest() === Action.CLONE &&
+            this.getCurrentItemId() !== null &&
+            (this.getPreviousScreen() === ScreenBuilder.SCREENS.ITEM || this.getPreviousScreen() === ScreenBuilder.SCREENS.BROWSE);
     }
 }

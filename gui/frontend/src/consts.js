@@ -10,6 +10,12 @@ export const Events = {
     TRANSITION_END: "transitionend"
 };
 
+export const Action = {
+    EDIT: "edit",
+    CLONE: "clone",
+    DELETE: "delete",
+};
+
 export const NotificationType = {
     GENERIC: 0,
     SUCCESS: 1,

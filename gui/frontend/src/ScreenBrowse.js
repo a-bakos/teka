@@ -5,7 +5,7 @@ import ElementNav from "./ElementNav";
 import ElementFooter from "./ElementFooter";
 
 import coverExample from './assets/images/pooh.jpg';
-import {Events, NotificationType} from "./consts";
+import {Action, Events, NotificationType} from "./consts";
 import AppNotification from "./AppNotification";
 import Modal from "./Modal";
 import {splitAuthors} from "./utils";
@@ -16,6 +16,10 @@ export default class ScreenBrowse {
     static ID_NAME_FILTER_INPUT = "filterInput";
     static CLASS_NAME_DELETE_BOOK = "deleteBook";
     static SELECTOR_CLASS_DELETE_BOOK = "." + ScreenBrowse.CLASS_NAME_DELETE_BOOK;
+    static CLASS_NAME_EDIT_BOOK = "editBook";
+    static SELECTOR_CLASS_EDIT_BOOK = "." + ScreenBrowse.CLASS_NAME_EDIT_BOOK;
+    static CLASS_NAME_DUPLICATE_BOOK = "duplicateBook";
+    static SELECTOR_CLASS_DUPLICATE_BOOK = "." + ScreenBrowse.CLASS_NAME_DUPLICATE_BOOK;
 
     constructor(appContext) {
         this.ctx = appContext;
@@ -54,6 +58,26 @@ export default class ScreenBrowse {
             }, ScreenBuilder.ARTIFICIAL_DELAY)
 
             setTimeout(() => {
+                /**
+                 * Edit button events
+                 */
+                const editButtons = document.querySelectorAll(ScreenBrowse.SELECTOR_CLASS_EDIT_BOOK);
+                for (let btn of editButtons) {
+                    btn.addEventListener(Events.CLICK, () => {
+                        this.ctx.setActionRequest(Action.EDIT);
+                    });
+                }
+
+                /**
+                 * Duplicate button events
+                 */
+                const duplicateButtons = document.querySelectorAll(ScreenBrowse.SELECTOR_CLASS_DUPLICATE_BOOK);
+                for (let btn of duplicateButtons) {
+                    btn.addEventListener(Events.CLICK, () => {
+                        this.ctx.setActionRequest(Action.CLONE);
+                    });
+                }
+
                 /**
                  * Delete button events w/ confirmation modals
                  */
@@ -153,14 +177,16 @@ export default class ScreenBrowse {
                         class="px-2 py-1 bg-yellow-500 text-white rounded hover:bg-yellow-600">
                         ${this.ctx.t("globals.view")}
                     </button>
-                    <button 
-                        data-iid="${book.item_id}" 
-                        class="px-2 py-1 bg-blue-500 text-white rounded hover:bg-blue-600">
+                    <button
+                        data-iid="${book.item_id}"
+                        data-screen="${ScreenBuilder.SCREENS.FORM}"
+                        class="${ScreenBrowse.CLASS_NAME_EDIT_BOOK} px-2 py-1 bg-blue-500 text-white rounded hover:bg-blue-600">
                         ${this.ctx.t("globals.edit")}
                     </button>
                     <button 
-                        data-iid="${book.item_id}" 
-                        class="px-2 py-1 bg-green-500 text-white rounded hover:bg-green-600">
+                        data-iid="${book.item_id}"
+                        data-screen="${ScreenBuilder.SCREENS.FORM}"
+                        class="${ScreenBrowse.CLASS_NAME_DUPLICATE_BOOK} px-2 py-1 bg-green-500 text-white rounded hover:bg-green-600">
                         ${this.ctx.t("globals.duplicate")}
                     </button>
                     <button

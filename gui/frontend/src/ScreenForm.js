@@ -4,6 +4,7 @@ import ElementNav from "./ElementNav";
 import ElementFooter from "./ElementFooter";
 import ScreenBuilder from "./ScreenBuilder";
 import {formatDate} from "./utils";
+import {Action, Events} from "./consts";
 
 export default class ScreenForm {
     static EMPTY_STRING = "";
@@ -14,6 +15,7 @@ export default class ScreenForm {
     static ID_NAME_INPUT_ISBN = "formInputIsbn";
     static ID_NAME_INPUT_PAGES = "formInputPages";
     static ID_NAME_INPUT_NOTES = "formInputNotes";
+    static ID_NAME_MAIN_SUBMIT_BUTTON = "formSubmit";
 
     constructor(appContext) {
         this.ctx = appContext;
@@ -25,8 +27,8 @@ export default class ScreenForm {
         let pageTitle;
         let addOrUpdateBtn;
         if (
-            this.ctx.getPreviousScreen() === ScreenBuilder.SCREENS.ITEM &&
-            this.ctx.getCurrentItemId() !== null
+            this.ctx.isActionRequestEdit() &&
+            !this.ctx.isActionRequestClone()
         ) {
             // Edit item
             pageTitle = this.ctx.t("newItem.screenTitleEdit");
@@ -41,7 +43,7 @@ export default class ScreenForm {
             <div class="pt-16 p-2">
                 <h1 class="text-xl text-center">${pageTitle}</h1>
 
-                <form class="flex flex-col items-center pt-2 p-4 space-y-4">
+                <div class="flex flex-col items-center pt-2 p-4 space-y-4">
                     <div class="flex flex-row items-center space-x-2 w-full max-w-lg">
                         <label class="w-32 text-left min-w-[90px]" for="">${this.ctx.t("newItem.title")}<span class="text-red-700">*</span></label>
                         <input 
@@ -150,12 +152,12 @@ export default class ScreenForm {
                     
                     <div class="flex flex-row items-center space-x-2 w-full max-w-lg">
                         <button 
-                            type="submit" 
+                            id="${ScreenForm.ID_NAME_MAIN_SUBMIT_BUTTON}"
                             class="bg-gray-200 w-full py-2 text-xl rounded">
                             ${addOrUpdateBtn}
                         </button>
                     </div>
-                </form>
+                </div>
             </div>
             ${this.Footer.render()}        
         `;
@@ -179,6 +181,29 @@ export default class ScreenForm {
                 }
             }
         }
+
+        const submit = document.getElementById(ScreenForm.ID_NAME_MAIN_SUBMIT_BUTTON);
+        submit.addEventListener(Events.CLICK, () => {
+            console.log("deal with submission")
+
+            console.log()
+            const action = this.ctx.getActionRequest();
+            switch (action) {
+                case Action.EDIT:
+                    console.log("edit")
+                    // clean up upon successful resp?
+                    this.ctx.resetActionRequest();
+                    this.ctx.resetCurrentItemId();
+                    break;
+                case Action.CLONE:
+                    console.log("clone")
+                    // clean up upon successful resp?
+                    this.ctx.resetActionRequest();
+                    this.ctx.resetCurrentItemId();
+                    break;
+                default:
+            }
+        });
     }
 
     attachEvents() {
