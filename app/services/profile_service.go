@@ -2,6 +2,7 @@ package services
 
 import (
 	"database/sql"
+	"fmt"
 	"teka/app/repository"
 	"teka/constants"
 	"teka/db"
@@ -179,6 +180,7 @@ func GetStats(profileId string) models.Stats {
 
 	stats, err := repository.GetStats(tx, profileId)
 	if err != nil {
+		fmt.Println(err)
 		return models.Stats{}
 	}
 

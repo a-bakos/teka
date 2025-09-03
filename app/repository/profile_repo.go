@@ -257,15 +257,16 @@ func GetProfileItemFlags(tx *sql.Tx, profileId, itemId string) models.ProfileIte
 
 func GetStats(tx *sql.Tx, profileId string) (models.Stats, error) {
 	var stats models.Stats
+
 	err := tx.QueryRow(`
 		SELECT
 			COUNT (DISTINCT item_id) AS total,
 			COUNT (DISTINCT item_id) FILTER (WHERE is_favourite = 1) AS favs,
-			COUNT (DISTINCT item_id) FILTER (WHERE reading_status = "reading") AS reading,
-			COUNT (DISTINCT item_id) FILTER (WHERE reading_status = "read") AS read
+			COUNT (DISTINCT item_id) FILTER (WHERE reading_status = ?) AS reading,
+			COUNT (DISTINCT item_id) FILTER (WHERE reading_status = ?) AS read
 		FROM profile_item_flags
 		WHERE profile_id = ?
-	`, profileId).Scan(
+	`, constants.StatusReading, constants.StatusRead, profileId).Scan(
 		&stats.MyBooks,
 		&stats.MyFavs,
 		&stats.Reading,

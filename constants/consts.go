@@ -36,3 +36,6 @@ const DbTableProfiles string = "profiles"
 const DbTableProfileSettings string = "profile_settings"
 const DbTableItemCreators string = "item_creators"
 const DbTableProfileItemFlags string = "profile_item_flags"
+
+const StatusReading string = "reading"
+const StatusRead string = "read"

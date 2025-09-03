@@ -125,6 +125,9 @@ func (a App) Run() {
 
 	pif := services.GetProfileItemFlags("1", "1")
 	util.PrintStruct(pif)
+
+	stats := services.GetStats("2")
+	util.PrintStruct(stats)
 }
 
 // methods exposed to JS via Wails
