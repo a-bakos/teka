@@ -121,7 +121,7 @@ export default class ScreenBrowse {
     async getSectionDash() {
         const dash = document.createElement("section");
         dash.innerHTML = `
-            ${await this.sectionDashlets()}
+            ${await this.sectionDashlets()} 
             ${this.tempFilters()}
         `;
         return dash;
@@ -132,7 +132,7 @@ export default class ScreenBrowse {
     }
 
     async getBooks() {
-        const books = await window.go.main.App.GetBooks();
+        const books = await window.go.main.App.GetBooksByProfileId(this.ctx.getCurrentUserId());
 
         if (!books || books.length === 0) {
             const el = document.createElement("div");

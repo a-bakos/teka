@@ -83,6 +83,10 @@ func (a *App) GetMyStats(profileId string) models.Stats {
 	return services.GetStats(profileId)
 }
 
+func (a *App) GetBooksByProfileId(profileId string) []models.Book {
+	return services.GetBooksByProfileId(profileId)
+}
+
 // todo
 // addBook
 // updateBook

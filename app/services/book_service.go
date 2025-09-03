@@ -165,3 +165,19 @@ func GetBooks() []models.Book {
 	}
 	return books
 }
+
+func GetBooksByProfileId(profileId string) []models.Book {
+	tx, err := db.Conn.Begin()
+	if err != nil {
+		return nil
+	}
+	defer func() {
+		if err != nil {
+			tx.Rollback()
+		} else {
+			tx.Commit()
+		}
+	}()
+	
+	return repository.GetBooksByProfileId(tx, profileId)
+}
