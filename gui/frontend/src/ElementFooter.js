@@ -14,7 +14,7 @@ export default class ElementFooter {
             debugArea = `
                 <div class="fixed bottom-5 w-full opacity-75 font-mono font-xs bg-red-200 p-3">
                     <p>Current screen: ${this.ctx.getCurrentScreen()} | Previous screen: ${this.ctx.getPreviousScreen()}</p>
-                    <p>Action request: ${this.ctx.getActionRequest()}</p>
+                    <p>Action request: ${this.ctx.getActionRequest()} | Current item: ${this.ctx.getCurrentItemId()}</p>
                     <p>Current user: ${this.ctx.getCurrentUserName()} (${this.ctx.getCurrentUserId()})</p>
                 </div>
             `;
