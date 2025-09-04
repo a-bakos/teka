@@ -2,7 +2,6 @@ package app
 
 import (
 	"teka/app/services"
-	"teka/util"
 )
 
 type App struct {
@@ -12,10 +11,10 @@ type App struct {
 func (a App) Run() {
 
 	// New profile definition
-	// newProfile := services.NewProfile("Columbo", nil) // this collects input from the user
+	newProfile := services.NewProfile("Columbo", nil) // this collects input from the user
 
 	// Profile add
-	// _ = services.CreateProfile(&newProfile) // returns profile ID
+	_ = services.CreateProfile(&newProfile) // returns profile ID
 
 	// Profile delete
 	// _ = services.DeleteProfile(repository.DeleteProfileById, "2")
@@ -120,14 +119,14 @@ func (a App) Run() {
 	//}
 	//util.PrintStruct(coll)
 
-	b := services.GetBook("1")
-	util.PrintStruct(b)
+	//b := services.GetBook("1")
+	//util.PrintStruct(b)
 
-	pif := services.GetProfileItemFlags("1", "1")
-	util.PrintStruct(pif)
+	//pif := services.GetProfileItemFlags("1", "1")
+	//util.PrintStruct(pif)
 
-	stats := services.GetStats("2")
-	util.PrintStruct(stats)
+	//stats := services.GetStats("2")
+	//util.PrintStruct(stats)
 }
 
 // methods exposed to JS via Wails

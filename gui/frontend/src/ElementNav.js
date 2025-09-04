@@ -19,7 +19,7 @@ export default class ElementNav {
                     <button class="${ElementNav.CLASS_MAIN_MENU} flex justify-center items-center gap-2 w-1/4 py-3 border-r hover:bg-gray-200" data-screen="${ScreenBuilder.SCREENS.BROWSE}">${this.navIcon(IconNavBooks)} ${this.ctx.t("nav.browse")}</button>     
                     <button class="${ElementNav.CLASS_MAIN_MENU} flex justify-center items-center gap-2 w-1/4 py-3 border-r hover:bg-gray-200" data-screen="${ScreenBuilder.SCREENS.FORM}">${this.navIcon(IconNavBook)} ${this.ctx.t("nav.new")}</button>
                     <button class="${ElementNav.CLASS_MAIN_MENU} flex justify-center items-center gap-2 w-1/4 py-3 border-r hover:bg-gray-200" data-screen="${ScreenBuilder.SCREENS.PROFILE}">${this.navIcon(IconNavUser)} ${this.ctx.t("nav.profile")}</button>
-                    <button class="${ElementNav.CLASS_MAIN_MENU} flex justify-center items-center gap-2 w-1/4 py-3 hover:bg-blue-700" data-screen="${ScreenBuilder.SCREENS.SETTINGS}">${this.navIcon(IconNavGear)} ${this.ctx.t("nav.settings")}</button>
+                    <button class="${ElementNav.CLASS_MAIN_MENU} flex justify-center items-center gap-2 w-1/4 py-3 hover:bg-gray-200" data-screen="${ScreenBuilder.SCREENS.SETTINGS}">${this.navIcon(IconNavGear)} ${this.ctx.t("nav.settings")}</button>
                 </div>
             </nav> 
         `;

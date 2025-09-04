@@ -107,12 +107,17 @@ export default class ScreenProfile {
     }
 
     async afterRender() {
-        // Load profiles list
+        await this.loadProfilesList()
+    }
+
+    // Load profiles list
+    async loadProfilesList() {
         const container = document.getElementById(ScreenProfile.ID_NAME_PROFILES_CONTAINER);
         container.innerHTML = ScreenProfile.EMPTY_STRING;
         container.appendChild(ScreenBuilder.createPreloader());
 
         const profiles = await this.getProfiles();
+
         if (profiles) {
             setTimeout(() => {
                 container.appendChild(profiles);
@@ -169,6 +174,7 @@ export default class ScreenProfile {
                 const id = await window.go.main.App.CreateProfile(inputNewProfileName.value);
                 inputNewProfileName.value = ScreenProfile.EMPTY_STRING;
                 new AppNotification(NotificationType.SUCCESS, `Profile created with ID: ${id}`);
+                await this.loadProfilesList()
             } catch (err) {
                 new AppNotification(NotificationType.ERROR, `Profile creation failed`);
                 console.log("Profile creation failed:", err)

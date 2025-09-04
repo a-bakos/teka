@@ -193,7 +193,7 @@ export default class ScreenBrowse {
                         class="${ScreenBrowse.CLASS_NAME_EDIT_BOOK} px-2 py-1 bg-blue-500 text-white rounded hover:bg-blue-600">
                         ${this.ctx.t("globals.edit")}
                     </button>
-                    <button 
+                    <button
                         data-iid="${book.item_id}"
                         data-screen="${ScreenBuilder.SCREENS.FORM}"
                         class="${ScreenBrowse.CLASS_NAME_DUPLICATE_BOOK} px-2 py-1 bg-green-500 text-white rounded hover:bg-green-600">
@@ -213,7 +213,6 @@ export default class ScreenBrowse {
                   </div>
                 </div>
             `;
-
             ul.appendChild(li);
         }
 
@@ -248,7 +247,7 @@ export default class ScreenBrowse {
 
     addWidget(title, content) {
         return `
-            <div class="flex-1 min-w-[200px] bg-white shadow rounded p-4 cursor-pointer hover:bg-gray-50">
+            <div class="flex-1 min-w-[200px] bg-white border-r rounded p-4 cursor-pointer hover:bg-gray-50">
                 <h3 class="text-lg font-semibold mb-2">${title}</h3>
                 <p class="text-gray-500">${content}</p>
             </div>`;
@@ -257,7 +256,7 @@ export default class ScreenBrowse {
     async sectionDashlets() {
         const stats = await this.getStats()
         return `
-            <div class="flex flex-wrap gap-4 p-4">
+            <div class="flex flex-wrap border">
                 <!-- Favorite Books Widget -->
                 ${this.addWidget(this.ctx.t("browse.myLibraryTitle"), `You have <span id="${ScreenBrowse.ID_NAME_STATS_TOTAL}">${stats.my_books_count}</span> books in your library.`)}
                 <!-- Favorite Books Widget -->

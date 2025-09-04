@@ -2,7 +2,6 @@
 
 export default class ElementFooter {
     static EMPTY_STRING = "";
-    static ID_NAME_APP_VERSION = "appVersion";
 
     constructor(appContext) {
         this.ctx = appContext;
