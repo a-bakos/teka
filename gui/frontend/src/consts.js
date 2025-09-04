@@ -32,3 +32,5 @@ export const Keycode = {
 };
 
 export const MultiAuthorSeparator = "+";
+
+export const ItemTypeBook = "book";

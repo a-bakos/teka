@@ -67,6 +67,10 @@ func (a *App) CreateProfile(name string) int64 {
 	return id
 }
 
+func (a *App) AddBook(book *models.Book) int64 {
+	return services.CreateBook(book)
+}
+
 func (a *App) DeleteBook(id string) bool {
 	return services.DeleteBook(id)
 }
@@ -77,6 +81,10 @@ func (a *App) GetBook(id string) models.Book {
 
 func (a *App) GetProfileItemFlags(profileId, itemId string) models.ProfileItemFlags {
 	return services.GetProfileItemFlags(profileId, itemId)
+}
+
+func (a *App) AddToCollection(bookId, profileId string) bool {
+	return services.AddToCollection(bookId, profileId)
 }
 
 func (a *App) GetMyStats(profileId string) models.Stats {

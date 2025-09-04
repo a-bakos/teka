@@ -159,6 +159,13 @@ export default class ScreenProfile {
     }
 
     attachEvents() {
+        this.addNewProfile()
+        this.removeProfile()
+        this.switchProfile()
+        this.updateProfile()
+    }
+
+    addNewProfile() {
         // Add new profile event listener
         document.getElementById(ScreenProfile.ID_NAME_ADD_PROFILE_BTN).addEventListener(Events.CLICK, async () => {
             const inputNewProfileName = document.getElementById(ScreenProfile.ID_NAME_ADD_PROFILE_INPUT)
@@ -180,14 +187,17 @@ export default class ScreenProfile {
                 console.log("Profile creation failed:", err)
             }
         });
+    }
 
-        // Remove profile event listener
+    removeProfile() {
         // todo
+    }
 
-        // Switch profile event listener
+    switchProfile() {
         // todo
+    }
 
-        // Update profile event listener
+    updateProfile() {
         // todo
     }
 }

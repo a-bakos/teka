@@ -70,31 +70,31 @@ func InsertItem(tx *sql.Tx, item *models.Book) (int64, error) {
 		return id, nil
 	}
 
-	res, err := tx.Exec(`
+	res, errInsert := tx.Exec(`
         INSERT INTO items (title, description, item_type, created_at, created_by)
         VALUES (?, ?, ?, CURRENT_TIMESTAMP, ?)`,
 		item.Title, item.Description, item.ItemType, item.CreatedBy,
 	)
-	if err != nil {
-		util.Logger("Failed for: %s, error: %v", item.Title, err)
-		return constants.DbFailedInsertId, err
+	if errInsert != nil {
+		util.Logger("Failed for: %s, error: %v", item.Title, errInsert)
+		return constants.DbFailedInsertId, errInsert
 	}
 
-	itemID, err := res.LastInsertId()
+	itemID, errLastInsert := res.LastInsertId()
 	util.Logger("Inserted item title / ID: %s / %d", item.Title, itemID)
-	if err != nil {
-		return constants.DbFailedInsertId, err
+	if errLastInsert != nil {
+		return constants.DbFailedInsertId, errLastInsert
 	}
 
 	// Insert book [done]
-	bookID, err := InsertBook(tx, item, itemID)
-	if bookID == constants.DbFailedInsertId && err == nil {
+	bookID, errInsertBook := InsertBook(tx, item, itemID)
+	if bookID == constants.DbFailedInsertId && errInsertBook == nil {
 		fmt.Println("book exists!")
 		return 0, nil
 	}
 
-	if err != nil {
-		return constants.DbFailedInsertId, err
+	if errInsertBook != nil {
+		return constants.DbFailedInsertId, errInsertBook
 	}
 
 	return bookID, nil

@@ -223,6 +223,22 @@ func GetCollection(tx *sql.Tx, profileId string) ([]models.Book, error) {
 	return collection, nil
 }
 
+func AddToCollection(tx *sql.Tx, itemId, profileId string) bool {
+	res, err := tx.Exec(`INSERT INTO collections (profile_id, item_id) VALUES (?, ?)`, profileId, itemId)
+	if err != nil {
+		util.Logger("Error inserting collection item: %v", err)
+		return false
+	}
+	var id int64
+	id, errInsert := res.LastInsertId()
+	if errInsert != nil {
+		util.Logger("Error inserting collection item: %v", errInsert)
+		return false
+	}
+	util.Logger("Inserted item: %d", id)
+	return true
+}
+
 func GetProfileItemFlags(tx *sql.Tx, profileId, itemId string) models.ProfileItemFlags {
 	var pif models.ProfileItemFlags
 	err := tx.QueryRow(`
@@ -258,14 +274,19 @@ func GetProfileItemFlags(tx *sql.Tx, profileId, itemId string) models.ProfileIte
 func GetStats(tx *sql.Tx, profileId string) (models.Stats, error) {
 	var stats models.Stats
 
+	// todo total needs changing to collection!! not pif
+
 	err := tx.QueryRow(`
 		SELECT
-			COUNT (DISTINCT item_id) AS total,
-			COUNT (DISTINCT item_id) FILTER (WHERE is_favourite = 1) AS favs,
-			COUNT (DISTINCT item_id) FILTER (WHERE reading_status = ?) AS reading,
-			COUNT (DISTINCT item_id) FILTER (WHERE reading_status = ?) AS read
-		FROM profile_item_flags
-		WHERE profile_id = ?
+			COUNT(DISTINCT c.item_id) AS total,
+			COUNT(DISTINCT pif.item_id) FILTER (WHERE pif.is_favourite = 1) AS favs,
+			COUNT(DISTINCT pif.item_id) FILTER (WHERE pif.reading_status = ?) AS reading,
+			COUNT(DISTINCT pif.item_id) FILTER (WHERE pif.reading_status = ?) AS read
+		FROM collections c
+		LEFT JOIN profile_item_flags pif
+			ON c.profile_id = pif.profile_id
+		   AND c.item_id = pif.item_id
+		WHERE c.profile_id = ?
 	`, constants.StatusReading, constants.StatusRead, profileId).Scan(
 		&stats.MyBooks,
 		&stats.MyFavs,

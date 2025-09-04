@@ -151,6 +151,22 @@ func GetCollection(profileId string) ([]models.Book, error) {
 	return repository.GetCollection(tx, profileId)
 }
 
+func AddToCollection(bookId, profileId string) bool {
+	tx, err := db.Conn.Begin()
+	if err != nil {
+		return false
+	}
+	defer func() {
+		if err != nil {
+			tx.Rollback()
+		} else {
+			tx.Commit()
+		}
+	}()
+
+	return repository.AddToCollection(tx, bookId, profileId)
+}
+
 func GetProfileItemFlags(profileId, itemId string) models.ProfileItemFlags {
 	tx, err := db.Conn.Begin()
 	if err != nil {

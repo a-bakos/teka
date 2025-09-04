@@ -2,9 +2,8 @@
 
 import ElementNav from "./ElementNav";
 import ElementFooter from "./ElementFooter";
-import ScreenBuilder from "./ScreenBuilder";
-import {formatDate} from "./utils";
-import {Action, Events} from "./consts";
+import {formatDate, formatPublishDate} from "./utils";
+import {Action, Events, ItemTypeBook} from "./consts";
 
 export default class ScreenForm {
     static EMPTY_STRING = "";
@@ -15,6 +14,7 @@ export default class ScreenForm {
     static ID_NAME_INPUT_ISBN = "formInputIsbn";
     static ID_NAME_INPUT_PAGES = "formInputPages";
     static ID_NAME_INPUT_NOTES = "formInputNotes";
+    static ID_NAME_INPUT_ADD_TO_COLLECTION = "formInputCollection"
     static ID_NAME_MAIN_SUBMIT_BUTTON = "formSubmit";
 
     constructor(appContext) {
@@ -50,7 +50,7 @@ export default class ScreenForm {
                             required 
                             class="border flex-1 p-2 rounded" 
                             type="text" 
-                            name="" 
+                            name=""
                             id="${ScreenForm.ID_NAME_INPUT_TITLE}" 
                             placeholder="${this.ctx.t("newItem.titlePlaceholder")}" 
                             value="">
@@ -149,6 +149,18 @@ export default class ScreenForm {
                         <label class="w-32 text-left min-w-[90px]" for="image-upload">${this.ctx.t("newItem.image")}</label>
                         <input class="border flex-1 p-2 rounded" type="file" name="image" id="image-upload" accept="image/*">
                     </div>
+
+                    <div class="flex flex-row items-center space-x-2 w-full max-w-lg border flex-1 p-2 rounded">
+                        <input 
+                            type="checkbox" 
+                            id="${ScreenForm.ID_NAME_INPUT_ADD_TO_COLLECTION}" 
+                            name="add_to_collection" 
+                            checked
+                            class="h-5 w-5">
+                        <label 
+                            class="text-left" 
+                            for="">${this.ctx.t("newItem.addToCollection")}</label>
+                    </div>
                     
                     <div class="flex flex-row items-center space-x-2 w-full max-w-lg">
                         <button 
@@ -183,10 +195,9 @@ export default class ScreenForm {
         }
 
         const submit = document.getElementById(ScreenForm.ID_NAME_MAIN_SUBMIT_BUTTON);
-        submit.addEventListener(Events.CLICK, () => {
+        submit.addEventListener(Events.CLICK, async () => {
             console.log("deal with submission")
 
-            console.log()
             const action = this.ctx.getActionRequest();
             switch (action) {
                 case Action.EDIT:
@@ -203,6 +214,16 @@ export default class ScreenForm {
                     break;
                 default:
             }
+
+            const bookDetails = this.createBookModel()
+            const bookId = await window.go.main.App.AddBook(bookDetails);
+            console.log(bookId) // deal with exists or new ID
+
+            const addToCollection = document.getElementById(ScreenForm.ID_NAME_INPUT_ADD_TO_COLLECTION).checked;
+            if (bookId && addToCollection) {
+                const added = await window.go.main.App.AddToCollection(bookId.toString(), this.ctx.getCurrentUserId().toString());
+                console.log(added)
+            }
         });
     }
 
@@ -218,5 +239,32 @@ export default class ScreenForm {
         const profileId = this.ctx.getCurrentUserId();
         const bookId = this.ctx.getCurrentItemId();
         return await window.go.main.App.GetProfileItemFlags(profileId, bookId);
+    }
+
+    createBookModel() {
+        const title = document.getElementById(ScreenForm.ID_NAME_INPUT_TITLE).value;
+        const authors = document.getElementById(ScreenForm.ID_NAME_INPUT_AUTHORS).value;
+        const year = document.getElementById(ScreenForm.ID_NAME_INPUT_YEAR).value;
+        const publisher = document.getElementById(ScreenForm.ID_NAME_INPUT_PUBLISHER).value;
+        const isbn = document.getElementById(ScreenForm.ID_NAME_INPUT_ISBN).value;
+        const pages = document.getElementById(ScreenForm.ID_NAME_INPUT_PAGES).value;
+        const notes = document.getElementById(ScreenForm.ID_NAME_INPUT_NOTES).value;
+
+        let bookDetails = {
+            "title": title.trim(),
+            "description": notes.trim(),
+            "item_type": ItemTypeBook,
+            "created_by": parseInt(this.ctx.getCurrentUserId()),
+            "publisher": publisher.trim(),
+            "page_count": parseInt(pages),
+            "isbn": isbn.trim(),
+            "author_names": authors.trim()
+        };
+
+        if (year) {
+            bookDetails.published_date = formatPublishDate(year);
+        }
+
+        return bookDetails;
     }
 }

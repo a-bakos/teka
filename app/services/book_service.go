@@ -10,32 +10,18 @@ import (
 	"teka/util"
 )
 
-func NewBook() models.Book {
-	// validate inputs, sanitise, etc
-
-	return models.Book{
-		Item: models.Item{
-			Title:       "Jamie Goes to Spain",
-			Description: "Jamie Oliver's culinary journey through Egypt, exploring traditional recipes and cooking techniques.",
-			ItemType:    constants.ItemTypeBook,
-			CreatedBy:   1,
-		},
-		Publisher:     util.PointerString("Cooking Press"),
-		PublishedDate: util.ParsePublishedDate("2025-05-11"),
-		PageCount:     util.PointerInt(455),
-		ISBN:          util.PointerString("978-3-16-148410-0"),
-		AuthorNames:   "Jamie Oliver + Ainsley Harriott + Cook1 + Cook2 + Gok",
-		// AuthorIDs:     []int64{}
-	}
-}
-
 func CreateBook(b *models.Book) int64 {
+	if db.Conn == nil {
+		panic("DB connection is nil")
+	}
 	tx, err := db.Conn.Begin()
 	if err != nil {
+		util.Logger("%v", err)
 		return constants.DbFailedInsertId
 	}
 	defer func() {
 		if err != nil {
+			util.Logger("%v", err)
 			tx.Rollback()
 		} else {
 			tx.Commit()
@@ -45,16 +31,16 @@ func CreateBook(b *models.Book) int64 {
 	util.Logger("Book to add: %s by %s", b.Item.Title, b.AuthorNames)
 
 	// Create or get authors [done]
-	newAuthorIDs, err := repository.CreateAuthors(tx, b.AuthorNames)
-	if err != nil {
-		util.Logger("CreateAuthors error: %s", err)
+	newAuthorIDs, errAuthors := repository.CreateAuthors(tx, b.AuthorNames)
+	if errAuthors != nil {
+		util.Logger("CreateAuthors error: %s", errAuthors)
 		return constants.DbFailedInsertId
 	}
 
 	// Create or get item [done]
-	bookID, err := repository.InsertItem(tx, b)
-	if err != nil {
-		util.Logger("Failed for book: %s, error: %s", b.Item.Title, err)
+	bookID, errInsert := repository.InsertItem(tx, b)
+	if errInsert != nil {
+		util.Logger("Failed for book: %s, error: %s", b.Item.Title, errInsert)
 		return constants.DbFailedInsertId
 	}
 
@@ -65,9 +51,9 @@ func CreateBook(b *models.Book) int64 {
 		}
 		name = util.ProcessAuthorName(name)
 
-		authorID, err := repository.GetAuthor(tx, repository.GetAuthorByName, name)
-		if err != nil {
-			util.Logger("GetAuthorByName error: %s", err)
+		authorID, errAuthor := repository.GetAuthor(tx, repository.GetAuthorByName, name)
+		if errAuthor != nil {
+			util.Logger("GetAuthorByName error: %s", errAuthor)
 			return 0
 		}
 		// add to existingAuthorIDs if found
@@ -78,9 +64,9 @@ func CreateBook(b *models.Book) int64 {
 
 	linkAuthorsToBook := func(tx *sql.Tx, bookID int64, authorIdCollection []int64) {
 		for _, existingAuthorID := range existingAuthorIDs {
-			_, err = repository.InsertItemCreator(tx, bookID, existingAuthorID, constants.RoleAuthor)
-			if err != nil {
-				util.Logger("InsertItemCreator error: %s", err)
+			_, errLink := repository.InsertItemCreator(tx, bookID, existingAuthorID, constants.RoleAuthor)
+			if errLink != nil {
+				util.Logger("InsertItemCreator error: %s", errLink)
 			}
 		}
 	}
@@ -178,6 +164,6 @@ func GetBooksByProfileId(profileId string) []models.Book {
 			tx.Commit()
 		}
 	}()
-	
+
 	return repository.GetBooksByProfileId(tx, profileId)
 }

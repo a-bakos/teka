@@ -23,3 +23,8 @@ export function formatDate(date) {
     const d = new Date(date);
     return d.getFullYear();
 }
+
+// Eg. we need this format for the DB: "2016-01-01T00:00:00Z"
+export function formatPublishDate(year) {
+    return `${year}-01-01T00:00:00Z`;
+}
