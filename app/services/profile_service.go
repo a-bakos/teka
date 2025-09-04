@@ -25,10 +25,12 @@ func CreateProfile(p *models.Profile) int64 {
 	}
 	tx, err := db.Conn.Begin()
 	if err != nil {
+		util.Logger("%v", err)
 		return constants.DbFailedInsertId
 	}
 	defer func() {
 		if err != nil {
+			util.Logger("%v", err)
 			tx.Rollback()
 		} else {
 			tx.Commit()
@@ -38,22 +40,22 @@ func CreateProfile(p *models.Profile) int64 {
 	util.Logger("Profile to add: %s", p.Name)
 
 	// Attempt to get profile
-	profile, err := repository.GetProfile(tx, repository.GetProfileByName, p.Name)
+	profile, errGetProfile := repository.GetProfile(tx, repository.GetProfileByName, p.Name)
 
-	if err != nil && err != sql.ErrNoRows {
-		util.Logger("Error: %v", err)
+	if errGetProfile != nil && errGetProfile != sql.ErrNoRows {
+		util.Logger("Error: %v", errGetProfile)
 		return int64(constants.ZeroValue)
 	}
 	// If found, can't insert
-	if err == nil && profile.ID != nil {
+	if errGetProfile == nil && profile.ID != nil {
 		util.Logger("Profile already exists: %s / %d", profile.Name, *profile.ID)
 		return int64(*profile.ID)
 	}
 
 	// Insert profile into the database
-	profileID, e := repository.InsertProfile(tx, p)
-	if e != nil {
-		util.Logger("Failed creating profile: %v", e)
+	profileID, errInsert := repository.InsertProfile(tx, p)
+	if errInsert != nil {
+		util.Logger("Failed creating profile: %v", errInsert)
 		return int64(constants.ZeroValue)
 	}
 	util.Logger("End for profile ID: %d", profileID)

@@ -30,9 +30,9 @@ func InsertProfile(tx *sql.Tx, p *models.Profile) (int64, error) {
 		return constants.DbFailedInsertId, err
 	}
 	var id int64
-	id, err = res.LastInsertId()
-	if err != nil {
-		return constants.DbFailedInsertId, err
+	id, errInsert := res.LastInsertId()
+	if errInsert != nil {
+		return constants.DbFailedInsertId, errInsert
 	}
 	util.Logger("Inserted profile ID: %d", id)
 	return id, nil
