@@ -25,7 +25,7 @@ export default class ElementFooter {
                 <div class="flex border-t p-1 text-xs">
                     <div class="w-1/3">${this.loginData()}</div>
                     <div class="w-1/3"><p class="block w-full text-center">Téka v${this.ctx.getVersion()} 2025</p></div>
-                    <div class="w-1/3"><p class="block w-full text-right">something here</p></div>
+                    <div class="w-1/3"><p class="block w-full text-right">Catalouging App</p></div>
                 </div>
             </footer> 
         `;
