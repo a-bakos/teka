@@ -204,3 +204,19 @@ func GetStats(profileId string) models.Stats {
 
 	return stats
 }
+
+func GetProfileSettings(profileId string) models.ProfileSettings {
+	tx, err := db.Conn.Begin()
+	if err != nil {
+		return models.ProfileSettings{}
+	}
+	defer func() {
+		if err != nil {
+			tx.Rollback()
+		} else {
+			tx.Commit()
+		}
+	}()
+
+	return repository.GetProfileSettings(tx, profileId)
+}

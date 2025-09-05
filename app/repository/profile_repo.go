@@ -301,3 +301,27 @@ func GetStats(tx *sql.Tx, profileId string) (models.Stats, error) {
 
 	return stats, nil
 }
+
+func GetProfileSettings(tx *sql.Tx, profileId string) models.ProfileSettings {
+	var ps models.ProfileSettings
+	err := tx.QueryRow(`
+		SELECT
+		    p.id,
+			p.name,
+			ps.language
+		FROM profiles p
+		JOIN profile_settings ps ON ps.profile_id = p.id  
+		WHERE id = ?
+	`, profileId).Scan(
+		&ps.ID,
+		&ps.Name,
+		&ps.Lang,
+	)
+
+	if err != nil {
+		util.Logger("Error %v", err)
+		return models.ProfileSettings{}
+	}
+
+	return ps
+}

@@ -18,6 +18,8 @@ export default class ScreenProfile {
 
     static EMPTY_STRING = "";
 
+    static ID_NAME_MY_PROFILE_NAME_INPUT = "myProfile";
+    static ID_NAME_MY_PROFILE_LANG = "myProfileLang";
     static ID_NAME_ADD_PROFILE_BTN = "addProfileBtn";
     static ID_NAME_ADD_PROFILE_INPUT = "addProfileInput";
     static ID_NAME_PROFILES_CONTAINER = "profilesContainer";
@@ -39,7 +41,7 @@ export default class ScreenProfile {
                     <label for="input-profile-name" class="w-32">${this.ctx.t("profile.name")}</label>
                     <input 
                         name="input-profile-name" 
-                        id="input-profile-name" 
+                        id="${ScreenProfile.ID_NAME_MY_PROFILE_NAME_INPUT}" 
                         class="border flex-1 p-2 rounded" 
                         type="text" 
                         placeholder="Charles Darwin"
@@ -49,7 +51,7 @@ export default class ScreenProfile {
                 <!-- Language Switcher -->
                 <div class="flex items-center space-x-2">
                     <label for="language-select" class="w-32">${this.ctx.t("profile.language")}</label>
-                    <select id="language-select" class="border flex-1 p-2 rounded">
+                    <select id="${ScreenProfile.ID_NAME_MY_PROFILE_LANG}" class="border flex-1 p-2 rounded">
                         <option value="en">${this.ctx.t("profile.eng")}</option>
                         <option value="hu">${this.ctx.t("profile.hun")}</option>
                     </select>
@@ -107,7 +109,17 @@ export default class ScreenProfile {
     }
 
     async afterRender() {
+        await this.loadMyProfileData()
         await this.loadProfilesList()
+    }
+
+    async loadMyProfileData() {
+        const name = document.getElementById(ScreenProfile.ID_NAME_MY_PROFILE_NAME_INPUT);
+        const lang = document.getElementById(ScreenProfile.ID_NAME_MY_PROFILE_LANG);
+
+        const myProfileData = await window.go.main.App.GetProfileData(this.ctx.getCurrentUserId());
+        name.value = myProfileData.name;
+        lang.value = myProfileData.lang;
     }
 
     // Load profiles list

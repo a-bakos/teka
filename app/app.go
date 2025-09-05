@@ -2,8 +2,6 @@ package app
 
 import (
 	"teka/app/services"
-	"teka/constants"
-	"teka/models"
 	"teka/util"
 )
 
@@ -23,26 +21,26 @@ func (a App) Run() {
 	// _ = services.DeleteProfile(repository.DeleteProfileById, "2")
 
 	// Test books for bulk inserting
-	books := []models.Book{
-		{
-			Item: models.Item{
-				Title:       "The Lost Kingdom",
-				Description: "An epic fantasy novel of forgotten realms, ancient magic, and the rise of a reluctant hero.",
-				ItemType:    constants.ItemTypeBook,
-				CreatedBy:   2,
-			},
-			Publisher:     util.PointerString("Mythic Tales"),
-			PublishedDate: util.ParsePublishedDate("2023-09-21"),
-			PageCount:     util.PointerInt(612),
-			ISBN:          util.PointerString("978-0-395-19395-8"),
-			AuthorNames:   "Uniqu",
-		},
-	}
+	//books := []models.Book{
+	//	{
+	//		Item: models.Item{
+	//			Title:       "The Lost Kingdom",
+	//			Description: "An epic fantasy novel of forgotten realms, ancient magic, and the rise of a reluctant hero.",
+	//			ItemType:    constants.ItemTypeBook,
+	//			CreatedBy:   2,
+	//		},
+	//		Publisher:     util.PointerString("Mythic Tales"),
+	//		PublishedDate: util.ParsePublishedDate("2023-09-21"),
+	//		PageCount:     util.PointerInt(612),
+	//		ISBN:          util.PointerString("978-0-395-19395-8"),
+	//		AuthorNames:   "Uniqu",
+	//	},
+	//}
 
-	for _, book := range books {
-		b := services.CreateBook(&book) // returns book id
-		util.Logger("%v", b)
-	}
+	//for _, book := range books {
+	//	b := services.CreateBook(&book) // returns book id
+	//	util.Logger("%v", b)
+	//}
 
 	// New book definition
 	//newbook := services.NewBook() // this collects all the data from the user
@@ -79,6 +77,9 @@ func (a App) Run() {
 
 	//stats := services.GetStats("2")
 	//util.PrintStruct(stats)
+
+	ps := services.GetProfileSettings("2")
+	util.PrintStruct(ps)
 }
 
 // methods exposed to JS via Wails

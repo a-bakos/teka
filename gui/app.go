@@ -79,6 +79,10 @@ func (a *App) GetBook(id string) models.Book {
 	return services.GetBook(id)
 }
 
+func (a *App) GetProfileData(profileId string) models.ProfileSettings {
+	return services.GetProfileSettings(profileId)
+}
+
 func (a *App) GetProfileItemFlags(profileId, itemId string) models.ProfileItemFlags {
 	return services.GetProfileItemFlags(profileId, itemId)
 }
