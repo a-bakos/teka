@@ -135,6 +135,30 @@
     "current": {
       "en": "(current)",
       "hu": "(jelenlegi)"
+    },
+    "hello": {
+      "en": "Hello, {{name}}!",
+      "hu": "Szia, {{name}}!"
+    },
+    "alreadyUsing": {
+      "en": "You are already using this profile",
+      "hu": "Ez a profil van használatban"
+    },
+    "noUsers": {
+      "en": "No profiles found. Please add a new profile.",
+      "hu": "Nincsenek profilok. Kérlek adj hozzá egy új profilt."
+    },
+    "profileCreated": {
+      "en": "Profile created successfully with ID: {{id}}",
+      "hu": "Profil sikeresen létrehozva, azonosító: {{id}}"
+    },
+    "profileCreationError": {
+      "en": "Error creating profile. Please try again.",
+      "hu": "Hiba a profil létrehozásakor. Kérlek próbáld újra."
+    },
+    "missingProfileName": {
+      "en": "Profile name cannot be empty.",
+      "hu": "A profil neve nem lehet üres."
     }
   },
   "newItem": {
@@ -313,6 +337,24 @@
     "filterInputPlaceholder": {
       "en": "Filter by Title or Author...",
       "hu": "Keresés cimre vagy szerzőre..."
+    },
+    "deleteConfirmation": {
+      "en": "Are you sure you want to delete <strong><em>{{title}}</em></strong> from your collection?",
+      "hu": "Biztosan törölni szeretnéd a(z) <strong><em>{{title}}</em></strong> könyvet a kollekciodbol?"
+    },
+    "deleteSuccess": {
+      "en": "Book deleted successfully: {{title}}",
+      "hu": "Könyv sikeresen törölve: {{title}}"
+    },
+    "deleteError": {
+      "en": "Error deleting book. Please try again.",
+      "hu": "Hiba a könyv törlésekor. Kérlek próbáld újra."
+    }
+  },
+  "startup": {
+    "newProfile": {
+      "en": "New Profile",
+      "hu": "Uj Profil"
     }
   }
 }

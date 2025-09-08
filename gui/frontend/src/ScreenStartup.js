@@ -98,7 +98,7 @@ export default class ScreenStartup {
 
         const p = document.createElement("p");
         p.className = "text-lg font-medium";
-        p.innerText = "New Profile";
+        p.innerText = this.ctx.t("startup.newProfile");
         newProfileButton.appendChild(innerDiv);
         newProfileButton.appendChild(p);
 

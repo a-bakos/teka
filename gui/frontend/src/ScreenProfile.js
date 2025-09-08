@@ -90,7 +90,7 @@ export default class ScreenProfile {
                         id="${ScreenProfile.ID_NAME_ADD_PROFILE_INPUT}" 
                         class="border flex-1 p-2 rounded" 
                         type="text"
-                        placeholder="Charles Darwin"">
+                        placeholder="Charles Darwin">
                     <button 
                         id="${ScreenProfile.ID_NAME_ADD_PROFILE_BTN}" 
                         class="bg-green-500 hover:bg-green-600 text-white rounded px-4 py-2">
@@ -149,7 +149,7 @@ export default class ScreenProfile {
         if (profiles.length === 0) {
             const el = document.createElement("div");
             el.className = "w-full px-3 py-2 rounded border";
-            el.innerText = "No users found";
+            el.innerText = this.ctx.t("profile.noUsers");
             return el;
         }
 
@@ -158,11 +158,18 @@ export default class ScreenProfile {
 
         for (const profile of profiles) {
             const li = document.createElement("li");
+
+            let btnClasses = "w-full text-left px-3 py-2 rounded border hover:bg-gray-100";
+            if (profile.id === parseInt(this.ctx.getCurrentUserId())) {
+                btnClasses += " relative bg-gray-100 cursor-not-allowed";
+                profile.name = profile.name + ` ${this.ctx.t("profile.current")}`;
+            }
+
             li.className = "relative";
             li.innerHTML = `
                 <button
                     ${DataAttr.UID}="${profile.id}" 
-                    class="${ScreenProfile.CLASS_NAME_SWITCH_PROFILE_BTN} w-full text-left px-3 py-2 rounded border hover:bg-gray-100">
+                    class="${ScreenProfile.CLASS_NAME_SWITCH_PROFILE_BTN} ${btnClasses}">
                     ${profile.name}
                     <span class="w-7 absolute inline-block right-0">${IconProfilePageUserSwitch}</span>
                 </button>
@@ -173,17 +180,21 @@ export default class ScreenProfile {
 
         const profileSwitchButtons = ul.querySelectorAll(ScreenProfile.SELECTOR_SWITCH_PROFILE_BTN);
         profileSwitchButtons.forEach(btn => {
+            if (parseInt(btn.getAttribute(DataAttr.UID)) === parseInt(this.ctx.getCurrentUserId())) {
+                return;
+            }
             btn.addEventListener(Events.CLICK, async (e) => {
                 const uid = e.currentTarget.getAttribute(DataAttr.UID);
                 if (uid === this.ctx.getCurrentUserId()) {
-                    new AppNotification(NotificationType.GENERIC, `You are already using this profile`, true);
+                    new AppNotification(NotificationType.GENERIC, this.ctx.t("profile.alreadyUsing"), true);
                     return;
                 }
                 this.ctx.setCurrentUserId(uid);
                 const myProfileData = await this.loadMyProfileData();
                 this.ctx.setCurrentUserName(myProfileData.name)
+                await this.loadProfilesList();
                 ElementFooter.reloadLoginData(this.ctx.getCurrentUserName());
-                new AppNotification(NotificationType.SUCCESS, `Profile switched`, true);
+                new AppNotification(NotificationType.SUCCESS, `${this.ctx.t("profile.hello", {name: myProfileData.name})}`, true);
             });
         });
 
@@ -203,7 +214,7 @@ export default class ScreenProfile {
             const inputNewProfileName = document.getElementById(ScreenProfile.ID_NAME_ADD_PROFILE_INPUT)
 
             if (!inputNewProfileName.value) {
-                new AppNotification(NotificationType.GENERIC, `No profile name set`, true);
+                new AppNotification(NotificationType.GENERIC, this.ctx.t("profile.missingProfileName"), true);
                 inputNewProfileName.focus()
                 return;
             }
@@ -212,10 +223,10 @@ export default class ScreenProfile {
                 // todo need to handle existing users!
                 const id = await window.go.main.App.CreateProfile(inputNewProfileName.value);
                 inputNewProfileName.value = ScreenProfile.EMPTY_STRING;
-                new AppNotification(NotificationType.SUCCESS, `Profile created with ID: ${id}`);
+                new AppNotification(NotificationType.SUCCESS, this.ctx.t("profile.profileCreated", {id: id}));
                 await this.loadProfilesList()
             } catch (err) {
-                new AppNotification(NotificationType.ERROR, `Profile creation failed`);
+                new AppNotification(NotificationType.ERROR, this.ctx.t("profile.profileCreationError"));
                 console.log("Profile creation failed:", err)
             }
         });

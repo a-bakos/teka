@@ -219,7 +219,7 @@ export default class ScreenItem {
                 // Delete
                 if (btn.id === ScreenItem.ID_NAME_BTN_DELETE) {
                     try {
-                        const modal = new Modal(`Are you sure you want to delete the following item?<br>${bookDetails.title}`);
+                        const modal = new Modal(this.ctx.t("browse.deleteConfirmation", {title: bookDetails.title}));
                         const confirmed = await modal.waitForChoice();
 
                         if (!confirmed) {
@@ -228,13 +228,13 @@ export default class ScreenItem {
 
                         const isDeleted = await window.go.main.App.DeleteBook(btnDelete.dataset.iid);
                         if (isDeleted) {
-                            new AppNotification(NotificationType.SUCCESS, `Book deleted: ${bookDetails.title}`);
+                            new AppNotification(NotificationType.SUCCESS, this.ctx.t("browse.deleteSuccess", {title: bookDetails.title}));
                             // reset current item id
                             setTimeout(() => {
                                 // todo go back to browse screen
                             }, 2000);
                         } else {
-                            new AppNotification(NotificationType.ERROR, `Book deletion failed`);
+                            new AppNotification(NotificationType.ERROR, this.ctx.t("browse.deleteError"));
                         }
                     } catch (err) {
                         console.error(err);

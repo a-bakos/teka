@@ -32,6 +32,17 @@ export default class ScreenBrowse {
         this.ctx = appContext;
         this.Nav = new ElementNav(this.ctx);
         this.Footer = new ElementFooter(this.ctx);
+
+        if (this.ctx.getPreviousScreen() === ScreenBuilder.SCREENS.STARTUP) {
+            setTimeout(() => {
+                new AppNotification(
+                    NotificationType.SUCCESS,
+                    `${this.ctx.t("profile.hello", {name: this.ctx.getCurrentUserName()})}`,
+                    true
+                );
+            }, 1000)
+        }
+
     }
 
     render() {
@@ -94,7 +105,7 @@ export default class ScreenBrowse {
                         try {
                             const id = btn.dataset.iid;
                             const bookTitle = document.querySelector(`h3[${DataAttr.IID}="${id}"]`).innerText.trim();
-                            const modal = new Modal(`Are you sure you want to delete the following item?<br>${bookTitle}`);
+                            const modal = new Modal(this.ctx.t("browse.deleteConfirmation", {title: bookTitle}));
                             const confirmed = await modal.waitForChoice();
 
                             if (!confirmed) {
@@ -103,12 +114,12 @@ export default class ScreenBrowse {
 
                             try {
                                 const _isDeleted = await window.go.main.App.DeleteBook(id);
-                                new AppNotification(NotificationType.SUCCESS, `Book deleted: ${bookTitle}`);
+                                new AppNotification(NotificationType.SUCCESS, this.ctx.t("browse.deleteSuccess", {title: bookTitle}));
                                 // remove item from DOM
                                 const parent = btn.closest("li");
                                 parent.remove();
                             } catch (err) {
-                                new AppNotification(NotificationType.ERROR, `Book deletion failed`);
+                                new AppNotification(NotificationType.ERROR, this.ctx.t("browse.deleteError"));
                             }
                         } catch (err) {
                             console.error(err);
