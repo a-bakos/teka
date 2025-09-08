@@ -4,7 +4,7 @@ import ScreenForm from "./ScreenForm";
 import ScreenBrowse from "./ScreenBrowse";
 import ScreenStartup from "./ScreenStartup";
 import ScreenProfile from "./ScreenProfile";
-import {Bool, Events} from "./consts";
+import {DataAttr, Bool, Events} from "./consts";
 
 // Example Flow: User clicks "Browse" from Startup
 // ScreenStartup.render() generates HTML with data-screen="browse"
@@ -99,5 +99,9 @@ export default class ScreenBuilder {
         preloader.innerHTML = `<div class="animate-spin rounded-full h-16 w-16 border-t-4 border-l-1 border-r-1 border-b-4 border-green-500"></div>`;
 
         return preloader;
+    }
+
+    static AddScreenSwitcher(screenName) {
+        return `${DataAttr.SCREEN}="${screenName}"`;
     }
 }

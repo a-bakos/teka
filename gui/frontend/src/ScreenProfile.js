@@ -10,7 +10,7 @@ import {
     IconProfilePageUserMinus
 } from './icons';
 
-import {Events, NotificationType} from "./consts";
+import {DataAttr, Events, NotificationType} from "./consts";
 import AppNotification from "./AppNotification";
 import ScreenBuilder from "./ScreenBuilder";
 
@@ -23,6 +23,8 @@ export default class ScreenProfile {
     static ID_NAME_ADD_PROFILE_BTN = "addProfileBtn";
     static ID_NAME_ADD_PROFILE_INPUT = "addProfileInput";
     static ID_NAME_PROFILES_CONTAINER = "profilesContainer";
+    static CLASS_NAME_SWITCH_PROFILE_BTN = "switchProfileBtn";
+    static SELECTOR_SWITCH_PROFILE_BTN = "." + ScreenProfile.CLASS_NAME_SWITCH_PROFILE_BTN;
 
     constructor(appContext) {
         this.ctx = appContext;
@@ -120,6 +122,8 @@ export default class ScreenProfile {
         const myProfileData = await window.go.main.App.GetProfileData(this.ctx.getCurrentUserId());
         name.value = myProfileData.name;
         lang.value = myProfileData.lang;
+
+        return myProfileData
     }
 
     // Load profiles list
@@ -156,9 +160,9 @@ export default class ScreenProfile {
             const li = document.createElement("li");
             li.className = "relative";
             li.innerHTML = `
-                <button 
-                    data-uid="${profile.id}" 
-                    class="w-full text-left px-3 py-2 rounded border hover:bg-gray-100">
+                <button
+                    ${DataAttr.UID}="${profile.id}" 
+                    class="${ScreenProfile.CLASS_NAME_SWITCH_PROFILE_BTN} w-full text-left px-3 py-2 rounded border hover:bg-gray-100">
                     ${profile.name}
                     <span class="w-7 absolute inline-block right-0">${IconProfilePageUserSwitch}</span>
                 </button>
@@ -167,14 +171,30 @@ export default class ScreenProfile {
             ul.appendChild(li);
         }
 
+        const profileSwitchButtons = ul.querySelectorAll(ScreenProfile.SELECTOR_SWITCH_PROFILE_BTN);
+        profileSwitchButtons.forEach(btn => {
+            btn.addEventListener(Events.CLICK, async (e) => {
+                const uid = e.currentTarget.getAttribute(DataAttr.UID);
+                if (uid === this.ctx.getCurrentUserId()) {
+                    new AppNotification(NotificationType.GENERIC, `You are already using this profile`, true);
+                    return;
+                }
+                this.ctx.setCurrentUserId(uid);
+                const myProfileData = await this.loadMyProfileData();
+                this.ctx.setCurrentUserName(myProfileData.name)
+                ElementFooter.reloadLoginData(this.ctx.getCurrentUserName());
+                new AppNotification(NotificationType.SUCCESS, `Profile switched`, true);
+            });
+        });
+
         return ul;
     }
 
     attachEvents() {
-        this.addNewProfile()
-        this.removeProfile()
-        this.switchProfile()
-        this.updateProfile()
+        this.addNewProfile();
+        this.removeProfile();
+        this.switchProfile();
+        this.updateProfile();
     }
 
     addNewProfile() {

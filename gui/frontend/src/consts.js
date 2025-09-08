@@ -34,3 +34,9 @@ export const Keycode = {
 export const MultiAuthorSeparator = "+";
 
 export const ItemTypeBook = "book";
+
+export const DataAttr = {
+    IID: "data-iid",
+    UID: "data-uid",
+    SCREEN: "data-screen",
+}

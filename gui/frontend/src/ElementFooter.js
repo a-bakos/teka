@@ -31,12 +31,21 @@ export default class ElementFooter {
         `;
     }
 
+    static ID_NAME_LOGIN = "footerLoginName";
+
     loginData() {
         if (null !== this.ctx.getCurrentUserName()) {
-            return `<p class="block w-full">${this.ctx.t("footer.loggedIn")} ${this.ctx.getCurrentUserName()}</p>`;
+            return `<p class="block w-full">
+                ${this.ctx.t("footer.loggedIn")}
+                <span id="${ElementFooter.ID_NAME_LOGIN}">${this.ctx.getCurrentUserName()}</span>
+            </p>`;
         } else {
             return ElementFooter.EMPTY_STRING;
         }
+    }
+
+    static reloadLoginData(loginName) {
+        document.getElementById(ElementFooter.ID_NAME_LOGIN).innerHTML = loginName;
     }
 
     attachEvents() {

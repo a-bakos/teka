@@ -5,7 +5,7 @@ import ElementNav from "./ElementNav";
 import ElementFooter from "./ElementFooter";
 
 import coverExample from './assets/images/pooh.jpg';
-import {Action, Events, NotificationType} from "./consts";
+import {Action, DataAttr, Events, NotificationType} from "./consts";
 import AppNotification from "./AppNotification";
 import Modal from "./Modal";
 import {formatDate, splitAuthors} from "./utils";
@@ -20,6 +20,8 @@ export default class ScreenBrowse {
     static SELECTOR_CLASS_EDIT_BOOK = "." + ScreenBrowse.CLASS_NAME_EDIT_BOOK;
     static CLASS_NAME_DUPLICATE_BOOK = "duplicateBook";
     static SELECTOR_CLASS_DUPLICATE_BOOK = "." + ScreenBrowse.CLASS_NAME_DUPLICATE_BOOK;
+    static CLASS_NAME_ITEM = "itemBook";
+    static SELECTOR_CLASS_ITEM = "." + ScreenBrowse.CLASS_NAME_ITEM;
 
     static ID_NAME_STATS_TOTAL = "booksTotal";
     static ID_NAME_STATS_FAVS = "favCount";
@@ -54,7 +56,7 @@ export default class ScreenBrowse {
                 container.querySelector(ScreenBuilder.SELECTOR_CLASS_PRELOADER).remove();
                 document.getElementById(ScreenBrowse.ID_NAME_FILTER_INPUT).focus();
 
-                const allBooks = document.querySelectorAll(".itemBook div");
+                const allBooks = document.querySelectorAll(`${ScreenBrowse.SELECTOR_CLASS_ITEM} div`);
                 for (const book of allBooks) {
                     book.addEventListener(Events.CLICK, () => {
                         this.ctx.setCurrentItemId(book.dataset.iid);
@@ -91,7 +93,7 @@ export default class ScreenBrowse {
                     btn.addEventListener(Events.CLICK, async () => {
                         try {
                             const id = btn.dataset.iid;
-                            const bookTitle = document.querySelector(`h3[data-iid="${id}"]`).innerText.trim();
+                            const bookTitle = document.querySelector(`h3[${DataAttr.IID}="${id}"]`).innerText.trim();
                             const modal = new Modal(`Are you sure you want to delete the following item?<br>${bookTitle}`);
                             const confirmed = await modal.waitForChoice();
 
@@ -152,16 +154,16 @@ export default class ScreenBrowse {
 
         for (const book of books) {
             const li = document.createElement("li");
-            li.className = "itemBook";
+            li.className = ScreenBrowse.CLASS_NAME_ITEM;
             li.innerHTML = `
                 <div
-                    data-iid="${book.item_id}" 
+                    ${DataAttr.IID}="${book.item_id}" 
                     class="flex items-center gap-4 p-2 border-b hover:bg-gray-50">
 
                   <!-- Col 1: Small cover -->
                   <div class="w-16 h-24 flex-shrink-0">
                     <img 
-                        data-screen="${ScreenBuilder.SCREENS.ITEM}" 
+                        ${ScreenBuilder.AddScreenSwitcher(ScreenBuilder.SCREENS.ITEM)}" 
                         src="${coverExample}" 
                         alt="" 
                         class="cursor-pointer w-full h-full object-cover rounded">
@@ -170,8 +172,8 @@ export default class ScreenBrowse {
                   <!-- Col 2: Title + Author -->
                   <div class="flex-1">
                     <h3 
-                        data-iid="${book.item_id}"
-                        data-screen="${ScreenBuilder.SCREENS.ITEM}"
+                        ${DataAttr.IID}="${book.item_id}"
+                        ${ScreenBuilder.AddScreenSwitcher(ScreenBuilder.SCREENS.ITEM)}"
                         class="cursor-pointer text-lg font-semibold text-gray-900">
                         ${book.title}
                     </h3>
@@ -182,25 +184,25 @@ export default class ScreenBrowse {
                   <!-- Col 3: Actions -->
                   <div class="flex items-center gap-2 text-sm select-none">
                     <button 
-                        data-iid="${book.item_id}"
-                        data-screen="${ScreenBuilder.SCREENS.ITEM}" 
+                        ${DataAttr.IID}="${book.item_id}"
+                        ${ScreenBuilder.AddScreenSwitcher(ScreenBuilder.SCREENS.ITEM)}" 
                         class="px-2 py-1 bg-yellow-500 text-white rounded hover:bg-yellow-600">
                         ${this.ctx.t("globals.view")}
                     </button>
                     <button
-                        data-iid="${book.item_id}"
-                        data-screen="${ScreenBuilder.SCREENS.FORM}"
+                        ${DataAttr.IID}="${book.item_id}"
+                        ${ScreenBuilder.AddScreenSwitcher(ScreenBuilder.SCREENS.FORM)}"
                         class="${ScreenBrowse.CLASS_NAME_EDIT_BOOK} px-2 py-1 bg-blue-500 text-white rounded hover:bg-blue-600">
                         ${this.ctx.t("globals.edit")}
                     </button>
                     <button
-                        data-iid="${book.item_id}"
-                        data-screen="${ScreenBuilder.SCREENS.FORM}"
+                        ${DataAttr.IID}="${book.item_id}"
+                        ${ScreenBuilder.AddScreenSwitcher(ScreenBuilder.SCREENS.FORM)}"
                         class="${ScreenBrowse.CLASS_NAME_DUPLICATE_BOOK} px-2 py-1 bg-green-500 text-white rounded hover:bg-green-600">
                         ${this.ctx.t("globals.duplicate")}
                     </button>
                     <button
-                        data-iid="${book.item_id}" 
+                        ${DataAttr.IID}="${book.item_id}" 
                         class="${ScreenBrowse.CLASS_NAME_DELETE_BOOK} px-2 py-1 bg-red-500 text-white rounded hover:bg-red-600">
                         ${this.ctx.t("globals.remove")}
                     </button>
@@ -226,20 +228,40 @@ export default class ScreenBrowse {
     attachEvents() {
     }
 
+    metaExists(metaValue) {
+        if (
+            metaValue !== null &&
+            metaValue !== "null" &&
+            metaValue !== ScreenBrowse.EMPTY_STRING
+        ) {
+            return true;
+        }
+
+        return false;
+    }
+
+    addMetaLabel(metaValue, title) {
+        return `<span 
+            class="border rounded p-1 mr-1" 
+            title="${title}">
+            ${metaValue}
+        </span>`;
+    }
+
     addMetadata(book) {
         let html = ScreenBrowse.EMPTY_STRING;
 
-        if (undefined !== book.published_date) {
-            html += `<span class="" title="${this.ctx.t("itemDetails.publishDate")}">${formatDate(book.published_date)}</span>`;
+        if (this.metaExists(book.published_date)) {
+            html += this.addMetaLabel(formatDate(book.published_date), this.ctx.t("itemDetails.publishDate"));
         }
-        if (undefined !== book.publisher) {
-            html += `<span class="" title="${this.ctx.t("itemDetails.publisher")}">${book.publisher}</span>`;
+        if (this.metaExists(book.publisher)) {
+            html += this.addMetaLabel(book.publisher, this.ctx.t("itemDetails.publisher"));
         }
-        if (undefined !== book.page_count) {
-            html += `<span class="" title="${this.ctx.t("itemDetails.pages")}">${book.page_count}</span>`;
+        if (this.metaExists(book.page_count)) {
+            html += this.addMetaLabel(book.page_count, this.ctx.t("itemDetails.pages"));
         }
-        if (undefined !== book.isbn) {
-            html += `<span class="" title="${this.ctx.t("itemDetails.isbn")}">${book.isbn}</span>`;
+        if (this.metaExists(book.isbn)) {
+            html += this.addMetaLabel(book.isbn, this.ctx.t("itemDetails.isbn"));
         }
 
         return html;

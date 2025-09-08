@@ -45,7 +45,9 @@ export default class ScreenForm {
 
                 <div class="flex flex-col items-center pt-2 p-4 space-y-4">
                     <div class="flex flex-row items-center space-x-2 w-full max-w-lg">
-                        <label class="w-32 text-left min-w-[90px]" for="">${this.ctx.t("newItem.title")}<span class="text-red-700">*</span></label>
+                        <label class="w-32 text-left min-w-[90px]" for="">
+                            ${this.ctx.t("newItem.title")}<span class="text-red-700">*</span>
+                        </label>
                         <input 
                             required 
                             class="border flex-1 p-2 rounded" 
@@ -56,7 +58,9 @@ export default class ScreenForm {
                             value="">
                     </div>
                     <div class="flex flex-row items-center space-x-2 w-full max-w-lg">
-                        <label class="w-32 text-left min-w-[90px]" for="author">${this.ctx.t("newItem.authors")}<span class="text-red-700">*</span></label>
+                        <label class="w-32 text-left min-w-[90px]" for="author">
+                            ${this.ctx.t("newItem.authors")}<span class="text-red-700">*</span>
+                        </label>
                         <input 
                             required 
                             class="border flex-1 p-2 rounded" 
@@ -75,7 +79,9 @@ export default class ScreenForm {
                     </div>
                     <p class="text-xs text-right">${this.ctx.t("newItem.multiAuthorHelper")}</p>
                     <div class="flex flex-row items-center space-x-2 w-full max-w-lg">
-                        <label class="w-32 text-left min-w-[90px]" for="publish-year">${this.ctx.t("newItem.publishYear")}</label>
+                        <label class="w-32 text-left min-w-[90px]" for="publish-year">
+                            ${this.ctx.t("newItem.publishYear")}
+                        </label>
                         <input 
                             class="border flex-1 p-2 rounded" 
                             type="number" 
@@ -86,7 +92,9 @@ export default class ScreenForm {
                             placeholder="1984">
                     </div>
                     <div class="flex flex-row items-center space-x-2 w-full max-w-lg">
-                        <label class="w-32 text-left min-w-[90px]" for="publisher">${this.ctx.t("newItem.publisher")}</label>
+                        <label class="w-32 text-left min-w-[90px]" for="publisher">
+                            ${this.ctx.t("newItem.publisher")}
+                        </label>
                         <input 
                             class="border flex-1 p-2 rounded" 
                             type="text" 
@@ -103,7 +111,9 @@ export default class ScreenForm {
                         </datalist>
                     </div>
                     <div class="flex flex-row items-center space-x-2 w-full max-w-lg">
-                        <label class="w-32 text-left min-w-[90px]" for="">${this.ctx.t("newItem.isbn")}</label>
+                        <label class="w-32 text-left min-w-[90px]" for="">
+                            ${this.ctx.t("newItem.isbn")}
+                        </label>
                         <input 
                             class="border flex-1 p-2 rounded" 
                             type="text" 
@@ -146,8 +156,17 @@ export default class ScreenForm {
                     </div>
                     
                     <div class="flex flex-row items-center space-x-2 w-full max-w-lg">
-                        <label class="w-32 text-left min-w-[90px]" for="image-upload">${this.ctx.t("newItem.image")}</label>
-                        <input class="border flex-1 p-2 rounded" type="file" name="image" id="image-upload" accept="image/*">
+                        <label 
+                            class="w-32 text-left min-w-[90px]" 
+                            for="image-upload">
+                            ${this.ctx.t("newItem.image")}
+                        </label>
+                        <input 
+                            class="border flex-1 p-2 rounded" 
+                            type="file" 
+                            name="image"
+                            id="image-upload" 
+                            accept="image/*">
                     </div>
 
                     <div class="flex flex-row items-center space-x-2 w-full max-w-lg border flex-1 p-2 rounded">
@@ -196,19 +215,14 @@ export default class ScreenForm {
 
         const submit = document.getElementById(ScreenForm.ID_NAME_MAIN_SUBMIT_BUTTON);
         submit.addEventListener(Events.CLICK, async () => {
-            console.log("deal with submission")
 
             const action = this.ctx.getActionRequest();
             switch (action) {
                 case Action.EDIT:
-                    console.log("edit")
-                    // clean up upon successful resp?
                     this.ctx.resetActionRequest();
                     this.ctx.resetCurrentItemId();
                     break;
                 case Action.CLONE:
-                    console.log("clone")
-                    // clean up upon successful resp?
                     this.ctx.resetActionRequest();
                     this.ctx.resetCurrentItemId();
                     break;
@@ -241,6 +255,48 @@ export default class ScreenForm {
         return await window.go.main.App.GetProfileItemFlags(profileId, bookId);
     }
 
+    createBookDetails(
+        title,
+        notes = ScreenForm.EMPTY_STRING,
+        publishDate = ScreenForm.EMPTY_STRING,
+        publisher = ScreenForm.EMPTY_STRING,
+        pages = ScreenForm.EMPTY_STRING,
+        isbn = ScreenForm.EMPTY_STRING,
+        authors = ScreenForm.EMPTY_STRING
+    ) {
+        let bookDetails = {
+            "title": title.trim(),
+            "item_type": ItemTypeBook,
+            "created_by": parseInt(this.ctx.getCurrentUserId())
+        };
+
+        if (notes) {
+            bookDetails.description = notes.trim();
+        }
+
+        if (publisher) {
+            bookDetails.publisher = publisher.trim();
+        }
+
+        if (publishDate) {
+            bookDetails.published_date = formatPublishDate(publishDate);
+        }
+
+        if (pages) {
+            bookDetails.page_count = parseInt(pages);
+        }
+
+        if (isbn) {
+            bookDetails.isbn = isbn.trim();
+        }
+
+        if (authors) {
+            bookDetails.author_names = authors.trim();
+        }
+
+        return bookDetails;
+    }
+
     createBookModel() {
         const title = document.getElementById(ScreenForm.ID_NAME_INPUT_TITLE).value;
         const authors = document.getElementById(ScreenForm.ID_NAME_INPUT_AUTHORS).value;
@@ -250,21 +306,6 @@ export default class ScreenForm {
         const pages = document.getElementById(ScreenForm.ID_NAME_INPUT_PAGES).value;
         const notes = document.getElementById(ScreenForm.ID_NAME_INPUT_NOTES).value;
 
-        let bookDetails = {
-            "title": title.trim(),
-            "description": notes.trim(),
-            "item_type": ItemTypeBook,
-            "created_by": parseInt(this.ctx.getCurrentUserId()),
-            "publisher": publisher.trim(),
-            "page_count": parseInt(pages),
-            "isbn": isbn.trim(),
-            "author_names": authors.trim()
-        };
-
-        if (year) {
-            bookDetails.published_date = formatPublishDate(year);
-        }
-
-        return bookDetails;
+        return this.createBookDetails(title, notes, year, publisher, pages, isbn, authors);
     }
 }
