@@ -30,14 +30,14 @@ func CreateBook(b *models.Book) int64 {
 
 	util.Logger("Book to add: %s by %s", b.Item.Title, b.AuthorNames)
 
-	// Create or get authors [done]
+	// Create or get authors
 	newAuthorIDs, errAuthors := repository.CreateAuthors(tx, b.AuthorNames)
 	if errAuthors != nil {
 		util.Logger("CreateAuthors error: %s", errAuthors)
 		return constants.DbFailedInsertId
 	}
 
-	// Create or get item [done]
+	// Create or get item
 	bookID, errInsert := repository.InsertItem(tx, b)
 	if errInsert != nil {
 		util.Logger("Failed for book: %s, error: %s", b.Item.Title, errInsert)
@@ -56,7 +56,6 @@ func CreateBook(b *models.Book) int64 {
 			util.Logger("GetAuthorByName error: %s", errAuthor)
 			return 0
 		}
-		// add to existingAuthorIDs if found
 		if authorID != constants.NotFoundCreatorId {
 			existingAuthorIDs = append(existingAuthorIDs, authorID)
 		}

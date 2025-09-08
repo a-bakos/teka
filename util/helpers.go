@@ -47,6 +47,6 @@ func StringToInt64(s string) (int64, error) {
 }
 
 func PrintStruct(s interface{}) {
-	b, _ := json.MarshalIndent(s, "", "  ")
+	b, _ := json.MarshalIndent(s, constants.EmptyString, "  ")
 	fmt.Println(string(b))
 }

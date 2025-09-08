@@ -81,5 +81,3 @@ func (a App) Run() {
 	ps := services.GetProfileSettings("2")
 	util.PrintStruct(ps)
 }
-
-// methods exposed to JS via Wails

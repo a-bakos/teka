@@ -20,7 +20,6 @@ const RoleAuthor string = "author"
 const RoleUnknown string = "unknown"
 
 const EmptyString string = ""
-
 const SingleWhiteSpace string = " "
 
 const TrueInt int = 1
@@ -34,6 +33,7 @@ const DbTableCreators string = "creators"
 const DbTableImages string = "images"
 const DbTableProfiles string = "profiles"
 const DbTableProfileSettings string = "profile_settings"
+const DbTableCollections string = "collections"
 const DbTableItemCreators string = "item_creators"
 const DbTableProfileItemFlags string = "profile_item_flags"
 
