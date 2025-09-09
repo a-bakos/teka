@@ -9,6 +9,7 @@ import {Action, DataAttr, Events, NotificationType} from "./consts";
 import AppNotification from "./AppNotification";
 import Modal from "./Modal";
 import {formatDate, splitAuthors} from "./utils";
+import {IconNavBook} from "./icons";
 
 export default class ScreenBrowse {
     static EMPTY_STRING = "";
@@ -118,6 +119,7 @@ export default class ScreenBrowse {
                                 // remove item from DOM
                                 const parent = btn.closest("li");
                                 parent.remove();
+                                // todo need to update books list + widgets
                             } catch (err) {
                                 new AppNotification(NotificationType.ERROR, this.ctx.t("browse.deleteError"));
                             }
@@ -173,11 +175,18 @@ export default class ScreenBrowse {
 
                   <!-- Col 1: Small cover -->
                   <div class="w-16 h-24 flex-shrink-0">
-                    <img 
-                        ${ScreenBuilder.AddScreenSwitcher(ScreenBuilder.SCREENS.ITEM)}" 
-                        src="${coverExample}" 
-                        alt="" 
-                        class="cursor-pointer w-full h-full object-cover rounded">
+                    <span 
+                        ${ScreenBuilder.AddScreenSwitcher(ScreenBuilder.SCREENS.ITEM)} 
+                        class="justify-center items-center flex cursor-pointer w-7 bg-gray-200 w-full h-full rounded">
+                        ${IconNavBook}
+                    </span>
+
+                    ` + ""//<img
+                //   ${ScreenBuilder.AddScreenSwitcher(ScreenBuilder.SCREENS.ITEM)}
+                //   src="${coverExample}"
+                //   alt=""
+                //   class="cursor-pointer w-full h-full object-cover rounded">
+                + `
                   </div>
                 
                   <!-- Col 2: Title + Author -->
