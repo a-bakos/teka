@@ -270,7 +270,7 @@
     },
     "id": {
       "en": "Book ID",
-      "hu": "Cikkszám"
+      "hu": "Azonosító"
     },
     "addedAt": {
       "en": "Added at",
@@ -312,7 +312,7 @@
     },
     "addBooks": {
       "en": "Start adding",
-      "hu": "Uj hozzáadas"
+      "hu": "Uj hozzáadasa"
     },
     "myLibraryTitle": {
       "en": "My library",
@@ -332,7 +332,7 @@
     },
     "filterBtn": {
       "en": "Filter",
-      "hu": "Szurés"
+      "hu": "Szűrés"
     },
     "filterInputPlaceholder": {
       "en": "Filter by Title or Author...",
@@ -354,7 +354,7 @@
   "startup": {
     "newProfile": {
       "en": "New Profile",
-      "hu": "Uj Profil"
+      "hu": "Új profil"
     }
   }
 }

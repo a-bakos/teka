@@ -6,15 +6,21 @@ import ScreenBuilder from "./ScreenBuilder";
 
 import coverExample from './assets/images/pooh.jpg';
 import {formatDate, splitAuthors} from "./utils";
-import {Action, Bool, Events, NotificationType} from "./consts";
+import {Action, Bool, DataAttr, Events, NotificationType} from "./consts";
 import AppNotification from "./AppNotification";
 import Modal from "./Modal";
+import {IconNavBook} from "./icons";
 
 export default class ScreenItem {
+    static EMPTY_STRING = "";
+
+    static ID_NAME_SCREEN_WRAP = "screenWrap";
+
     static ID_NAME_COL_BOOK_COVER = "colBookCover";
     static ID_NAME_COL_BOOK_DETAILS = "colBookDetails";
     static ID_NAME_COL_BOOK_META = "colBookMeta";
     static ID_NAME_RELATED_BOOKS = "relatedBooks";
+    static ID_NAME_RELATED_BOOKS_WRAP = "relatedBooksWrap";
 
     static ID_NAME_BOOK_TITLE = "bookTitle";
     static ID_NAME_BOOK_AUTHOR = "bookAuthor";
@@ -38,6 +44,8 @@ export default class ScreenItem {
     static ID_NAME_BTN_DELETE = "bookDelete";
     static ID_NAME_BTN_DUPLICATE = "bookDuplicate";
 
+    static REDIRECT_DELAY = 1500;
+
     constructor(appContext) {
         this.ctx = appContext;
         this.Nav = new ElementNav(this.ctx);
@@ -47,13 +55,13 @@ export default class ScreenItem {
     render() {
         return `
             ${this.Nav.render()}
-            <div class="pt-16 p-2">
+            <div id="${ScreenItem.ID_NAME_SCREEN_WRAP}" class="pt-16 p-2">
                 <!-- 3-column layout -->
                 <div class="flex w-full mx-auto bg-white rounded shadow">
                                 
                     <!-- Left column: Image -->
-                    <div id="${ScreenItem.ID_NAME_COL_BOOK_COVER}" class="w-1/4 border bg-gray-50 p-2">
-                        <img src="${coverExample}" alt="" class="rounded shadow mb-2">
+                    <div id="${ScreenItem.ID_NAME_COL_BOOK_COVER}" class="w-1/4 bg-gray-50 p-2">
+                        <img src="${coverExample}" alt="" class="rounded mb-2">
                         <div>
                             <button 
                                 id="${ScreenItem.ID_NAME_COVER_UPLOAD}" 
@@ -64,7 +72,7 @@ export default class ScreenItem {
                     </div>
                                             
                    <!-- Middle column: Main details -->
-                    <div id="${ScreenItem.ID_NAME_COL_BOOK_DETAILS}" class="w-2/4 border">
+                    <div id="${ScreenItem.ID_NAME_COL_BOOK_DETAILS}" class="w-2/4">
                         <div class="max-w-xl mx-auto bg-white p-2">
                             <div class="flex items-center justify-between">
                                 <div class="w-3/5">
@@ -126,23 +134,7 @@ export default class ScreenItem {
                     </div>                                           
                 </div>
 
-                <section class="w-full mt-4">
-                    <h2 class="text-xl font-semibold mb-2">${this.ctx.t("itemDetails.moreFromAuthor")}</h2>
-
-                    <div id="${ScreenItem.ID_NAME_RELATED_BOOKS}" class="flex overflow-x-auto gap-4 py-2">
-                        <!-- Each book card -->
-                        <div class="min-w-[120px] flex-shrink-0 bg-white shadow rounded p-2 cursor-pointer hover:bg-gray-50">
-                            <img src="${coverExample}" alt="Book Cover" class="w-full h-32 object-cover rounded mb-1">
-                            <p class="text-sm font-medium truncate">Book Title 1</p>
-                        </div>
-    
-                        <div class="min-w-[120px] flex-shrink-0 bg-white shadow rounded p-2 cursor-pointer hover:bg-gray-50">
-                            <img src="${coverExample}" alt="Book Cover" class="w-full h-32 object-cover rounded mb-1">
-                            <p class="text-sm font-medium truncate">Book Title 2</p>
-                        </div>
-                        <!-- Repeat for additional books -->
-                    </div>
-                </section>
+                <section id="${ScreenItem.ID_NAME_RELATED_BOOKS_WRAP}" class="w-full mt-4"></section>
             </div>
             ${this.Footer.render()}
         `;
@@ -163,6 +155,9 @@ export default class ScreenItem {
                 console.log(book)
                 console.log(pif)
                 this.distributeBookDetails(book, pif)
+
+                // related books
+                await this.loadRelatedBooks(book.author_names, bookId);
             } else {
                 console.log('cant find item id')
             }
@@ -229,10 +224,12 @@ export default class ScreenItem {
                         const isDeleted = await window.go.main.App.DeleteBook(btnDelete.dataset.iid);
                         if (isDeleted) {
                             new AppNotification(NotificationType.SUCCESS, this.ctx.t("browse.deleteSuccess", {title: bookDetails.title}));
-                            // reset current item id
+                            this.ctx.resetCurrentItemId();
+                            document.getElementById(ScreenItem.ID_NAME_SCREEN_WRAP).innerHTML = ScreenBuilder.createPreloader().outerHTML;
                             setTimeout(() => {
-                                // todo go back to browse screen
-                            }, 2000);
+                                const redirectBtn = document.querySelector(`button[${DataAttr.SCREEN}="${ScreenBuilder.SCREENS.BROWSE}"]`);
+                                redirectBtn.click();
+                            }, ScreenItem.REDIRECT_DELAY);
                         } else {
                             new AppNotification(NotificationType.ERROR, this.ctx.t("browse.deleteError"));
                         }
@@ -248,5 +245,36 @@ export default class ScreenItem {
         document.getElementById(ScreenItem.ID_NAME_ADDED_BY).innerText = "";
         document.getElementById(ScreenItem.ID_NAME_LAST_UPDATED).innerText = "";
         document.getElementById(ScreenItem.ID_NAME_UPDATED_BY).innerText = "";
+    }
+
+    async loadRelatedBooks(authorNames, excludeItemId) {
+        const container = document.getElementById(ScreenItem.ID_NAME_RELATED_BOOKS_WRAP);
+        container.innerHTML = ScreenItem.EMPTY_STRING;
+        container.appendChild(ScreenBuilder.createPreloader());
+
+        // todo
+        // const relatedBooks = await window.go.main.App.LoadRelatedBooks(authorNames, excludeItemId)
+
+        let html = `
+            <h2 class="text-xl font-semibold mb-2">${this.ctx.t("itemDetails.moreFromAuthor")}</h2>
+            <div id="${ScreenItem.ID_NAME_RELATED_BOOKS}" class="flex overflow-x-auto gap-4 py-2">
+                <!-- Each book card -->
+                <div class="min-w-[120px] flex-shrink-0 bg-white shadow rounded p-2 cursor-pointer hover:bg-gray-50">
+                    <img src="${coverExample}" alt="Book Cover" class="w-full h-32 object-cover rounded mb-1">
+                    <p class="text-sm font-medium truncate">Book Title 1</p>
+                </div>
+
+                <div class="min-w-[120px] flex-shrink-0 bg-white shadow rounded p-2 cursor-pointer hover:bg-gray-50">
+                    <span
+                        ${ScreenBuilder.AddScreenSwitcher(ScreenBuilder.SCREENS.ITEM)} 
+                        class="justify-center items-center flex cursor-pointer w-7 bg-gray-200 w-full rounded">
+                        ${IconNavBook}
+                    </span>
+                    <p class="text-sm font-medium truncate">Book Title 2</p>
+                </div>
+            </div>`;
+
+        container.querySelector(ScreenBuilder.SELECTOR_CLASS_PRELOADER).remove();
+        container.innerHTML = html;
     }
 }
