@@ -48,7 +48,8 @@ func (a App) Run() {
 	//_ = services.CreateBook(&newbook) // returns book id
 
 	// Get all books
-	// services.GetBooks()
+	b := services.GetBooks()
+	util.PrintStruct(b)
 
 	// Delete book by book id
 	//r := services.DeleteBook("20")
@@ -78,6 +79,7 @@ func (a App) Run() {
 	//stats := services.GetStats("2")
 	//util.PrintStruct(stats)
 
-	ps := services.GetProfileSettings("2")
-	util.PrintStruct(ps)
+	//ps := services.GetProfileSettings("2")
+	//util.PrintStruct(ps)
+
 }

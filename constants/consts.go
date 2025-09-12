@@ -6,6 +6,9 @@ const DbDriver string = "sqlite3"
 const DbPath string = "./temp/tekatest.db"
 const DbFailedInsertId int64 = 0
 
+const DbRowsOrderAsc string = "ASC"
+const DbRowsOrderDesc string = "DESC"
+
 const ZeroValue int = 0
 const NotFoundCreatorId int64 = 0
 const NotFoundItemId int64 = 0

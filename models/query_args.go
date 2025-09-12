@@ -7,6 +7,7 @@ type QueryArgs struct {
 	ItemType    *string
 	Title       *string
 	Description *string
+	Order       *string // "ASC" or "DESC"
 }
 
 type BookQueryArgs struct {

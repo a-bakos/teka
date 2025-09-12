@@ -213,7 +213,9 @@ func GetBooks(tx *sql.Tx) []models.Book {
 		    books.isbn,
 		    books.publisher, 
 		    books.published_date, 
-		    books.page_count;
+		    books.page_count
+		ORDER BY 
+		    items.title ASC;
 	`,
 		constants.MultiAuthorSeparator,
 	)
@@ -290,7 +292,9 @@ func GetBooksByProfileId(tx *sql.Tx, profileId string) []models.Book {
 		    books.isbn,
 		    books.publisher, 
 		    books.published_date, 
-		    books.page_count;
+		    books.page_count
+		ORDER BY
+		    items.title ASC;
 	`,
 		constants.MultiAuthorSeparator,
 		profileId,

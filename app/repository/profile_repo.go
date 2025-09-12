@@ -40,7 +40,7 @@ func InsertProfile(tx *sql.Tx, p *models.Profile) (int64, error) {
 
 func GetProfiles(tx *sql.Tx) []models.Profile {
 	var profiles []models.Profile
-	profileRows, err := tx.Query(`SELECT * FROM profiles`)
+	profileRows, err := tx.Query(`SELECT * FROM profiles ORDER BY name`)
 	if err != nil {
 		util.Logger("Error %v", err)
 		return profiles

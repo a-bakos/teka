@@ -307,6 +307,9 @@ export default class ScreenBrowse {
                 ${this.addWidget(this.ctx.t("browse.statusReadingTitle"), `Currently reading <span id="${ScreenBrowse.ID_NAME_STATS_READING}">${stats.reading_count}</span> books.`)}
                 <!-- Read Books Widget -->
                 ${this.addWidget(this.ctx.t("browse.statusReadTitle"), `You finished <span id="${ScreenBrowse.ID_NAME_STATS_READ}">${stats.read_count}</span> books.`)}
+                
+                ${this.addWidget("Osszes szerzo", `Az osszes szerzo az adatbazisban`)}
+                ${this.addWidget("Osszes konyv", `Az osszes konyv az adatbazisban`)}
             </div>
         `;
     }

@@ -3,6 +3,8 @@
 export default class ElementFooter {
     static EMPTY_STRING = "";
 
+    static ID_NAME_LOGIN = "footerLoginName";
+
     constructor(appContext) {
         this.ctx = appContext;
     }
@@ -30,8 +32,6 @@ export default class ElementFooter {
             </footer> 
         `;
     }
-
-    static ID_NAME_LOGIN = "footerLoginName";
 
     loginData() {
         if (null !== this.ctx.getCurrentUserName()) {
