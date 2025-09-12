@@ -33,11 +33,12 @@ Tech stack:
 - Go
 - SQLite
 - Wails (for GUI)
-- HTML + CSS / Tailwind + JS (for GUI)
+- HTML + CSS / Tailwind
+- JavaScript
 - JSON
 
-- previous considerations for gui: fyne, wails, gio
-- previous considerations for internationalization dictionary: json, yaml, toml
+- previous considerations for gui: fyne, gio
+- previous considerations for internationalization dictionary: yaml, toml
 
 ---
 
@@ -53,6 +54,8 @@ Tech stack:
 | `Creator`          | Represents an author or creator of an item                                |
 | `ItemCreator`      | Association between `Item` and `Creator` (to allow for multiple creators) |
 | `Image`            | Represents an image associated with an item                               |
+| `Language`         | TODO                                                                      |
+| `Stats`            | TODO                                                                      |
 
 ---
 
@@ -194,3 +197,25 @@ Rule of Thumb
 - Repositories: "How to get and save the data."
 - Services: "What to do with the data."
 - UI Layer (CLI/GUI): "How the user interacts with the data."
+
+---
+
+# TODO
+
+- prevent duplicated item_id per profile_id in collections
+- prevent duplicated creators per item (same name)
+- update book
+- filters
+- widgets
+- related books
+- delete profile
+- change language
+- export db
+- import db
+- first-run setup for db
+- first-run setup for profile
+- collection vs catalog/library
+- image attachment uploader
+- item details meta sidebar
+- add to favs
+- sw remote updates

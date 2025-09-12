@@ -195,7 +195,7 @@ export default class ScreenBrowse {
                         ${DataAttr.IID}="${book.item_id}"
                         ${ScreenBuilder.AddScreenSwitcher(ScreenBuilder.SCREENS.ITEM)}"
                         class="cursor-pointer text-lg font-semibold text-gray-900">
-                        ${book.title}
+                        ${book.title} [ID: ${book.item_id}]
                     </h3>
                     <p class="text-sm text-gray-500">${splitAuthors(book.author_names)}</p>
                     <p class="text-sm text-gray-500">${this.addMetadata(book)}</p>
