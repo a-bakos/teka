@@ -187,3 +187,13 @@ func GetLibraryStats() (models.LibStats, error) {
 
 	return stats, nil
 }
+
+// todo
+func GetAuthorsList() []models.Author {
+	return []models.Author{}
+}
+
+// todo
+func GetPublishersList() []models.Publisher {
+	return []models.Publisher{}
+}
