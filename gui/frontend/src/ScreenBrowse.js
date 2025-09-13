@@ -146,6 +146,10 @@ export default class ScreenBrowse {
         return await window.go.main.App.GetMyStats(this.ctx.getCurrentUserId());
     }
 
+    async getLibraryStats() {
+        return await window.go.main.App.GetLibraryStats();
+    }
+
     async getBooks() {
         const books = await window.go.main.App.GetBooksByProfileId(this.ctx.getCurrentUserId());
 
@@ -205,19 +209,19 @@ export default class ScreenBrowse {
                   <div class="flex items-center gap-2 text-sm select-none">
                     <button 
                         ${DataAttr.IID}="${book.item_id}"
-                        ${ScreenBuilder.AddScreenSwitcher(ScreenBuilder.SCREENS.ITEM)}" 
+                        ${ScreenBuilder.AddScreenSwitcher(ScreenBuilder.SCREENS.ITEM)} 
                         class="px-2 py-1 bg-yellow-500 text-white rounded hover:bg-yellow-600">
                         ${this.ctx.t("globals.view")}
                     </button>
                     <button
                         ${DataAttr.IID}="${book.item_id}"
-                        ${ScreenBuilder.AddScreenSwitcher(ScreenBuilder.SCREENS.FORM)}"
+                        ${ScreenBuilder.AddScreenSwitcher(ScreenBuilder.SCREENS.FORM)}
                         class="${ScreenBrowse.CLASS_NAME_EDIT_BOOK} px-2 py-1 bg-blue-500 text-white rounded hover:bg-blue-600">
                         ${this.ctx.t("globals.edit")}
                     </button>
                     <button
                         ${DataAttr.IID}="${book.item_id}"
-                        ${ScreenBuilder.AddScreenSwitcher(ScreenBuilder.SCREENS.FORM)}"
+                        ${ScreenBuilder.AddScreenSwitcher(ScreenBuilder.SCREENS.FORM)}
                         class="${ScreenBrowse.CLASS_NAME_DUPLICATE_BOOK} px-2 py-1 bg-green-500 text-white rounded hover:bg-green-600">
                         ${this.ctx.t("globals.duplicate")}
                     </button>
@@ -297,6 +301,7 @@ export default class ScreenBrowse {
 
     async sectionDashlets() {
         const stats = await this.getStats()
+        const libStats = await this.getLibraryStats();
         return `
             <div class="flex flex-wrap border">
                 <!-- Favorite Books Widget -->
@@ -307,9 +312,10 @@ export default class ScreenBrowse {
                 ${this.addWidget(this.ctx.t("browse.statusReadingTitle"), `Currently reading <span id="${ScreenBrowse.ID_NAME_STATS_READING}">${stats.reading_count}</span> books.`)}
                 <!-- Read Books Widget -->
                 ${this.addWidget(this.ctx.t("browse.statusReadTitle"), `You finished <span id="${ScreenBrowse.ID_NAME_STATS_READ}">${stats.read_count}</span> books.`)}
-                
-                ${this.addWidget("Osszes szerzo", `Az osszes szerzo az adatbazisban`)}
-                ${this.addWidget("Osszes konyv", `Az osszes konyv az adatbazisban`)}
+                <!-- All Authors Widget -->
+                ${this.addWidget("Osszes szerzo", `Az osszes szerzo az adatbazisban ${libStats.all_books_count}`)}
+                <!-- All Books Widget -->
+                ${this.addWidget("Osszes konyv", `Az osszes konyv az adatbazisban ${libStats.all_authors_count}`)}
             </div>
         `;
     }

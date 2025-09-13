@@ -274,8 +274,6 @@ func GetProfileItemFlags(tx *sql.Tx, profileId, itemId string) models.ProfileIte
 func GetStats(tx *sql.Tx, profileId string) (models.Stats, error) {
 	var stats models.Stats
 
-	// todo total needs changing to collection!! not pif
-
 	err := tx.QueryRow(`
 		SELECT
 			COUNT(DISTINCT c.item_id) AS total,
@@ -286,7 +284,10 @@ func GetStats(tx *sql.Tx, profileId string) (models.Stats, error) {
 		LEFT JOIN profile_item_flags pif
 			ON c.profile_id = pif.profile_id
 		   AND c.item_id = pif.item_id
-		WHERE c.profile_id = ?
+		JOIN items i 
+			ON i.id = c.item_id
+		WHERE c.profile_id = ? 
+		    AND i.item_type = "book"
 	`, constants.StatusReading, constants.StatusRead, profileId).Scan(
 		&stats.MyBooks,
 		&stats.MyFavs,

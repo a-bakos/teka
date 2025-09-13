@@ -331,3 +331,26 @@ func GetBooksByProfileId(tx *sql.Tx, profileId string) []models.Book {
 
 	return books
 }
+
+func GetLibraryStats(tx *sql.Tx) (models.LibStats, error) {
+	var libStats models.LibStats
+
+	err := tx.QueryRow(`
+		SELECT 
+		    COUNT(DISTINCT i.id) AS all_books,
+		    COUNT(DISTINCT c.id) AS all_authors
+		FROM items i, creators c
+		WHERE 
+			i.item_type = "book"
+	`).Scan(
+		&libStats.AllBooks,
+		&libStats.AllAuthors,
+	)
+
+	if err != nil {
+		util.Logger("Error %v", err)
+		return models.LibStats{}, err
+	}
+
+	return libStats, nil
+}

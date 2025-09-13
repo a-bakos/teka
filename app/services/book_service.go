@@ -166,3 +166,24 @@ func GetBooksByProfileId(profileId string) []models.Book {
 
 	return repository.GetBooksByProfileId(tx, profileId)
 }
+
+func GetLibraryStats() (models.LibStats, error) {
+	tx, err := db.Conn.Begin()
+	if err != nil {
+		return models.LibStats{}, err
+	}
+	defer func() {
+		if err != nil {
+			tx.Rollback()
+		} else {
+			tx.Commit()
+		}
+	}()
+
+	stats, statsErr := repository.GetLibraryStats(tx)
+	if statsErr != nil {
+		return models.LibStats{}, statsErr
+	}
+
+	return stats, nil
+}

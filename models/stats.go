@@ -6,3 +6,8 @@ type Stats struct {
 	Reading int `json:"reading_count"`
 	Read    int `json:"read_count"`
 }
+
+type LibStats struct {
+	AllBooks   int64 `json:"all_books_count"`
+	AllAuthors int64 `json:"all_authors_count"`
+}

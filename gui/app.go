@@ -118,3 +118,7 @@ func (a *App) GetProfiles() []models.Profile {
 func (a *App) GetBooks() []models.Book {
 	return services.GetBooks()
 }
+
+func (a *App) GetLibraryStats() (models.LibStats, error) {
+	return services.GetLibraryStats()
+}
