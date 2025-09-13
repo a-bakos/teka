@@ -40,3 +40,7 @@ export const DataAttr = {
     UID: "data-uid",
     SCREEN: "data-screen",
 }
+
+export const SeparateItemsWith = ", ";
+
+export const EmptyString = "";

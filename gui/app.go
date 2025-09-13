@@ -122,3 +122,11 @@ func (a *App) GetBooks() []models.Book {
 func (a *App) GetLibraryStats() (models.LibStats, error) {
 	return services.GetLibraryStats()
 }
+
+func (a *App) GetAuthorsList() {
+	return services.GetAuthorsList()
+}
+
+func (a *App) GetPublishersList() {
+	return services.GetPublishersList()
+}

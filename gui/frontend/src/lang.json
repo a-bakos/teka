@@ -241,6 +241,10 @@
     "updateItemBtn": {
       "en": "Update",
       "hu": "Frissites"
+    },
+    "addToCollection": {
+      "en": "Add to my collection",
+      "hu": "Hozzáadás a könyvtáramhoz"
     }
   },
   "itemDetails": {

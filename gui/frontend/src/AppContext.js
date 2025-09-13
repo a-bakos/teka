@@ -102,4 +102,8 @@ export default class AppContext {
             this.getCurrentItemId() !== null &&
             (this.getPreviousScreen() === ScreenBuilder.SCREENS.ITEM || this.getPreviousScreen() === ScreenBuilder.SCREENS.BROWSE);
     }
+
+    addAttribute(attr, value) {
+        return `${attr}="${value}"`;
+    }
 }

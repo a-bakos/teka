@@ -1,4 +1,5 @@
 import * as constants from "./consts";
+import {EmptyString, SeparateItemsWith} from "./consts";
 
 export function randomStringGenerator() {
     return (Math.random() + 1).toString(36).substring(7);
@@ -7,11 +8,11 @@ export function randomStringGenerator() {
 export function splitAuthors(authorNames) {
     const authors = authorNames.split(constants.MultiAuthorSeparator)
 
-    let authorValue = "";
+    let authorValue = EmptyString;
     for (let i = 0; i < authors.length; i++) {
         authorValue += authors[i]
         if (i !== authors.length - 1) {
-            authorValue += ", ";
+            authorValue += SeparateItemsWith;
         }
     }
     authorValue.trim();
@@ -27,4 +28,10 @@ export function formatDate(date) {
 // Eg. we need this format for the DB: "2016-01-01T00:00:00Z"
 export function formatPublishDate(year) {
     return `${year}-01-01T00:00:00Z`;
+}
+
+export function implode(arr, implodeChar = SeparateItemsWith) {
+    if (arr.length === 0) return EmptyString;
+    if (arr.length === 1) return arr[0];
+    return arr.slice(0, -1).join(", ") + implodeChar + arr[arr.length - 1];
 }

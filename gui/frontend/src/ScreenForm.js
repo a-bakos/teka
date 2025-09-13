@@ -2,8 +2,10 @@
 
 import ElementNav from "./ElementNav";
 import ElementFooter from "./ElementFooter";
-import {formatDate, formatPublishDate} from "./utils";
-import {Action, Events, ItemTypeBook} from "./consts";
+import {formatDate, formatPublishDate, implode} from "./utils";
+import {Action, DataAttr, Events, ItemTypeBook, NotificationType} from "./consts";
+import AppNotification from "./AppNotification";
+import ScreenBuilder from "./ScreenBuilder";
 
 export default class ScreenForm {
     static EMPTY_STRING = "";
@@ -45,20 +47,23 @@ export default class ScreenForm {
 
                 <div class="flex flex-col items-center pt-2 p-4 space-y-4">
                     <div class="flex flex-row items-center space-x-2 w-full max-w-lg">
-                        <label class="w-32 text-left min-w-[90px]" for="">
+                        <label 
+                            class="w-32 text-left min-w-[90px]" 
+                            for="${ScreenForm.ID_NAME_INPUT_TITLE}">
                             ${this.ctx.t("newItem.title")}<span class="text-red-700">*</span>
                         </label>
                         <input 
                             required 
                             class="border flex-1 p-2 rounded" 
                             type="text" 
-                            name=""
                             id="${ScreenForm.ID_NAME_INPUT_TITLE}" 
                             placeholder="${this.ctx.t("newItem.titlePlaceholder")}" 
                             value="">
                     </div>
                     <div class="flex flex-row items-center space-x-2 w-full max-w-lg">
-                        <label class="w-32 text-left min-w-[90px]" for="author">
+                        <label 
+                            class="w-32 text-left min-w-[90px]" 
+                            for="${ScreenForm.ID_NAME_INPUT_AUTHORS}">
                             ${this.ctx.t("newItem.authors")}<span class="text-red-700">*</span>
                         </label>
                         <input 
@@ -79,26 +84,28 @@ export default class ScreenForm {
                     </div>
                     <p class="text-xs text-right">${this.ctx.t("newItem.multiAuthorHelper")}</p>
                     <div class="flex flex-row items-center space-x-2 w-full max-w-lg">
-                        <label class="w-32 text-left min-w-[90px]" for="publish-year">
+                        <label 
+                            class="w-32 text-left min-w-[90px]" 
+                            for="${ScreenForm.ID_NAME_INPUT_YEAR}">
                             ${this.ctx.t("newItem.publishYear")}
                         </label>
                         <input 
                             class="border flex-1 p-2 rounded" 
                             type="number" 
-                            name="publish-year" 
                             id="${ScreenForm.ID_NAME_INPUT_YEAR}" 
                             min="1000" 
                             max="9999" 
                             placeholder="1984">
                     </div>
                     <div class="flex flex-row items-center space-x-2 w-full max-w-lg">
-                        <label class="w-32 text-left min-w-[90px]" for="publisher">
+                        <label 
+                            class="w-32 text-left min-w-[90px]" 
+                            for="${ScreenForm.ID_NAME_INPUT_PUBLISHER}">
                             ${this.ctx.t("newItem.publisher")}
                         </label>
                         <input 
                             class="border flex-1 p-2 rounded" 
                             type="text" 
-                            name="publisher" 
                             id="${ScreenForm.ID_NAME_INPUT_PUBLISHER}" 
                             placeholder="${this.ctx.t("newItem.publisherPlaceholder")}" 
                             list="publisher-list" 
@@ -111,14 +118,15 @@ export default class ScreenForm {
                         </datalist>
                     </div>
                     <div class="flex flex-row items-center space-x-2 w-full max-w-lg">
-                        <label class="w-32 text-left min-w-[90px]" for="">
+                        <label 
+                            class="w-32 text-left min-w-[90px]" 
+                            for="${ScreenForm.ID_NAME_INPUT_ISBN}">
                             ${this.ctx.t("newItem.isbn")}
                         </label>
                         <input 
                             class="border flex-1 p-2 rounded" 
                             type="text" 
                             pattern="[0-9\-]*"
-                            name="" 
                             id="${ScreenForm.ID_NAME_INPUT_ISBN}"
                             placeholder="${this.ctx.t("newItem.isbnPlaceholder")}" 
                             value="">
@@ -134,11 +142,14 @@ export default class ScreenForm {
                     </div>-->
                     
                     <div class="flex flex-row items-center space-x-2 w-full max-w-lg">
-                        <label class="w-32 text-left min-w-[90px]" for="">${this.ctx.t("newItem.pages")}</label>
+                        <label 
+                            class="w-32 text-left min-w-[90px]" 
+                            for="${ScreenForm.ID_NAME_INPUT_PAGES}">
+                            ${this.ctx.t("newItem.pages")}
+                        </label>
                         <input 
                             class="border flex-1 p-2 rounded" 
                             type="number" 
-                            name="" 
                             id="${ScreenForm.ID_NAME_INPUT_PAGES}" 
                             placeholder="921" 
                             value="">
@@ -146,39 +157,27 @@ export default class ScreenForm {
                     <div class="flex flex-row items-center space-x-2 w-full max-w-lg">
                         <label 
                             class="w-32 text-left min-w-[90px]" 
-                            for="">${this.ctx.t("newItem.notes")}</label>
+                            for="${ScreenForm.ID_NAME_INPUT_NOTES}">
+                            ${this.ctx.t("newItem.notes")}
+                        </label>
                         <textarea 
                             class="border flex-1 p-2 rounded" 
-                            name="" 
                             id="${ScreenForm.ID_NAME_INPUT_NOTES}" 
                             cols="30" 
                             rows="2"></textarea>
                     </div>
                     
-                    <div class="flex flex-row items-center space-x-2 w-full max-w-lg">
-                        <label 
-                            class="w-32 text-left min-w-[90px]" 
-                            for="image-upload">
-                            ${this.ctx.t("newItem.image")}
-                        </label>
-                        <input 
-                            class="border flex-1 p-2 rounded" 
-                            type="file" 
-                            name="image"
-                            id="image-upload" 
-                            accept="image/*">
-                    </div>
-
                     <div class="flex flex-row items-center space-x-2 w-full max-w-lg border flex-1 p-2 rounded">
                         <input 
                             type="checkbox" 
                             id="${ScreenForm.ID_NAME_INPUT_ADD_TO_COLLECTION}" 
-                            name="add_to_collection" 
                             checked
                             class="h-5 w-5">
                         <label 
                             class="text-left" 
-                            for="">${this.ctx.t("newItem.addToCollection")}</label>
+                            for="${ScreenForm.ID_NAME_INPUT_ADD_TO_COLLECTION}">
+                            ${this.ctx.t("newItem.addToCollection")}
+                        </label>
                     </div>
                     
                     <div class="flex flex-row items-center space-x-2 w-full max-w-lg">
@@ -196,7 +195,7 @@ export default class ScreenForm {
 
     async afterRender() {
         if (this.ctx.getCurrentItemId()) {
-            const book = await this.getBook()
+            const book = await this.getBook();
             if (book) {
                 document.getElementById(ScreenForm.ID_NAME_INPUT_TITLE).value = book.title;
                 document.getElementById(ScreenForm.ID_NAME_INPUT_AUTHORS).value = book.author_names;
@@ -213,8 +212,37 @@ export default class ScreenForm {
             }
         }
 
+
         const submit = document.getElementById(ScreenForm.ID_NAME_MAIN_SUBMIT_BUTTON);
         submit.addEventListener(Events.CLICK, async () => {
+
+            // Check empty title or authors
+            const title = document.getElementById(ScreenForm.ID_NAME_INPUT_TITLE);
+            const authors = document.getElementById(ScreenForm.ID_NAME_INPUT_AUTHORS);
+
+            const inputErrorClass = "border-red-700";
+            let missingItems = [];
+
+            if (!title.value) {
+                title.classList.add(inputErrorClass);
+                missingItems.push("Title");
+            } else {
+                title.classList.remove(inputErrorClass);
+            }
+            if (!authors.value) {
+                authors.classList.add(inputErrorClass);
+                missingItems.push("Author(s)");
+            } else {
+                authors.classList.remove(inputErrorClass);
+            }
+
+            if (missingItems.length > 0) {
+                new AppNotification(
+                    NotificationType.ERROR,
+                    `Missing ${implode(missingItems)}`,
+                    true
+                );
+            }
 
             const action = this.ctx.getActionRequest();
             switch (action) {
@@ -229,14 +257,25 @@ export default class ScreenForm {
                 default:
             }
 
-            const bookDetails = this.createBookModel()
+            const bookDetails = this.createBookModel();
             const bookId = await window.go.main.App.AddBook(bookDetails);
-            console.log(bookId) // deal with exists or new ID
+            console.log(bookId) // todo deal with exists or new ID
 
             const addToCollection = document.getElementById(ScreenForm.ID_NAME_INPUT_ADD_TO_COLLECTION).checked;
             if (bookId && addToCollection) {
                 const added = await window.go.main.App.AddToCollection(bookId.toString(), this.ctx.getCurrentUserId().toString());
-                console.log(added)
+                this.ctx.setCurrentItemId(bookId.toString());
+
+                new AppNotification(
+                    NotificationType.SUCCESS,
+                    `Book added${added ? " and added to your collection" : ""}!<br>
+                            <button 
+                                ${ScreenBuilder.AddScreenSwitcher(ScreenBuilder.SCREENS.ITEM)} 
+                                ${this.ctx.addAttribute(DataAttr.IID, bookId)}>                                
+                                Check item!
+                            </button>`,
+                    false
+                );
             }
         });
     }
@@ -309,3 +348,6 @@ export default class ScreenForm {
         return this.createBookDetails(title, notes, year, publisher, pages, isbn, authors);
     }
 }
+
+// todo getAuthors list
+// todo getPublishers list
