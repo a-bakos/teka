@@ -127,7 +127,6 @@ func (a *App) GetAuthorsList() ([]models.Author, error) {
 	return services.GetAuthorsList()
 }
 
-//
-//func (a *App) GetPublishersList() {
-//	return services.GetPublishersList()
-//}
+func (a *App) GetPublishersList() ([]models.Publisher, error) {
+	return services.GetPublishersList()
+}

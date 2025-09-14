@@ -379,3 +379,25 @@ func GetAuthors(tx *sql.Tx) ([]models.Author, error) {
 
 	return authors, nil
 }
+
+func GetPublishers(tx *sql.Tx) ([]models.Publisher, error) {
+	publisherRows, err := tx.Query(`SELECT DISTINCT publisher FROM books WHERE publisher IS NOT NULL AND publisher <> '' ORDER BY publisher ASC`)
+
+	if err != nil {
+		util.Logger("Failed: %v", err)
+		return nil, err
+	}
+	var publishers []models.Publisher
+	for publisherRows.Next() {
+		var p models.Publisher
+
+		err = publisherRows.Scan(&p.Name)
+		if err != nil {
+			util.Logger("Failed for publisher: %v", err)
+		}
+
+		publishers = append(publishers, p)
+	}
+
+	return publishers, nil
+}

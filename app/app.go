@@ -82,7 +82,7 @@ func (a App) Run() {
 	//ps := services.GetProfileSettings("2")
 	//util.PrintStruct(ps)
 
-	al, err := services.GetAuthorsList()
+	al, err := services.GetPublishersList()
 	if err != nil {
 		util.Logger("%v", ``)
 	}

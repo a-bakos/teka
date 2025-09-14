@@ -67,6 +67,9 @@ export default class ScreenStartup {
         const authors = await window.go.main.App.GetAuthorsList();
         console.log(authors)
 
+        const publishers = await window.go.main.App.GetPublishersList();
+        console.log(publishers)
+
         const container = document.createElement("div");
         container.className = "grid grid-cols-5 gap-8";
 

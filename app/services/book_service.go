@@ -188,7 +188,6 @@ func GetLibraryStats() (models.LibStats, error) {
 	return stats, nil
 }
 
-// todo
 func GetAuthorsList() ([]models.Author, error) {
 	tx, err := db.Conn.Begin()
 	if err != nil {
@@ -205,7 +204,18 @@ func GetAuthorsList() ([]models.Author, error) {
 	return repository.GetAuthors(tx)
 }
 
-// todo
-func GetPublishersList() []models.Publisher {
-	return []models.Publisher{}
+func GetPublishersList() ([]models.Publisher, error) {
+	tx, err := db.Conn.Begin()
+	if err != nil {
+		return []models.Publisher{}, err
+	}
+	defer func() {
+		if err != nil {
+			tx.Rollback()
+		} else {
+			tx.Commit()
+		}
+	}()
+
+	return repository.GetPublishers(tx)
 }
