@@ -31,6 +31,18 @@ export default class ScreenBuilder {
         ITEM: "item",
     };
 
+    static BROWSE_FILTERS = {
+        ALL: "all", // = in my collection
+        READ: "read",
+        UNREAD: "unread",
+        READING: "reading",
+        FAVORITES: "favorites",
+        //WISHLIST: "wishlist",
+        ALL_BOOKS: "all_books",
+        ALL_AUTHORS: "all_authors",
+        ALL_PUBLISHERS: "all_publishers",
+    }
+
     // Any button or element with a data-screen attribute automatically becomes a navigation trigger
     static NAV_SCREEN_TRIGGER = "[data-screen]";
 

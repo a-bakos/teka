@@ -39,6 +39,7 @@ export const DataAttr = {
     IID: "data-iid",
     UID: "data-uid",
     SCREEN: "data-screen",
+    BROWSE_FILTER: "data-browse-filter",
 }
 
 export const SeparateItemsWith = ", ";

@@ -5,7 +5,7 @@ import ElementNav from "./ElementNav";
 import ElementFooter from "./ElementFooter";
 
 import coverExample from './assets/images/pooh.jpg';
-import {Action, DataAttr, Events, NotificationType} from "./consts";
+import {Action, DataAttr, EmptyString, Events, NotificationType} from "./consts";
 import AppNotification from "./AppNotification";
 import Modal from "./Modal";
 import {formatDate, splitAuthors} from "./utils";
@@ -291,9 +291,16 @@ export default class ScreenBrowse {
         return html;
     }
 
-    addWidget(title, content) {
+    addWidget(title, content, attrs = {}) {
+        let attrsString = EmptyString;
+        for (const [key, value] of Object.entries(attrs)) {
+            attrsString += this.ctx.addAttribute(key, value);
+        }
+
         return `
-            <div class="flex-1 min-w-[200px] bg-white border-r rounded p-4 cursor-pointer hover:bg-gray-50">
+            <div
+                ${attrsString}
+                class="flex-1 min-w-[200px] bg-white border-r rounded p-4 cursor-pointer hover:bg-gray-50">
                 <h3 class="text-lg font-semibold mb-2">${title}</h3>
                 <p class="text-gray-500">${content}</p>
             </div>`;
@@ -304,18 +311,66 @@ export default class ScreenBrowse {
         const libStats = await this.getLibraryStats();
         return `
             <div class="flex flex-wrap border">
-                <!-- Favorite Books Widget -->
-                ${this.addWidget(this.ctx.t("browse.myLibraryTitle"), `You have <span id="${ScreenBrowse.ID_NAME_STATS_TOTAL}">${stats.my_books_count}</span> books in your library.`)}
-                <!-- Favorite Books Widget -->
-                ${this.addWidget(this.ctx.t("browse.favsTitle"), `You have <span id="${ScreenBrowse.ID_NAME_STATS_FAVS}">${stats.my_favs_count}</span> favorite books.`)}
-                <!-- Reading Now Widget -->
-                ${this.addWidget(this.ctx.t("browse.statusReadingTitle"), `Currently reading <span id="${ScreenBrowse.ID_NAME_STATS_READING}">${stats.reading_count}</span> books.`)}
-                <!-- Read Books Widget -->
-                ${this.addWidget(this.ctx.t("browse.statusReadTitle"), `You finished <span id="${ScreenBrowse.ID_NAME_STATS_READ}">${stats.read_count}</span> books.`)}
-                <!-- All Authors Widget -->
-                ${this.addWidget("Osszes szerzo", `Az osszes szerzo az adatbazisban ${libStats.all_books_count}`)}
-                <!-- All Books Widget -->
-                ${this.addWidget("Osszes konyv", `Az osszes konyv az adatbazisban ${libStats.all_authors_count}`)}
+        
+        <!-- All Books Widget -->
+        ${this.addWidget(
+            this.ctx.t("browse.myLibraryTitle"),
+            `You have <span id="${ScreenBrowse.ID_NAME_STATS_TOTAL}">${stats.my_books_count}</span> books in your library.`,
+            {
+                [DataAttr.SCREEN]: ScreenBuilder.SCREENS.BROWSE,
+                [DataAttr.BROWSE_FILTER]: ScreenBuilder.BROWSE_FILTERS.ALL
+            }
+        )}
+
+        <!-- Favorite Books Widget -->
+        ${this.addWidget(
+            this.ctx.t("browse.favsTitle"),
+            `You have <span id="${ScreenBrowse.ID_NAME_STATS_FAVS}">${stats.my_favs_count}</span> favorite books.`,
+            {
+                [DataAttr.SCREEN]: ScreenBuilder.SCREENS.BROWSE,
+                [DataAttr.BROWSE_FILTER]: ScreenBuilder.BROWSE_FILTERS.FAVORITES
+            }
+        )}
+        
+        <!-- Reading Now Widget -->
+        ${this.addWidget(
+            this.ctx.t("browse.statusReadingTitle"),
+            `Currently reading <span id="${ScreenBrowse.ID_NAME_STATS_READING}">${stats.reading_count}</span> books.`,
+            {
+                [DataAttr.SCREEN]: ScreenBuilder.SCREENS.BROWSE,
+                [DataAttr.BROWSE_FILTER]: ScreenBuilder.BROWSE_FILTERS.READING
+            }
+        )}
+        
+        <!-- Read Books Widget -->
+        ${this.addWidget(
+            this.ctx.t("browse.statusReadTitle"),
+            `You finished <span id="${ScreenBrowse.ID_NAME_STATS_READ}">${stats.read_count}</span> books.`,
+            {
+                [DataAttr.SCREEN]: ScreenBuilder.SCREENS.BROWSE,
+                [DataAttr.BROWSE_FILTER]: ScreenBuilder.BROWSE_FILTERS.READ
+            }
+        )}
+        
+        <!-- All Authors Widget -->
+        ${this.addWidget(
+            "Osszes szerzo",
+            `Az osszes szerzo az adatbazisban ${libStats.all_authors_count}`,
+            {
+                [DataAttr.SCREEN]: ScreenBuilder.SCREENS.BROWSE,
+                [DataAttr.BROWSE_FILTER]: ScreenBuilder.BROWSE_FILTERS.ALL_AUTHORS
+            }
+        )}
+        
+        <!-- All Books Widget -->
+        ${this.addWidget(
+            "Osszes konyv",
+            `Az osszes konyv az adatbazisban ${libStats.all_books_count}`,
+            {
+                [DataAttr.SCREEN]: ScreenBuilder.SCREENS.BROWSE,
+                [DataAttr.BROWSE_FILTER]: ScreenBuilder.BROWSE_FILTERS.ALL_BOOKS
+            }
+        )}
             </div>
         `;
     }
