@@ -64,6 +64,9 @@ export default class ScreenStartup {
         // profiles is [{ id: "", name: ""}, { ... }]
         const profiles = await window.go.main.App.GetProfiles();
 
+        const authors = await window.go.main.App.GetAuthorsList();
+        console.log(authors)
+
         const container = document.createElement("div");
         container.className = "grid grid-cols-5 gap-8";
 

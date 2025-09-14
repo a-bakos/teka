@@ -123,10 +123,11 @@ func (a *App) GetLibraryStats() (models.LibStats, error) {
 	return services.GetLibraryStats()
 }
 
-func (a *App) GetAuthorsList() {
+func (a *App) GetAuthorsList() ([]models.Author, error) {
 	return services.GetAuthorsList()
 }
 
-func (a *App) GetPublishersList() {
-	return services.GetPublishersList()
-}
+//
+//func (a *App) GetPublishersList() {
+//	return services.GetPublishersList()
+//}

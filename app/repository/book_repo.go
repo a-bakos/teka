@@ -354,3 +354,28 @@ func GetLibraryStats(tx *sql.Tx) (models.LibStats, error) {
 
 	return libStats, nil
 }
+
+func GetAuthors(tx *sql.Tx) ([]models.Author, error) {
+	authorRows, err := tx.Query(`SELECT * FROM creators ORDER BY name ASC`)
+
+	if err != nil {
+		util.Logger("Failed: %v", err)
+		return nil, err
+	}
+	var authors []models.Author
+	for authorRows.Next() {
+		var a models.Author
+
+		err = authorRows.Scan(
+			&a.ID,
+			&a.Name,
+		)
+		if err != nil {
+			util.Logger("Failed for author ID %d: %v", a.ID, err)
+		}
+
+		authors = append(authors, a)
+	}
+
+	return authors, nil
+}

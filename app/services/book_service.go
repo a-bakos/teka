@@ -189,8 +189,20 @@ func GetLibraryStats() (models.LibStats, error) {
 }
 
 // todo
-func GetAuthorsList() []models.Author {
-	return []models.Author{}
+func GetAuthorsList() ([]models.Author, error) {
+	tx, err := db.Conn.Begin()
+	if err != nil {
+		return []models.Author{}, err
+	}
+	defer func() {
+		if err != nil {
+			tx.Rollback()
+		} else {
+			tx.Commit()
+		}
+	}()
+
+	return repository.GetAuthors(tx)
 }
 
 // todo
