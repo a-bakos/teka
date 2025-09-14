@@ -381,7 +381,13 @@ func GetAuthors(tx *sql.Tx) ([]models.Author, error) {
 }
 
 func GetPublishers(tx *sql.Tx) ([]models.Publisher, error) {
-	publisherRows, err := tx.Query(`SELECT DISTINCT publisher FROM books WHERE publisher IS NOT NULL AND publisher <> '' ORDER BY publisher ASC`)
+	publisherRows, err := tx.Query(`
+		SELECT DISTINCT publisher 
+		FROM books 
+		WHERE publisher 
+		    IS NOT NULL 
+		  AND publisher <> '' 
+		ORDER BY publisher ASC`)
 
 	if err != nil {
 		util.Logger("Failed: %v", err)

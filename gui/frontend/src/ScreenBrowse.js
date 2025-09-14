@@ -4,8 +4,7 @@ import ScreenBuilder from "./ScreenBuilder";
 import ElementNav from "./ElementNav";
 import ElementFooter from "./ElementFooter";
 
-import coverExample from './assets/images/pooh.jpg';
-import {Action, DataAttr, EmptyString, Events, NotificationType} from "./consts";
+import {Action, DataAttr, EmptyString, Events, NotificationType, NullString} from "./consts";
 import AppNotification from "./AppNotification";
 import Modal from "./Modal";
 import {formatDate, splitAuthors} from "./utils";
@@ -29,6 +28,8 @@ export default class ScreenBrowse {
     static ID_NAME_STATS_READING = "readingCount";
     static ID_NAME_STATS_READ = "readCount";
 
+    static DELAY_GREETING = 1000;
+
     constructor(appContext) {
         this.ctx = appContext;
         this.Nav = new ElementNav(this.ctx);
@@ -41,7 +42,7 @@ export default class ScreenBrowse {
                     `${this.ctx.t("profile.hello", {name: this.ctx.getCurrentUserName()})}`,
                     true
                 );
-            }, 1000)
+            }, ScreenBrowse.DELAY_GREETING)
         }
 
     }
@@ -57,80 +58,104 @@ export default class ScreenBrowse {
     }
 
     async afterRender() {
+        // TODO WIP - implement browse screen filters
+        let tempBrowseFilter = ScreenBuilder.SCREEN_FILTERS.BROWSE.MAIN;
+        switch (tempBrowseFilter) {
+            case ScreenBuilder.SCREEN_FILTERS.BROWSE.SUMMARY:
+                // fetch all authors only
+                // const authors = await this.getAuthorsList();
+                break;
+            case ScreenBuilder.SCREEN_FILTERS.BROWSE.FAVORITES:
+                // fetch favs only
+                break;
+            case ScreenBuilder.SCREEN_FILTERS.BROWSE.READING:
+                // fetch reading only
+                break;
+            case ScreenBuilder.SCREEN_FILTERS.BROWSE.READ:
+                // fetch read only
+                break;
+            case ScreenBuilder.SCREEN_FILTERS.BROWSE.MAIN:
+            default:
+                // fetch all in collection
+                const books = await this.getBooks();
+                if (books) {
+                    this.renderBooksList(books);
+                }
+                break;
+        }
+    }
+
+    renderBooksList(books) {
         const container = document.getElementById(ScreenBrowse.ID_NAME_ALL_BOOKS_CONTAINER);
         container.innerHTML = ScreenBrowse.EMPTY_STRING;
         container.appendChild(ScreenBuilder.createPreloader());
 
-        const books = await this.getBooks();
-        if (books) {
-            setTimeout(() => {
-                container.appendChild(books);
-                container.querySelector(ScreenBuilder.SELECTOR_CLASS_PRELOADER).remove();
-                document.getElementById(ScreenBrowse.ID_NAME_FILTER_INPUT).focus();
+        setTimeout(() => {
+            container.appendChild(books);
+            container.querySelector(ScreenBuilder.SELECTOR_CLASS_PRELOADER).remove();
+            document.getElementById(ScreenBrowse.ID_NAME_FILTER_INPUT).focus();
 
-                const allBooks = document.querySelectorAll(`${ScreenBrowse.SELECTOR_CLASS_ITEM} div`);
-                for (const book of allBooks) {
-                    book.addEventListener(Events.CLICK, () => {
-                        this.ctx.setCurrentItemId(book.dataset.iid);
-                    });
-                }
-            }, ScreenBuilder.ARTIFICIAL_DELAY)
+            const allBooks = document.querySelectorAll(`${ScreenBrowse.SELECTOR_CLASS_ITEM} div`);
+            for (const book of allBooks) {
+                book.addEventListener(Events.CLICK, () => {
+                    this.ctx.setCurrentItemId(book.dataset.iid);
+                });
+            }
+        }, ScreenBuilder.ARTIFICIAL_DELAY)
 
-            setTimeout(async () => {
-                /**
-                 * Edit button events
-                 */
-                const editButtons = document.querySelectorAll(ScreenBrowse.SELECTOR_CLASS_EDIT_BOOK);
-                for (let btn of editButtons) {
-                    btn.addEventListener(Events.CLICK, () => {
-                        this.ctx.setActionRequest(Action.EDIT);
-                    });
-                }
+        setTimeout(async () => {
+            /**
+             * Edit button events
+             */
+            const editButtons = document.querySelectorAll(ScreenBrowse.SELECTOR_CLASS_EDIT_BOOK);
+            for (let btn of editButtons) {
+                btn.addEventListener(Events.CLICK, () => {
+                    this.ctx.setActionRequest(Action.EDIT);
+                });
+            }
 
-                /**
-                 * Duplicate button events
-                 */
-                const duplicateButtons = document.querySelectorAll(ScreenBrowse.SELECTOR_CLASS_DUPLICATE_BOOK);
-                for (let btn of duplicateButtons) {
-                    btn.addEventListener(Events.CLICK, () => {
-                        this.ctx.setActionRequest(Action.CLONE);
-                    });
-                }
+            /**
+             * Duplicate button events
+             */
+            const duplicateButtons = document.querySelectorAll(ScreenBrowse.SELECTOR_CLASS_DUPLICATE_BOOK);
+            for (let btn of duplicateButtons) {
+                btn.addEventListener(Events.CLICK, () => {
+                    this.ctx.setActionRequest(Action.CLONE);
+                });
+            }
 
-                /**
-                 * Delete button events w/ confirmation modals
-                 */
-                const deleteButtons = document.querySelectorAll(ScreenBrowse.SELECTOR_CLASS_DELETE_BOOK);
-                for (let btn of deleteButtons) {
-                    btn.addEventListener(Events.CLICK, async () => {
-                        try {
-                            const id = btn.dataset.iid;
-                            const bookTitle = document.querySelector(`h3[${DataAttr.IID}="${id}"]`).innerText.trim();
-                            const modal = new Modal(this.ctx.t("browse.deleteConfirmation", {title: bookTitle}));
-                            const confirmed = await modal.waitForChoice();
+            /**
+             * Delete button events w/ confirmation modals
+             */
+            const deleteButtons = document.querySelectorAll(ScreenBrowse.SELECTOR_CLASS_DELETE_BOOK);
+            for (let btn of deleteButtons) {
+                btn.addEventListener(Events.CLICK, async () => {
+                    try {
+                        const id = btn.dataset.iid;
+                        const bookTitle = document.querySelector(`h3[${this.ctx.addAttribute(DataAttr.IID, id)}`).innerText.trim();
+                        const modal = new Modal(this.ctx.t("browse.deleteConfirmation", {title: bookTitle}));
+                        const confirmed = await modal.waitForChoice();
 
-                            if (!confirmed) {
-                                return;
-                            }
-
-                            try {
-                                const _isDeleted = await window.go.main.App.DeleteBook(id);
-                                new AppNotification(NotificationType.SUCCESS, this.ctx.t("browse.deleteSuccess", {title: bookTitle}));
-                                // remove item from DOM
-                                const parent = btn.closest("li");
-                                parent.remove();
-                                // todo need to update books list + widgets
-                            } catch (err) {
-                                new AppNotification(NotificationType.ERROR, this.ctx.t("browse.deleteError"));
-                            }
-                        } catch (err) {
-                            console.error(err);
+                        if (!confirmed) {
+                            return;
                         }
-                    });
-                }
-            }, ScreenBuilder.ARTIFICIAL_DELAY + 10);
 
-        }
+                        try {
+                            const _isDeleted = await window.go.main.App.DeleteBook(id);
+                            new AppNotification(NotificationType.SUCCESS, this.ctx.t("browse.deleteSuccess", {title: bookTitle}));
+                            // remove item from DOM
+                            const parent = btn.closest("li");
+                            parent.remove();
+                            // todo need to update books list + widgets
+                        } catch (err) {
+                            new AppNotification(NotificationType.ERROR, this.ctx.t("browse.deleteError"));
+                        }
+                    } catch (err) {
+                        console.error(err);
+                    }
+                });
+            }
+        }, ScreenBuilder.ARTIFICIAL_DELAY + 10);
     }
 
     async getSectionDash() {
@@ -159,8 +184,8 @@ export default class ScreenBrowse {
             el.innerHTML = `
                 <p>${this.ctx.t("browse.noBooks")}</p>
                 <button 
-                    class="mt-3 rounded border" 
-                    data-screen="${ScreenBuilder.SCREENS.FORM}">
+                    class="mt-3 rounded border"
+                    ${ScreenBuilder.AddScreenSwitcher(ScreenBuilder.SCREENS.FORM)}>  
                     ${this.ctx.t("browse.addBooks")}
                 </button>`;
             return el;
@@ -174,7 +199,7 @@ export default class ScreenBrowse {
             li.className = ScreenBrowse.CLASS_NAME_ITEM;
             li.innerHTML = `
                 <div
-                    ${DataAttr.IID}="${book.item_id}" 
+                    ${this.ctx.addAttribute(DataAttr.IID, book.item_id)} 
                     class="flex items-center gap-4 p-2 border-b hover:bg-gray-50">
 
                   <!-- Col 1: Small cover -->
@@ -196,8 +221,8 @@ export default class ScreenBrowse {
                   <!-- Col 2: Title + Author -->
                   <div class="flex-1">
                     <h3 
-                        ${DataAttr.IID}="${book.item_id}"
-                        ${ScreenBuilder.AddScreenSwitcher(ScreenBuilder.SCREENS.ITEM)}"
+                        ${this.ctx.addAttribute(DataAttr.IID, book.item_id)}
+                        ${ScreenBuilder.AddScreenSwitcher(ScreenBuilder.SCREENS.ITEM)}
                         class="cursor-pointer text-lg font-semibold text-gray-900">
                         ${book.title} [ID: ${book.item_id}]
                     </h3>
@@ -208,25 +233,25 @@ export default class ScreenBrowse {
                   <!-- Col 3: Actions -->
                   <div class="flex items-center gap-2 text-sm select-none">
                     <button 
-                        ${DataAttr.IID}="${book.item_id}"
+                        ${this.ctx.addAttribute(DataAttr.IID, book.item_id)}
                         ${ScreenBuilder.AddScreenSwitcher(ScreenBuilder.SCREENS.ITEM)} 
                         class="px-2 py-1 bg-yellow-500 text-white rounded hover:bg-yellow-600">
                         ${this.ctx.t("globals.view")}
                     </button>
                     <button
-                        ${DataAttr.IID}="${book.item_id}"
+                        ${this.ctx.addAttribute(DataAttr.IID, book.item_id)}
                         ${ScreenBuilder.AddScreenSwitcher(ScreenBuilder.SCREENS.FORM)}
                         class="${ScreenBrowse.CLASS_NAME_EDIT_BOOK} px-2 py-1 bg-blue-500 text-white rounded hover:bg-blue-600">
                         ${this.ctx.t("globals.edit")}
                     </button>
                     <button
-                        ${DataAttr.IID}="${book.item_id}"
+                        ${this.ctx.addAttribute(DataAttr.IID, book.item_id)}
                         ${ScreenBuilder.AddScreenSwitcher(ScreenBuilder.SCREENS.FORM)}
                         class="${ScreenBrowse.CLASS_NAME_DUPLICATE_BOOK} px-2 py-1 bg-green-500 text-white rounded hover:bg-green-600">
                         ${this.ctx.t("globals.duplicate")}
                     </button>
                     <button
-                        ${DataAttr.IID}="${book.item_id}" 
+                        ${this.ctx.addAttribute(DataAttr.IID, book.item_id)}
                         class="${ScreenBrowse.CLASS_NAME_DELETE_BOOK} px-2 py-1 bg-red-500 text-white rounded hover:bg-red-600">
                         ${this.ctx.t("globals.remove")}
                     </button>
@@ -255,8 +280,8 @@ export default class ScreenBrowse {
     metaExists(metaValue) {
         if (
             metaValue !== null &&
-            metaValue !== "null" &&
-            metaValue !== ScreenBrowse.EMPTY_STRING
+            metaValue !== NullString &&
+            metaValue !== EmptyString
         ) {
             return true;
         }
@@ -309,16 +334,16 @@ export default class ScreenBrowse {
     async sectionDashlets() {
         const stats = await this.getStats()
         const libStats = await this.getLibraryStats();
-        return `
-            <div class="flex flex-wrap border">
-        
+
+        return `<div class="flex flex-wrap border">
+
         <!-- All Books Widget -->
         ${this.addWidget(
             this.ctx.t("browse.myLibraryTitle"),
             `You have <span id="${ScreenBrowse.ID_NAME_STATS_TOTAL}">${stats.my_books_count}</span> books in your library.`,
             {
                 [DataAttr.SCREEN]: ScreenBuilder.SCREENS.BROWSE,
-                [DataAttr.BROWSE_FILTER]: ScreenBuilder.BROWSE_FILTERS.ALL
+                [DataAttr.SCREEN_FILTER]: ScreenBuilder.SCREEN_FILTERS.BROWSE.MAIN
             }
         )}
 
@@ -328,17 +353,17 @@ export default class ScreenBrowse {
             `You have <span id="${ScreenBrowse.ID_NAME_STATS_FAVS}">${stats.my_favs_count}</span> favorite books.`,
             {
                 [DataAttr.SCREEN]: ScreenBuilder.SCREENS.BROWSE,
-                [DataAttr.BROWSE_FILTER]: ScreenBuilder.BROWSE_FILTERS.FAVORITES
+                [DataAttr.SCREEN_FILTER]: ScreenBuilder.SCREEN_FILTERS.BROWSE.FAVORITES
             }
         )}
-        
+
         <!-- Reading Now Widget -->
         ${this.addWidget(
             this.ctx.t("browse.statusReadingTitle"),
             `Currently reading <span id="${ScreenBrowse.ID_NAME_STATS_READING}">${stats.reading_count}</span> books.`,
             {
                 [DataAttr.SCREEN]: ScreenBuilder.SCREENS.BROWSE,
-                [DataAttr.BROWSE_FILTER]: ScreenBuilder.BROWSE_FILTERS.READING
+                [DataAttr.SCREEN_FILTER]: ScreenBuilder.SCREEN_FILTERS.BROWSE.READING
             }
         )}
         
@@ -348,31 +373,21 @@ export default class ScreenBrowse {
             `You finished <span id="${ScreenBrowse.ID_NAME_STATS_READ}">${stats.read_count}</span> books.`,
             {
                 [DataAttr.SCREEN]: ScreenBuilder.SCREENS.BROWSE,
-                [DataAttr.BROWSE_FILTER]: ScreenBuilder.BROWSE_FILTERS.READ
+                [DataAttr.SCREEN_FILTER]: ScreenBuilder.SCREEN_FILTERS.BROWSE.READ
             }
         )}
-        
-        <!-- All Authors Widget -->
+
+        <!-- Summary Widget -->
         ${this.addWidget(
-            "Osszes szerzo",
-            `Az osszes szerzo az adatbazisban ${libStats.all_authors_count}`,
+            "Adatbazis attekinto",
+            `Osszes szerzo: ${libStats.all_authors_count}<br>Osszes konyv: ${libStats.all_books_count}`,
             {
                 [DataAttr.SCREEN]: ScreenBuilder.SCREENS.BROWSE,
-                [DataAttr.BROWSE_FILTER]: ScreenBuilder.BROWSE_FILTERS.ALL_AUTHORS
+                [DataAttr.SCREEN_FILTER]: ScreenBuilder.SCREEN_FILTERS.BROWSE.SUMMARY
             }
         )}
-        
-        <!-- All Books Widget -->
-        ${this.addWidget(
-            "Osszes konyv",
-            `Az osszes konyv az adatbazisban ${libStats.all_books_count}`,
-            {
-                [DataAttr.SCREEN]: ScreenBuilder.SCREENS.BROWSE,
-                [DataAttr.BROWSE_FILTER]: ScreenBuilder.BROWSE_FILTERS.ALL_BOOKS
-            }
-        )}
-            </div>
-        `;
+
+        </div>`;
     }
 
     tempFilters() {

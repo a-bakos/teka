@@ -31,16 +31,16 @@ export default class ScreenBuilder {
         ITEM: "item",
     };
 
-    static BROWSE_FILTERS = {
-        ALL: "all", // = in my collection
-        READ: "read",
-        UNREAD: "unread",
-        READING: "reading",
-        FAVORITES: "favorites",
-        //WISHLIST: "wishlist",
-        ALL_BOOKS: "all_books",
-        ALL_AUTHORS: "all_authors",
-        ALL_PUBLISHERS: "all_publishers",
+    static SCREEN_FILTERS = {
+        BROWSE: {
+            MAIN: "main", // = in my collection
+            READ: "read",
+            UNREAD: "unread",
+            READING: "reading",
+            FAVORITES: "favorites",
+            //WISHLIST: "wishlist",
+            SUMMARY: "summary",
+        }
     }
 
     // Any button or element with a data-screen attribute automatically becomes a navigation trigger

@@ -10,6 +10,7 @@ export default class AppContext {
         };
         this.currentScreen = ScreenBuilder.SCREENS.STARTUP;
         this.previousScreen = null;
+        this.screenFilter = null; // todo maybe rename this
         this.actionRequest = null;
         this.currentItem = null;
         this.formType = null;
@@ -29,6 +30,14 @@ export default class AppContext {
 
     getVersion() {
         return this.version;
+    }
+
+    setScreenFilter(filter) {
+        this.screenFilter = filter;
+    }
+
+    getScreenFilter() {
+        return this.screenFilter;
     }
 
     setActionRequest(action) {
