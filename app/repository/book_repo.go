@@ -39,6 +39,10 @@ func InsertBook(tx *sql.Tx, b *models.Book, itemID int64) (int64, error) {
 		return constants.DbFailedInsertId, err
 	}
 
+	if b.ISBN != nil && !b.HasValidIsbn() {
+		b.ISBN = nil
+	}
+
 	// Step 2: Insert into books
 	res, err := tx.Exec(`
         INSERT INTO books (item_id, publisher, published_date, page_count, isbn)
