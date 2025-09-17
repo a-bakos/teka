@@ -100,6 +100,38 @@ func InsertItem(tx *sql.Tx, item *models.Book) (int64, error) {
 	return bookID, nil
 }
 
+func AddToFavs(tx *sql.Tx, bookId, profile string) bool {
+	res, err := tx.Exec(`INSERT INTO profile_item_flags (profile_id, item_id, is_favourite) VALUES (?, ?, ?)`, profile, bookId, 1)
+	if err != nil {
+		util.Logger("Error inserting favorite item: %v", err)
+		return false
+	}
+	var id int64
+	id, errInsert := res.LastInsertId()
+	if errInsert != nil {
+		util.Logger("Error inserting favorite item: %v", errInsert)
+		return false
+	}
+	util.Logger("Inserted favorite item: %d", id)
+	return true
+}
+
+func RemoveFromFavs(tx *sql.Tx, bookId, profile string) bool {
+	// Update row, don't delete
+	res, err := tx.Exec(`UPDATE profile_item_flags SET is_favourite = 0 WHERE profile_id = ? AND item_id = ?`, profile, bookId)
+	if err != nil {
+		util.Logger("Error removing favorite item: %v", err)
+		return false
+	}
+	rowsAffected, errRows := res.RowsAffected()
+	if errRows != nil {
+		util.Logger("Error removing favorite item: %v", errRows)
+		return false
+	}
+	util.Logger("Removed favorite item, rows affected: %d", rowsAffected)
+	return true
+}
+
 // todo
 // getItemsByType
 // getItemsByCreatedByID

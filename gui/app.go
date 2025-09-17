@@ -91,6 +91,14 @@ func (a *App) AddToCollection(bookId, profileId string) bool {
 	return services.AddToCollection(bookId, profileId)
 }
 
+func (a *App) AddToFavs(bookId, profileId string) bool {
+	return services.AddToFavs(bookId, profileId)
+}
+
+func (a *App) RemoveFromFavs(bookId, profileId string) bool {
+	return services.RemoveFromFavs(bookId, profileId)
+}
+
 func (a *App) GetMyStats(profileId string) models.Stats {
 	return services.GetStats(profileId)
 }

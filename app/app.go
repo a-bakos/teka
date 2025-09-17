@@ -87,4 +87,8 @@ func (a App) Run() {
 		util.Logger("%v", ``)
 	}
 	util.PrintStruct(al)
+
+	res := services.AddToFavs("24", "2")
+	util.Logger("Added to favs: %v", res)
+
 }

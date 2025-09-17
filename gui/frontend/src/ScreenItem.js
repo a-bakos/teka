@@ -166,6 +166,14 @@ export default class ScreenItem {
         }
     }
 
+    async addOrRemoveFromFavs(bookId, profileId, isFav) {
+        if (isFav === Bool.TRUE) {
+            return await window.go.main.App.RemoveFromFavs(bookId, profileId);
+        } else {
+            return await window.go.main.App.AddToFavs(bookId, profileId);
+        }
+    }
+
     distributeBookDetails(bookDetails, profileItemFlags) {
         document.getElementById(ScreenItem.ID_NAME_BOOK_TITLE).innerText = bookDetails.title;
         document.getElementById(ScreenItem.ID_NAME_BOOK_AUTHOR).innerText = splitAuthors(bookDetails.author_names);
@@ -173,6 +181,7 @@ export default class ScreenItem {
         document.getElementById(ScreenItem.ID_NAME_BOOK_PUBLISH_DATE).innerText = formatDate(bookDetails.published_date).toString();
         document.getElementById(ScreenItem.ID_NAME_BOOK_ISBN).innerText = bookDetails.isbn;
         document.getElementById(ScreenItem.ID_NAME_BOOK_PAGES).innerText = bookDetails.page_count;
+
 
         const favBtn = document.createElement("button");
         favBtn.id = ScreenItem.ID_NAME_FAV_BTN;
