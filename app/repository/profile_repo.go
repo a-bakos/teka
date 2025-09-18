@@ -241,6 +241,8 @@ func AddToCollection(tx *sql.Tx, itemId, profileId string) bool {
 
 func GetProfileItemFlags(tx *sql.Tx, profileId, itemId string) models.ProfileItemFlags {
 	var pif models.ProfileItemFlags
+	var status sql.NullString
+	var fav sql.NullBool
 	err := tx.QueryRow(`
 		SELECT
 		    pif.profile_id,
@@ -257,11 +259,23 @@ func GetProfileItemFlags(tx *sql.Tx, profileId, itemId string) models.ProfileIte
 	`, profileId, itemId).Scan(
 		&pif.ProfileID,
 		&pif.ItemID,
-		&pif.Status,
-		&pif.IsFavorite,
+		&status,
+		&fav,
 		&pif.Notes,
 		&pif.UpdatedAt,
 	)
+
+	if status.Valid {
+		pif.Status = status.String
+	} else {
+		pif.Status = constants.EmptyString
+	}
+
+	if fav.Valid {
+		pif.IsFavorite = true
+	} else {
+		pif.IsFavorite = false
+	}
 
 	if err != nil {
 		util.Logger("Error %v", err)

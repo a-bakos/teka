@@ -149,7 +149,7 @@ export default class ScreenItem {
                 const bookId = this.ctx.currentItem;
                 const book = await window.go.main.App.GetBook(bookId);
 
-                const profileId = this.ctx.currentUserId;
+                const profileId = this.ctx.getCurrentUserId();
                 const pif = await window.go.main.App.GetProfileItemFlags(profileId, bookId);
 
                 console.log(book)

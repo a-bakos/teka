@@ -73,8 +73,8 @@ func (a App) Run() {
 	//b := services.GetBook("1")
 	//util.PrintStruct(b)
 
-	//pif := services.GetProfileItemFlags("1", "1")
-	//util.PrintStruct(pif)
+	pif := services.GetProfileItemFlags("2", "24")
+	util.PrintStruct(pif)
 
 	//stats := services.GetStats("2")
 	//util.PrintStruct(stats)
@@ -82,13 +82,13 @@ func (a App) Run() {
 	//ps := services.GetProfileSettings("2")
 	//util.PrintStruct(ps)
 
-	al, err := services.GetPublishersList()
-	if err != nil {
-		util.Logger("%v", ``)
-	}
-	util.PrintStruct(al)
-
-	res := services.AddToFavs("24", "2")
-	util.Logger("Added to favs: %v", res)
+	//al, err := services.GetPublishersList()
+	//if err != nil {
+	//	util.Logger("%v", ``)
+	//}
+	//util.PrintStruct(al)
+	//
+	//res := services.AddToFavs("24", "2")
+	//util.Logger("Added to favs: %v", res)
 
 }
