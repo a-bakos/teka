@@ -262,7 +262,7 @@ export default class ScreenItem {
         container.appendChild(ScreenBuilder.createPreloader());
 
         // todo
-        // const relatedBooks = await window.go.main.App.LoadRelatedBooks(authorNames, excludeItemId)
+        // const relatedBooks = await window.go.main.App.GetRelatedBooks(authorNames, excludeItemId)
 
         let html = `
             <h2 class="text-xl font-semibold mb-2">${this.ctx.t("itemDetails.moreFromAuthor")}</h2>

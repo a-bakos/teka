@@ -251,3 +251,19 @@ func RemoveFromFavs(bookId, profileId string) bool {
 
 	return repository.RemoveFromFavs(tx, bookId, profileId)
 }
+
+func GetRelatedBooks(authorNames, excludeItemId string) []models.Book {
+	tx, err := db.Conn.Begin()
+	if err != nil {
+		return nil
+	}
+	defer func() {
+		if err != nil {
+			tx.Rollback()
+		} else {
+			tx.Commit()
+		}
+	}()
+
+	return repository.GetRelatedBooks(tx, authorNames, excludeItemId)
+}

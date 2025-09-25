@@ -107,6 +107,10 @@ func (a *App) GetBooksByProfileId(profileId string) []models.Book {
 	return services.GetBooksByProfileId(profileId)
 }
 
+func (a *App) GetRelatedBooks(authorNames, excludeItemId string) []models.Book {
+	return services.GetRelatedBooks(authorNames, excludeItemId)
+}
+
 // todo
 // addBook
 // updateBook

@@ -411,3 +411,87 @@ func GetPublishers(tx *sql.Tx) ([]models.Publisher, error) {
 
 	return publishers, nil
 }
+
+// WIP
+func GetRelatedBooks(tx *sql.Tx, authorNames, excludeItemId string) []models.Book {
+	// Author names process
+
+	var authorName string
+	/// constants.MultiAuthorSeparator
+
+	booksRows, err := tx.Query(`
+		SELECT 
+		    items.id,
+		    items.title,
+		    items.description, 
+		    items.item_type,
+		    items.created_at,
+		    items.updated_at,
+		    items.created_by,
+		    items.updated_by,   
+		    books.isbn,
+		    books.publisher,
+		    books.published_date, 
+		    books.page_count,
+		    GROUP_CONCAT(creators.name, ?) AS author_names -- group for multi-authors = author1+author2
+		FROM items 
+		INNER JOIN books 
+			ON items.id = books.item_id
+		INNER JOIN item_creators
+			ON items.id = item_creators.item_id
+		INNER JOIN creators
+			ON item_creators.creator_id = creators.id
+		WHERE creators.name IN ?
+		    AND items.id <> ?
+		GROUP BY
+		    items.id,
+		    items.title,
+		    items.description, 
+		    items.item_type,
+		    items.created_at,
+		    items.updated_at,
+		    items.created_by,
+		    items.updated_by,
+		    books.isbn,
+		    books.publisher, 
+		    books.published_date, 
+		    books.page_count
+		ORDER BY
+		    items.title ASC;
+	`,
+		authorName,
+		excludeItemId,
+	)
+
+	if err != nil {
+		util.Logger("Failed: %v", err)
+	}
+	var books []models.Book // container
+	for booksRows.Next() {
+		var b models.Book
+
+		err = booksRows.Scan(
+			&b.Item.ID,
+			&b.Item.Title,
+			&b.Item.Description,
+			&b.Item.ItemType,
+			&b.Item.CreatedAt,
+			&b.Item.UpdatedAt,
+			&b.Item.CreatedBy,
+			&b.Item.UpdatedBy,
+			&b.ISBN,
+			&b.Publisher,
+			&b.PublishedDate,
+			&b.PageCount,
+			&b.AuthorNames,
+		)
+		if err != nil {
+			util.Logger("Failed for item ID %d: %v", b.Item.ID, err)
+		}
+
+		books = append(books, b)
+	}
+
+	return books
+
+}
